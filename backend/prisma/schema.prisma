@@ -1,0 +1,219 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================
+// Admin Users
+// =============================================
+model Admin {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  passwordHash        String    @map("password_hash")
+  fullName            String    @map("full_name")
+  role                AdminRole @default(STAFF)
+  isActive            Boolean   @default(true) @map("is_active")
+  lastLoginAt         DateTime? @map("last_login_at")
+  failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime? @map("locked_until")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  STAFF
+}
+
+// =============================================
+// Applicant (ผู้สมัคร)
+// =============================================
+model Applicant {
+  id String @id @default(cuid())
+
+  // ข้อมูลส่วนตัว
+  prefixName  String  @map("prefix_name") // คำนำหน้า
+  firstName   String  @map("first_name") // ชื่อ
+  lastName    String  @map("last_name") // นามสกุล
+  aliasName   String? @map("alias_name") // ฉายา (สำหรับพระภิกษุสามเณร)
+  firstNameEn String? @map("first_name_en")
+  lastNameEn  String? @map("last_name_en")
+  nationalId  String  @unique @map("national_id") // เลขบัตรประชาชน (encrypted)
+  gender      Gender
+  birthDate   DateTime @map("birth_date")
+  ethnicity   String // เชื้อชาติ
+  nationality String // สัญชาติ
+  religion    String // ศาสนา
+  bloodType   String? @map("blood_type")
+
+  // ข้อมูลติดต่อ
+  phone  String
+  email  String?
+  lineId String? @map("line_id")
+
+  // ที่อยู่
+  address     String
+  subDistrict String @map("sub_district") // ตำบล
+  district    String // อำเภอ
+  province    String // จังหวัด
+  postalCode  String @map("postal_code") // รหัสไปรษณีย์
+
+  // ข้อมูลการศึกษา
+  previousSchool    String  @map("previous_school")
+  previousEducation String  @map("previous_education")
+  gpa               Float?
+  graduationYear    String? @map("graduation_year")
+  schoolProvince    String? @map("school_province") // จังหวัดของโรงเรียน
+  applicationReason String? @map("application_reason") @db.Text // เหตุผลการสมัครเรียน
+
+  // รายการเอกสารที่แนบมา (เพื่อใช้ในการทำ PDF Checklist)
+  hasTranscript        Boolean @default(false) @map("has_transcript")
+  hasHouseRegistration Boolean @default(false) @map("has_house_registration")
+  hasIdCard            Boolean @default(false) @map("has_id_card")
+  hasNameChange        Boolean @default(false) @map("has_name_change")
+  hasPhoto             Boolean @default(false) @map("has_photo")
+
+  // หลักสูตรที่สมัคร
+  programId String  @map("program_id")
+  program   Program @relation(fields: [programId], references: [id])
+
+  // สถานะ
+  status            ApplicationStatus @default(PENDING)
+  applicationNumber String            @unique @map("application_number")
+  applicationYear   Int               @map("application_year")
+
+  // ข้อมูลผู้ปกครอง
+  parentName     String? @map("parent_name")
+  parentPhone    String? @map("parent_phone")
+  parentRelation String? @map("parent_relation")
+
+  // PDPA consent
+  pdpaConsent   Boolean  @default(false) @map("pdpa_consent")
+  consentedAt   DateTime? @map("consented_at")
+
+  // Timestamps
+  submittedAt DateTime  @default(now()) @map("submitted_at")
+  reviewedAt  DateTime? @map("reviewed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  documents Document[]
+
+  @@index([nationalId])
+  @@index([applicationNumber])
+  @@index([status])
+  @@index([applicationYear])
+  @@index([firstName, lastName])
+  @@map("applicants")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// =============================================
+// Programs (หลักสูตร)
+// =============================================
+model Program {
+  id          String  @id @default(cuid())
+  name        String  // ชื่อหลักสูตร
+  nameEn      String? @map("name_en")
+  faculty     String  // คณะ
+  degree      String  // ระดับปริญญา
+  description String? // หมายเหตุเพิ่มเติม (เช่น ภาคพิเศษ, เรียนเสาร์-อาทิตย์)
+  duration    String? // ระยะเวลาหลักสูตร (เช่น 4 ปี)
+  maxQuota    Int     @default(50) @map("max_quota") // จำนวนที่เปิดรับ
+  isActive    Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  applicants Applicant[]
+
+  @@map("programs")
+}
+
+// =============================================
+// Documents (เอกสารแนบ)
+// =============================================
+model Document {
+  id          String       @id @default(cuid())
+  applicantId String       @map("applicant_id")
+  applicant   Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  type        DocumentType
+  fileName    String       @map("file_name")
+  fileSize    Int          @map("file_size")
+  mimeType    String       @map("mime_type")
+  storageKey  String       @map("storage_key") // R2 object key
+  uploadedAt  DateTime     @default(now()) @map("uploaded_at")
+
+  @@index([applicantId])
+  @@map("documents")
+}
+
+enum DocumentType {
+  PHOTO
+  ID_CARD
+  HOUSE_REGISTRATION
+  TRANSCRIPT
+  CERTIFICATE
+  NAME_CHANGE
+  OTHER
+}
+
+// =============================================
+// Audit Logs
+// =============================================
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  adminId   String?  @map("admin_id")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  details   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([entity, entityId])
+  @@index([adminId])
+  @@map("audit_logs")
+}
+
+// =============================================
+// Backup Logs
+// =============================================
+model BackupLog {
+  id          String    @id @default(cuid())
+  type        String // "full" | "incremental"
+  status      String // "success" | "failed" | "running"
+  fileCount   Int       @default(0) @map("file_count")
+  totalSize   BigInt    @default(0) @map("total_size")
+  driveFileId String?   @map("drive_file_id")
+  error       String?
+  startedAt   DateTime  @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("backup_logs")
+}
