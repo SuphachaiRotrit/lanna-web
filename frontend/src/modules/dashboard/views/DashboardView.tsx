@@ -1,0 +1,101 @@
+'use client';
+
+import React from 'react';
+import { CalendarDays, Award, BookOpen, Activity, ArrowUpRight, TrendingUp, Users, Clock } from 'lucide-react';
+import { useDashboardStats } from '../hooks/use-dashboard';
+import { StatsOverview } from '../components/StatsOverview';
+import { TrendChart } from '../components/TrendChart';
+
+export const DashboardView = () => {
+  const { data: res, isLoading } = useDashboardStats();
+  const stats = res?.data;
+
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-[60vh]">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-gray-200 border-t-brand"></div>
+          <Activity size={16} className="absolute inset-0 m-auto text-brand animate-pulse" />
+        </div>
+        <p className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูลแดชบอร์ด...</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Dashboard</span>
+          </div>
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">ภาพรวมการรับสมัคร</h2>
+          <p className="text-gray-400 text-sm font-medium mt-0.5">สรุปข้อมูลการรับสมัครนักศึกษาและสถิติที่สำคัญ</p>
+        </div>
+        <div className="flex items-center gap-2 px-3.5 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[11px] font-bold text-gray-400">
+          <CalendarDays size={14} className="text-brand" />
+          ปีการศึกษา {stats?.overview?.currentYear}
+          <span className="text-gray-200 mx-1">|</span>
+          <Clock size={12} className="text-gray-300" />
+          อัปเดต {new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
+        </div>
+      </div>
+
+      <StatsOverview stats={stats} />
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+           <TrendChart data={stats?.monthlyTrend || []} year={stats?.overview?.currentYear || 0} />
+        </div>
+
+        {/* Popular Programs Side Panel */}
+        <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-extrabold text-gray-800 flex items-center gap-2">
+              <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+                <Award size={16} className="text-amber-500" />
+              </div>
+              หลักสูตรยอดนิยม
+            </h3>
+            <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Top 5</span>
+          </div>
+          <div className="space-y-4">
+            {stats?.programBreakdown?.sort((a: any, b: any) => b.count - a.count).slice(0, 5).map((prog: any, idx: number) => (
+              <div key={idx} className="group">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black ${
+                      idx === 0 ? 'bg-amber-50 text-amber-600' : idx === 1 ? 'bg-gray-100 text-gray-500' : 'bg-gray-50 text-gray-400'
+                    }`}>
+                      {idx + 1}
+                    </span>
+                    <span className="text-xs font-bold text-gray-700 truncate max-w-[140px]">{prog.programName}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs font-extrabold text-gray-800">{prog.count}</span>
+                    <Users size={10} className="text-gray-300" />
+                  </div>
+                </div>
+                <div className="h-1.5 w-full bg-gray-50 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-1000 ${
+                      idx === 0 ? 'bg-gradient-to-r from-amber-400 to-amber-500' : 'bg-gradient-to-r from-brand/60 to-brand/40'
+                    }`}
+                    style={{ width: `${Math.min((prog.count / (stats.overview.thisYearApplicants || 1)) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+            {(!stats?.programBreakdown || stats.programBreakdown.length === 0) && (
+              <div className="text-center py-10">
+                <BookOpen className="mx-auto text-gray-200 mb-3" size={40} />
+                <p className="text-gray-400 text-xs font-bold">ยังไม่มีข้อมูลการสมัคร</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

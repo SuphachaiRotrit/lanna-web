@@ -1,0 +1,116 @@
+import React from 'react';
+import { Clock, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Applicant } from '@/services/applicant.service';
+
+interface ApplicantTableProps {
+  applicants: Applicant[];
+  pagination: any;
+  loading: boolean;
+  onUpdateStatus: (id: string, status: string) => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+}
+
+export const ApplicantTable: React.FC<ApplicantTableProps> = ({ 
+  applicants, pagination, loading, onUpdateStatus, onPageChange, currentPage 
+}) => {
+  return (
+    <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="bg-gray-50/50">
+              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">ข้อมูลผู้สมัคร</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
+              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
+              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="py-20 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto"></div>
+                </td>
+              </tr>
+            ) : applicants.map((app) => (
+              <tr key={app.id} className="hover:bg-gray-50/50 transition-colors group">
+                <td className="px-8 py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-navy/5 flex items-center justify-center font-bold text-navy text-sm">
+                      {app.firstName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-navy leading-tight">{app.prefixName}{app.firstName} {app.lastName}</p>
+                      <p className="text-[11px] text-gray-400 font-bold mt-0.5">{app.applicationNumber}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-6">
+                  <p className="text-sm font-bold text-gray-700 truncate w-48">{app.program?.name}</p>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty}</p>
+                </td>
+                <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
+                <td className="px-6 py-6">
+                  <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    app.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
+                    app.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
+                    app.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
+                    'bg-blue-100 text-blue-600'
+                  }`}>
+                    {app.status === 'PENDING' && <Clock size={12} />}
+                    {app.status === 'APPROVED' && <CheckCircle2 size={12} />}
+                    {app.status === 'REJECTED' && <XCircle size={12} />}
+                    {app.status === 'PENDING' ? 'รอตรวจสอบ' : 
+                     app.status === 'APPROVED' ? 'เบื้องต้นผ่าน' :
+                     app.status === 'REJECTED' ? 'ไม่ผ่าน' : app.status}
+                  </div>
+                </td>
+                <td className="px-8 py-6 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <button onClick={() => onUpdateStatus(app.id, 'APPROVED')} className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors" title="อนุมัติ">
+                      <CheckCircle2 size={18} />
+                    </button>
+                    <button onClick={() => onUpdateStatus(app.id, 'REJECTED')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="ไม่อนุมัติ">
+                      <XCircle size={18} />
+                    </button>
+                    <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+                      <Eye size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="px-8 py-6 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+        <p className="text-xs font-bold text-gray-400">
+          แสดง {applicants.length} จาก {pagination.total || 0} รายการ
+        </p>
+        <div className="flex items-center gap-2">
+          <button 
+            disabled={currentPage === 1}
+            onClick={() => onPageChange(currentPage - 1)}
+            className="p-2 bg-white border border-gray-200 rounded-xl disabled:opacity-30 hover:bg-gray-50 transition-all shadow-sm"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <span className="text-sm font-black text-navy px-2">
+            หน้า {currentPage} / {pagination.totalPages || 1}
+          </span>
+          <button 
+            disabled={currentPage === pagination.totalPages}
+            onClick={() => onPageChange(currentPage + 1)}
+            className="p-2 bg-white border border-gray-200 rounded-xl disabled:opacity-30 hover:bg-gray-50 transition-all shadow-sm"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

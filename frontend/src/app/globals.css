@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  /* ===== MBU LANNA BRAND SYSTEM ===== */
+  --color-brand: #FF613E;
+  --color-brand-dark: #E04F2E;
+  --color-brand-light: #FF8466;
+  --color-navy: #0F1D2F;
+  --color-navy-light: #1A2D44;
+  --color-gold: #D4A843;
+  --color-cream: #FFF9F5;
+  --color-warm-gray: #F5F0EB;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  --animate-shake: shake 0.4s ease-in-out;
+}
+
+:root {
+  --background: 30 50% 99%;
+  --foreground: 210 30% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 30% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 30% 10%;
+  --primary: 12 100% 62%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 50% 12%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 30 20% 94%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 43 62% 55%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 25 15% 91%;
+  --input: 25 15% 91%;
+  --ring: 12 100% 62%;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 210 30% 5%;
+  --foreground: 0 0% 98%;
+  --card: 210 30% 8%;
+  --card-foreground: 0 0% 98%;
+  --primary: 12 100% 62%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 50% 20%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 215 20% 15%;
+  --muted-foreground: 215 16% 65%;
+  --border: 215 20% 15%;
+  --input: 215 20% 15%;
+  --ring: 12 100% 62%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: hsl(var(--foreground));
+  font-family: var(--font-prompt), var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+@layer utilities {
+  .text-brand {
+    color: var(--color-brand);
+  }
+
+  .text-glow-brand {
+    text-shadow: 0 0 20px rgba(255, 97, 62, 0.4);
+  }
+
+  .bg-brand {
+    background-color: var(--color-brand);
+  }
+
+  .border-brand {
+    border-color: var(--color-brand);
+  }
+
+  .brand-gradient {
+    background: linear-gradient(135deg, #FF613E 0%, #FF8466 50%, #D4A843 100%);
+  }
+
+  .navy-gradient {
+    background: linear-gradient(135deg, #0F1D2F 0%, #1A2D44 100%);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-dark {
+    background: rgba(15, 29, 47, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #FF613E, #D4A843);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shadow-brand {
+    box-shadow: 0 20px 50px -12px rgba(255, 97, 62, 0.25);
+  }
+
+  .shadow-brand-sm {
+    box-shadow: 0 8px 24px -6px rgba(255, 97, 62, 0.2);
+  }
+
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
