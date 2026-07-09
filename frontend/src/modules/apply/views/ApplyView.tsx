@@ -92,10 +92,10 @@ export const ApplyView = () => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length === 0) return;
 
-    // ตรวจสอบขนาดไฟล์ (ไม่เกิน 5MB)
-    const largeFile = selectedFiles.find(f => f.size > 5 * 1024 * 1024);
+    // ตรวจสอบขนาดไฟล์ (ไม่เกิน 4MB)
+    const largeFile = selectedFiles.find(f => f.size > 4 * 1024 * 1024);
     if (largeFile) {
-      toast.error(`ไฟล์ "${largeFile.name}" มีขนาดใหญ่เกิน 5MB`);
+      toast.error(`ไฟล์ "${largeFile.name}" มีขนาดใหญ่เกิน 4MB`);
       return;
     }
 

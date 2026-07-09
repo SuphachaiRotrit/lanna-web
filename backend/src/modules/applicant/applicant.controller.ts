@@ -42,7 +42,7 @@ export class ApplicantController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 5 * 1024 * 1024 },
+      limits: { fileSize: 4 * 1024 * 1024 },
     }),
   )
   async uploadDocument(

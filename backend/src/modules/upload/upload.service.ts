@@ -23,7 +23,7 @@ const ALLOWED_MIME_TYPES = [
   'image/webp',
   'application/pdf',
 ];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB — stays under Vercel's 4.5MB request-body cap
 
 @Injectable()
 export class UploadService {

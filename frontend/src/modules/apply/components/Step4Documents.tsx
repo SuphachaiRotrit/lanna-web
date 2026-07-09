@@ -109,7 +109,10 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
         <ErrorMessage name="pdpaConsent" component="div" className="text-red-500 text-xs mt-2 ml-9 font-bold" />
       </div>
 
-      <Turnstile onVerify={(token) => setFieldValue('turnstileToken', token)} />
+      <Turnstile
+        onVerify={(token) => setFieldValue('turnstileToken', token)}
+        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+      />
     </div>
   );
 };

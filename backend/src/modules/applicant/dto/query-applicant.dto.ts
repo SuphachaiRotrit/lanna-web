@@ -1,5 +1,8 @@
 import { IsOptional, IsString, IsEnum, IsInt, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
+
+const emptyToUndefined = ({ value }: { value: unknown }) =>
+  value === '' ? undefined : value;
 
 export enum StatusFilterDto {
   PENDING = 'PENDING',
@@ -15,10 +18,12 @@ export class QueryApplicantDto {
   search?: string; // Search by name or national ID
 
   @IsOptional()
+  @Transform(emptyToUndefined)
   @IsEnum(StatusFilterDto)
   status?: StatusFilterDto;
 
   @IsOptional()
+  @Transform(emptyToUndefined)
   @IsInt()
   @Min(2500)
   @Type(() => Number)

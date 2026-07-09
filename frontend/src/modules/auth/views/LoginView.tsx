@@ -87,7 +87,10 @@ export const LoginView = () => {
 
                 <div className="my-4">
                    <div className="rounded-xl border border-gray-100 bg-white p-1.5 flex justify-center overflow-hidden min-h-[70px] shadow-sm">
-                      <Turnstile onVerify={(token) => setFieldValue('turnstileToken', token)} />
+                      <Turnstile
+                        onVerify={(token) => setFieldValue('turnstileToken', token)}
+                        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                      />
                    </div>
                 </div>
 

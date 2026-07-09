@@ -2,7 +2,6 @@ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { ScheduleModule } from '@nestjs/schedule';
 
 // Core
 import { PrismaModule } from './prisma/prisma.module';
@@ -41,9 +40,6 @@ import { CommonModule } from './common/common.module';
         limit: 100,
       },
     ]),
-
-    // Scheduler
-    ScheduleModule.forRoot(),
 
     // Core
     PrismaModule,
