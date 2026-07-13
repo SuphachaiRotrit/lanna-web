@@ -43,6 +43,7 @@ export const useApplicantMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applicants"] });
+      queryClient.invalidateQueries({ queryKey: ["applicant"] });
       toast.success("อัปเดตสถานะสำเร็จ");
     },
     onError: (err) => {
