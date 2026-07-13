@@ -5,11 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  LayoutDashboard, 
-  Users, 
-  FileDown, 
-  Database, 
-  LogOut, 
+  LayoutDashboard,
+  Users,
+  FileDown,
+  LogOut,
   Menu, 
   X,
   Bell,
@@ -30,7 +29,6 @@ const menuItems = [
   { title: 'จัดการผู้สมัคร', icon: Users, href: '/admin/applicants', badge: 'hot' },
   { title: 'จัดการสาขาวิชา', icon: BookOpen, href: '/admin/programs', badge: null },
   { title: 'ส่งออกข้อมูล', icon: FileDown, href: '/admin/export', badge: null },
-  { title: 'สำรองข้อมูล', icon: Database, href: '/admin/backup', badge: null },
   { title: 'ตั้งค่า', icon: Settings, href: '/admin/settings', badge: null },
 ];
 

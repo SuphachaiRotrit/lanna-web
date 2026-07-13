@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -20,8 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1061.0",
-    "@aws-sdk/s3-request-presigner": "^3.1061.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
@@ -30,7 +29,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/throttler": "^6.5.0",
     "@prisma/client": "^6.19.3",
-    "archiver": "^7.0.1",
+    "@supabase/supabase-js": "^2.110.2",
     "axios": "^1.17.0",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
@@ -39,7 +38,6 @@
     "csurf": "^1.11.0",
     "exceljs": "^4.4.0",
     "express-rate-limit": "^8.5.2",
-    "googleapis": "^173.0.0",
     "helmet": "^8.2.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -57,7 +55,6 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@prisma/config": "^7.8.0",
-    "@types/archiver": "^7.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.10",
     "@types/csurf": "^1.11.5",

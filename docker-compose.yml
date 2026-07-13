@@ -32,20 +32,12 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION:-15m}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-7d}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
-      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
-      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
-      R2_BUCKET_NAME: ${R2_BUCKET_NAME}
-      R2_PUBLIC_URL: ${R2_PUBLIC_URL}
-      GOOGLE_CLIENT_EMAIL: ${GOOGLE_CLIENT_EMAIL}
-      GOOGLE_PRIVATE_KEY: ${GOOGLE_PRIVATE_KEY}
-      GOOGLE_DRIVE_FOLDER_ID: ${GOOGLE_DRIVE_FOLDER_ID}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-documents}
       TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY}
-      CRON_SECRET: ${CRON_SECRET}
     ports:
       - "4000:4000"
-    volumes:
-      - backend_uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -65,4 +57,3 @@ services:
 
 volumes:
   postgres_data:
-  backend_uploads:

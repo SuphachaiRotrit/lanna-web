@@ -12,7 +12,6 @@ import { ApplicantModule } from './modules/applicant/applicant.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ExportModule } from './modules/export/export.module';
-import { BackupModule } from './modules/backup/backup.module';
 import { ProgramModule } from './modules/program/program.module';
 
 // Common
@@ -50,7 +49,6 @@ import { CommonModule } from './common/common.module';
     UploadModule,
     DashboardModule,
     ExportModule,
-    BackupModule,
     ProgramModule,
   ],
   providers: [

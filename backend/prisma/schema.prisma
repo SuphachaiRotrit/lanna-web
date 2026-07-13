@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -165,7 +166,7 @@ model Document {
   fileName    String       @map("file_name")
   fileSize    Int          @map("file_size")
   mimeType    String       @map("mime_type")
-  storageKey  String       @map("storage_key") // R2 object key
+  storageKey  String       @map("storage_key") // storage object key
   uploadedAt  DateTime     @default(now()) @map("uploaded_at")
 
   @@index([applicantId])
@@ -199,22 +200,4 @@ model AuditLog {
   @@index([entity, entityId])
   @@index([adminId])
   @@map("audit_logs")
-}
-
-// =============================================
-// Backup Logs
-// =============================================
-model BackupLog {
-  id          String    @id @default(cuid())
-  type        String // "full" | "incremental"
-  status      String // "success" | "failed" | "running"
-  fileCount   Int       @default(0) @map("file_count")
-  totalSize   BigInt    @default(0) @map("total_size")
-  driveFileId String?   @map("drive_file_id")
-  error       String?
-  startedAt   DateTime  @map("started_at")
-  completedAt DateTime? @map("completed_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-
-  @@map("backup_logs")
 }

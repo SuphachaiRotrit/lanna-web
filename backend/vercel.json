@@ -1,5 +1,8 @@
 {
-  "crons": [
-    { "path": "/api/backup/cron", "schedule": "0 2 1 * *" }
-  ]
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.ts" }
+  ],
+  "functions": {
+    "api/index.ts": { "maxDuration": 10 }
+  }
 }

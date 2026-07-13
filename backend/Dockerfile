@@ -2,12 +2,13 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+COPY prisma ./prisma
+# prisma.config.ts requires DATABASE_URL to resolve even for `generate` (no DB connection needed).
+# postinstall runs `prisma generate`, so this must be set before `npm ci`.
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 RUN npm ci
 
 COPY . .
-# prisma.config.ts requires DATABASE_URL to resolve even for `generate` (no DB connection needed)
-ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
-RUN npx prisma generate
 RUN npm run build
 
 FROM node:20-alpine AS runner
