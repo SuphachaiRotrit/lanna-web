@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Search, Download, Printer } from 'lucide-react';
 import { useApplicants, useApplicantMutation } from '../hooks/use-applicants';
 import { ApplicantTable } from '../components/ApplicantTable';
+import { ApplicantDetailModal } from '../components/ApplicantDetailModal';
 import { PremiumButton, PremiumCard } from '../../../components/ui/PremiumBase';
 import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
 
@@ -15,6 +16,7 @@ export const ApplicantsView = () => {
     status: '',
     year: new Date().getFullYear() + 543,
   });
+  const [viewingApplicantId, setViewingApplicantId] = useState<string | null>(null);
 
   const { data: res, isLoading } = useApplicants(filters);
   const applicants = res?.data?.rows || [];
@@ -113,6 +115,12 @@ export const ApplicantsView = () => {
         currentPage={filters.page}
         onPageChange={handlePageChange}
         onUpdateStatus={(id, status) => updateStatus.mutate({ id, status })}
+        onView={setViewingApplicantId}
+      />
+
+      <ApplicantDetailModal
+        applicantId={viewingApplicantId}
+        onClose={() => setViewingApplicantId(null)}
       />
     </div>
   );
