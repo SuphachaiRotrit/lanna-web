@@ -34,6 +34,16 @@ export interface Program {
   isActive: boolean;
 }
 
+export interface ApplicantDocument {
+  id: string;
+  type: 'PHOTO' | 'ID_CARD' | 'HOUSE_REGISTRATION' | 'TRANSCRIPT' | 'CERTIFICATE' | 'NAME_CHANGE' | 'OTHER';
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  uploadedAt: string;
+  url: string;
+}
+
 export interface Applicant {
   id: string;
   prefixName: string;
@@ -74,4 +84,12 @@ export interface Applicant {
   applicationNumber: string;
   applicationYear: number;
   submittedAt: string;
+  parentName?: string;
+  parentPhone?: string;
+  parentRelation?: string;
+  pdpaConsent: boolean;
+  consentedAt?: string;
+  reviewedAt?: string;
+  rejectionReason?: string;
+  documents?: ApplicantDocument[];
 }
