@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
 
@@ -8,12 +8,13 @@ interface ApplicantTableProps {
   pagination: Partial<Pagination>;
   loading: boolean;
   onUpdateStatus: (id: string, status: string) => void;
+  onView: (id: string) => void;
   onPageChange: (page: number) => void;
   currentPage: number;
 }
 
-export const ApplicantTable: React.FC<ApplicantTableProps> = ({ 
-  applicants, pagination, loading, onUpdateStatus, onPageChange, currentPage 
+export const ApplicantTable: React.FC<ApplicantTableProps> = ({
+  applicants, pagination, loading, onUpdateStatus, onView, onPageChange, currentPage
 }) => {
   return (
     <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
@@ -56,29 +57,41 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 <td className="px-6 py-6">
                   <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                     app.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
+                    app.status === 'REVIEWING' ? 'bg-blue-100 text-blue-600' :
                     app.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
                     app.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
-                    'bg-blue-100 text-blue-600'
+                    'bg-gray-100 text-gray-500'
                   }`}>
                     {app.status === 'PENDING' && <Clock size={12} />}
+                    {app.status === 'REVIEWING' && <Eye size={12} />}
                     {app.status === 'APPROVED' && <CheckCircle2 size={12} />}
                     {app.status === 'REJECTED' && <XCircle size={12} />}
-                    {app.status === 'PENDING' ? 'รอตรวจสอบ' : 
+                    {app.status === 'PENDING' ? 'รอตรวจสอบ' :
+                     app.status === 'REVIEWING' ? 'กำลังตรวจสอบ' :
                      app.status === 'APPROVED' ? 'เบื้องต้นผ่าน' :
-                     app.status === 'REJECTED' ? 'ไม่ผ่าน' : app.status}
+                     app.status === 'REJECTED' ? 'ไม่ผ่าน' :
+                     app.status === 'CANCELLED' ? 'ยกเลิก' : app.status}
                   </div>
                 </td>
                 <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => onUpdateStatus(app.id, 'APPROVED')} className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors" title="อนุมัติ">
-                      <CheckCircle2 size={18} />
-                    </button>
-                    <button onClick={() => onUpdateStatus(app.id, 'REJECTED')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="ไม่อนุมัติ">
-                      <XCircle size={18} />
-                    </button>
-                    <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
-                      <Eye size={18} />
-                    </button>
+                  <div className="flex items-center justify-end">
+                    {app.status === 'PENDING' ? (
+                      <button
+                        onClick={() => { onUpdateStatus(app.id, 'REVIEWING'); onView(app.id); }}
+                        className="flex items-center gap-1.5 px-3 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors text-xs font-black"
+                      >
+                        <Search size={16} />
+                        ตรวจสอบ
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => onView(app.id)}
+                        className="flex items-center gap-1.5 px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors text-xs font-black"
+                      >
+                        <Eye size={16} />
+                        ดูรายละเอียด
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
