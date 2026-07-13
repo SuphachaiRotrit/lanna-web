@@ -1,20 +1,7 @@
 import { callAPI, AbortFunction } from "@/lib/call-api";
-import { ApiResponse, Pagination } from "@/types";
+import { ApiResponse, Pagination, Applicant } from "@/types";
 
-export interface Applicant {
-  id: string;
-  applicationNumber: string;
-  prefixName: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'DOCUMENT_REJECTED';
-  program?: {
-    name: string;
-    faculty: string;
-  };
-  createdAt: string;
-}
+export type { Applicant };
 
 /**
  * ADMIN: GET /admin/applicants - รายการผู้สมัคร
@@ -24,10 +11,17 @@ export const listApplicantsApi = async (params: Record<string, unknown>): Promis
 };
 
 /**
+ * ADMIN: GET /admin/applicants/:id - รายละเอียดผู้สมัคร
+ */
+export const getApplicantApi = async (id: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Applicant>>("GET", `/admin/applicants/${id}`);
+};
+
+/**
  * ADMIN: PATCH /admin/applicants/:id/status - อัปเดตสถานะ
  */
-export const updateApplicantStatusApi = async (id: string, status: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
-  return callAPI<ApiResponse<Applicant>>("PATCH", `/admin/applicants/${id}/status`, { status });
+export const updateApplicantStatusApi = async (id: string, status: string, reason?: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Applicant>>("PATCH", `/admin/applicants/${id}/status`, { status, reason });
 };
 
 /**

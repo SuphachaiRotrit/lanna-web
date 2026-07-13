@@ -16,6 +16,7 @@ import type { Request } from 'express';
 import { ApplicantService } from './applicant.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { QueryApplicantDto } from './dto/query-applicant.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
 
@@ -83,7 +84,7 @@ export class ApplicantController {
    */
   @Patch('admin/applicants/:id/status')
   @UseGuards(JwtAuthGuard)
-  async updateStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.applicantService.updateStatus(id, status);
+  async updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
+    return this.applicantService.updateStatus(id, dto.status, dto.reason);
   }
 }

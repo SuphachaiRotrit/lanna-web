@@ -303,7 +303,7 @@ export class ApplicantService {
   /**
    * Update applicant status (admin)
    */
-  async updateStatus(id: string, status: string) {
+  async updateStatus(id: string, status: ApplicationStatus, reason?: string) {
     const applicant = await this.prisma.applicant.findUnique({
       where: { id },
     });
@@ -315,8 +315,9 @@ export class ApplicantService {
     return this.prisma.applicant.update({
       where: { id },
       data: {
-        status: status as ApplicationStatus,
+        status,
         reviewedAt: new Date(),
+        ...(status === ApplicationStatus.REJECTED ? { rejectionReason: reason } : {}),
       },
       include: {
         program: { select: { name: true, faculty: true } },
