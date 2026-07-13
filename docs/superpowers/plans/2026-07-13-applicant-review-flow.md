@@ -51,15 +51,24 @@ to:
   rejectionReason String? @map("rejection_reason") @db.Text
 ```
 
-- [ ] **Step 2: Generate and apply the migration**
+- [ ] **Step 2: Write the migration file by hand and regenerate the client**
 
-Run from `backend/`:
+`backend/.env`'s `DATABASE_URL`/`DIRECT_URL` point at the real production Supabase database — do NOT run `prisma migrate dev` or any command that connects to it (it provisions a shadow database against whatever server it's told to talk to). Instead, write the migration SQL directly, matching the existing convention (see `backend/prisma/migrations/20260713082800_remove_backup_log/migration.sql` for the header-comment style).
 
-```bash
-npx prisma migrate dev --name add_applicant_rejection_reason
+Create `backend/prisma/migrations/20260713090000_add_applicant_rejection_reason/migration.sql`:
+
+```sql
+-- AlterTable
+ALTER TABLE "applicants" ADD COLUMN "rejection_reason" TEXT;
 ```
 
-Expected: creates a new folder under `backend/prisma/migrations/` and prints `Your database is now in sync with your schema.` The Prisma Client is regenerated automatically (this is what makes `rejectionReason` show up on the `Applicant` type used in Task 3).
+Then run, from `backend/` (this only reads `schema.prisma` — it does not connect to any database):
+
+```bash
+npx prisma generate
+```
+
+Expected: `✔ Generated Prisma Client ... to .\node_modules\@prisma\client`. This is what makes `rejectionReason` show up on the `Applicant` type used in Task 3. The actual `ALTER TABLE` is applied to the real database later, out of band, whenever the deploy pipeline runs `prisma migrate deploy` (or the user runs it manually) — not part of this task.
 
 - [ ] **Step 3: Commit**
 
@@ -171,7 +180,61 @@ git commit -m "feat: add UpdateStatusDto with conditional rejection-reason valid
 - Consumes: `UpdateStatusDto` from Task 2.
 - Produces: `ApplicantService.updateStatus(id: string, status: ApplicationStatus, reason?: string)` — signature change from the current `updateStatus(id: string, status: string)`.
 
-- [ ] **Step 1: Update the controller**
+**Do not connect to a real database in this task.** `backend/.env`'s `DATABASE_URL` points at the real production Supabase instance — do not run `npm run start:dev`, `curl` against a running server, or anything else that opens a live DB connection. Verification here is a unit test with a hand-mocked `PrismaService` (plain object, no NestJS `TestingModule`, matching the existing plain-Jest style in `backend/src/common/utils/encryption.util.spec.ts`).
+
+- [ ] **Step 1: Write the failing test**
+
+Create `backend/src/modules/applicant/applicant.service.spec.ts`:
+
+```typescript
+import { ApplicationStatus } from '@prisma/client';
+import { ApplicantService } from './applicant.service';
+
+describe('ApplicantService.updateStatus', () => {
+  const buildService = (update: jest.Mock) => {
+    const prisma = {
+      applicant: {
+        findUnique: jest.fn().mockResolvedValue({ id: '1' }),
+        update,
+      },
+    };
+    return new ApplicantService(prisma as any, {} as any, {} as any);
+  };
+
+  it('stores rejectionReason when status is REJECTED', async () => {
+    const update = jest.fn().mockResolvedValue({});
+    const service = buildService(update);
+
+    await service.updateStatus('1', ApplicationStatus.REJECTED, 'เอกสารไม่ครบถ้วน');
+
+    expect(update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          status: ApplicationStatus.REJECTED,
+          rejectionReason: 'เอกสารไม่ครบถ้วน',
+        }),
+      }),
+    );
+  });
+
+  it('does not set rejectionReason for other statuses', async () => {
+    const update = jest.fn().mockResolvedValue({});
+    const service = buildService(update);
+
+    await service.updateStatus('1', ApplicationStatus.APPROVED);
+
+    const dataArg = update.mock.calls[0][0].data;
+    expect(dataArg.rejectionReason).toBeUndefined();
+  });
+});
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run from `backend/`: `npx jest src/modules/applicant/applicant.service.spec.ts`
+Expected: FAIL — `rejectionReason` is never set because the current `updateStatus` doesn't accept a `reason` param.
+
+- [ ] **Step 3: Update the controller**
 
 In `backend/src/modules/applicant/applicant.controller.ts`, add the import:
 
@@ -205,7 +268,7 @@ with:
   }
 ```
 
-- [ ] **Step 2: Update the service**
+- [ ] **Step 4: Update the service**
 
 In `backend/src/modules/applicant/applicant.service.ts`, replace:
 
@@ -264,27 +327,20 @@ with:
   }
 ```
 
-- [ ] **Step 3: Type-check**
+- [ ] **Step 5: Run test to verify it passes**
+
+Run from `backend/`: `npx jest src/modules/applicant/applicant.service.spec.ts`
+Expected: PASS, 2 tests
+
+- [ ] **Step 6: Type-check**
 
 Run from `backend/`: `npx tsc --noEmit`
 Expected: no errors.
 
-- [ ] **Step 4: Manual verification**
-
-Run from `backend/`: `npm run start:dev`, then with an existing applicant id and a valid admin session cookie:
+- [ ] **Step 7: Commit**
 
 ```bash
-curl -X PATCH http://localhost:4000/api/admin/applicants/<id>/status \
-  -H "Content-Type: application/json" -b "<cookie>" \
-  -d '{"status":"REJECTED"}'
-```
-
-Expected: HTTP 400, validation error mentioning `reason`. Then repeat with `{"status":"REJECTED","reason":"เอกสารไม่ครบถ้วน"}` — expected: HTTP 200, response body's `data.status` is `"REJECTED"`.
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add backend/src/modules/applicant/applicant.controller.ts backend/src/modules/applicant/applicant.service.ts
+git add backend/src/modules/applicant/applicant.controller.ts backend/src/modules/applicant/applicant.service.ts backend/src/modules/applicant/applicant.service.spec.ts
 git commit -m "feat: validate status updates via UpdateStatusDto, persist rejection reason"
 ```
 
@@ -997,16 +1053,17 @@ with:
 Run from `frontend/`: `npx tsc --noEmit`
 Expected: no errors — this resolves the `onView` prop error that Task 7 introduced.
 
-- [ ] **Step 4: Manual verification**
+- [ ] **Step 4: Build check (no live browser verification)**
 
-Run from `frontend/`: `npm run dev`, open `/admin/applicants`.
+The only backend configuration available (`backend/.env`) connects to the real production database — do not run `npm run dev` against it and click through approve/reject, since that would mutate a real applicant record. Verification for this task is static only:
 
-1. A PENDING row shows a "ตรวจสอบ" button. Click it → status badge changes to "กำลังตรวจสอบ" and the detail dialog opens showing the applicant's data.
-2. In the dialog, document links open in a new tab.
-3. Click "ไม่ผ่าน" → textarea appears, "ยืนยันไม่ผ่าน" is disabled until text is entered → enter text, confirm → dialog closes, row status is "ไม่ผ่าน".
-4. Re-open a PENDING applicant, click "ตรวจสอบ", then click "อนุมัติผ่าน" directly → dialog closes, row status is "เบื้องต้นผ่าน".
-5. Click "ดูรายละเอียด" on an APPROVED/REJECTED row → dialog opens with only the "ปิด" button, no approve/reject.
-6. Bottom-left "ปิด" closes the dialog with no side effects in every case.
+Run from `frontend/`: `npx tsc --noEmit`
+Expected: no errors.
+
+Run from `frontend/`: `npx next build`
+Expected: build succeeds (compiles `/admin/applicants` and every component it imports, catching JSX/type errors `tsc --noEmit` alone can miss in Next.js route files).
+
+Leave a note in the task report that live browser verification of the click-through flow (ตรวจสอบ → dialog → อนุมัติผ่าน/ไม่ผ่าน) was skipped for this reason, and should be done by the user against a non-production database before this ships.
 
 - [ ] **Step 5: Commit**
 
