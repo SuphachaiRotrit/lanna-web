@@ -7,6 +7,9 @@
 - **Phase 1, 3, 4, 5, 6 — ยังไม่เริ่ม** เป็นงานที่ต้องทำผ่าน dashboard/บัญชีของคุณเอง (Supabase, Vercel 2 โปรเจกต์, GitHub secrets) ไม่สามารถทำแทนได้จาก session นี้ — แต่ช่วย generate ค่า secret แบบสุ่มให้ได้ (`JWT_SECRET`, `JWT_REFRESH_SECRET`, `ENCRYPTION_KEY`) ถ้าต้องการ
 - **ที่เก็บไฟล์ผู้สมัคร (สรุปไว้เผื่ออ้างอิง):** ไฟล์เอกสาร/รูปที่ผู้สมัครอัปโหลด (`backend/src/modules/upload/upload.service.ts` เมธอด `uploadFile`/`getSignedUrl`/`deleteFile`) เก็บบน **Supabase Storage** (private bucket + signed URL) ต้องสร้าง bucket ชื่อ `documents` (หรือชื่อที่ตรงกับ `SUPABASE_STORAGE_BUCKET`) แบบ private ใน Supabase project เดียวกับที่ใช้ทำฐานข้อมูล (Phase 1) แล้วตั้งค่า `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY`/`SUPABASE_STORAGE_BUCKET`
 - **ฟีเจอร์ backup ถูกลบออกทั้งหมดแล้ว** (backend module, frontend หน้า/เมนู, Cloudflare R2, Google Drive export, cron job, ตาราง `backup_logs`) — ไม่มี R2/Google Drive/CRON_SECRET ให้ตั้งค่าอีกต่อไป
+- **แก้บั๊ก deploy จริง 2 จุด (เจอตอน deploy ครั้งแรกบน Vercel):**
+  1. `backend/api/index.js`/`.d.ts`/`.js.map` (ไฟล์ compiled ที่หลุดติด commit มาคู่กับ `index.ts`) ทำให้ Vercel error "conflicting paths" เพราะเห็นทั้ง `.js` และ `.ts` ที่ path เดียวกัน — ลบไฟล์ compiled ออกแล้ว และเพิ่ม `backend/.gitignore` กันไม่ให้หลุดมาอีก (เก็บเฉพาะ `api/index.ts` ที่เป็น source จริง)
+  2. Vercel รัน `nest build` (ตาม `package.json` script `build`) แล้วหา static output directory (`public/`) ไม่เจอ เกิด error "No Output Directory named public found" — จริงๆ แล้ว `nest build`/`dist/` ไม่จำเป็นสำหรับ deploy บน Vercel เลย (ใช้แค่ตอน build Docker image) เพราะ Vercel bundle `api/index.ts` เป็น function ของตัวเองอัตโนมัติอยู่แล้ว แก้โดยเพิ่ม `"buildCommand": null` ใน `backend/vercel.json` เพื่อบอก Vercel ให้ข้ามขั้นตอน build ทั้งหมด (ไม่กระทบ `prisma generate` เพราะรันผ่าน `postinstall` ตอน install dependencies ไม่ใช่ตอน build)
 
 ## บริบท (ทำไมต้องทำแบบนี้)
 
