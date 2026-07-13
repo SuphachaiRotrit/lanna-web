@@ -3,3 +3,8 @@ node_modules
 .env
 
 /generated/prisma
+
+# api/ is deployed as raw TS (Vercel builds it itself) — never commit compiled output here
+/api/*.js
+/api/*.js.map
+/api/*.d.ts
