@@ -11,6 +11,11 @@
   --color-cream: #FFF9F5;
   --color-warm-gray: #F5F0EB;
 
+  /* darkened one step from Tailwind defaults for readability */
+  --color-gray-300: oklch(0.707 0.022 261.325);
+  --color-gray-400: oklch(0.551 0.027 264.364);
+  --color-gray-500: oklch(0.446 0.03 256.802);
+
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-float: float 6s ease-in-out infinite;
@@ -77,6 +82,10 @@
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  font-size: 17px;
 }
 
 body {
