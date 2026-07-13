@@ -317,7 +317,9 @@ export class ApplicantService {
       data: {
         status,
         reviewedAt: new Date(),
-        ...(status === ApplicationStatus.REJECTED ? { rejectionReason: reason } : {}),
+        ...(status === ApplicationStatus.REJECTED
+          ? { rejectionReason: reason }
+          : {}),
       },
       include: {
         program: { select: { name: true, faculty: true } },

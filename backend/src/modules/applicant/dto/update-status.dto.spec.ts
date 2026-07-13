@@ -5,7 +5,9 @@ import { UpdateStatusDto } from './update-status.dto';
 
 describe('UpdateStatusDto', () => {
   it('requires a non-empty reason when status is REJECTED', async () => {
-    const dto = plainToInstance(UpdateStatusDto, { status: ApplicationStatus.REJECTED });
+    const dto = plainToInstance(UpdateStatusDto, {
+      status: ApplicationStatus.REJECTED,
+    });
     const errors = await validate(dto);
     expect(errors.some((e) => e.property === 'reason')).toBe(true);
   });
@@ -20,13 +22,17 @@ describe('UpdateStatusDto', () => {
   });
 
   it('does not require reason for other statuses', async () => {
-    const dto = plainToInstance(UpdateStatusDto, { status: ApplicationStatus.APPROVED });
+    const dto = plainToInstance(UpdateStatusDto, {
+      status: ApplicationStatus.APPROVED,
+    });
     const errors = await validate(dto);
     expect(errors).toHaveLength(0);
   });
 
   it('rejects an invalid status value', async () => {
-    const dto = plainToInstance(UpdateStatusDto, { status: 'NOT_A_REAL_STATUS' });
+    const dto = plainToInstance(UpdateStatusDto, {
+      status: 'NOT_A_REAL_STATUS',
+    });
     const errors = await validate(dto);
     expect(errors.some((e) => e.property === 'status')).toBe(true);
   });
