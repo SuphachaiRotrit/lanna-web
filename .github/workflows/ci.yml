@@ -50,4 +50,5 @@ jobs:
       - run: npm ci
       - run: npx prisma migrate deploy
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
