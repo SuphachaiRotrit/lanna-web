@@ -7,6 +7,7 @@ import {
 } from "@/services/program.service";
 import { toast } from "sonner";
 import { Program } from "@/types";
+import { getErrorMessage } from "@/lib/call-api";
 
 export const usePrograms = () => {
   return useQuery({
@@ -32,8 +33,8 @@ export const useProgramMutation = (onSuccess?: () => void) => {
       toast.success("เพิ่มสาขาวิชาสำเร็จ");
       onSuccess?.();
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "ไม่สามารถเพิ่มข้อมูลได้");
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถเพิ่มข้อมูลได้"));
     }
   });
 
@@ -48,8 +49,8 @@ export const useProgramMutation = (onSuccess?: () => void) => {
       toast.success("แก้ไขข้อมูลสำเร็จ");
       onSuccess?.();
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "ไม่สามารถแก้ไขข้อมูลได้");
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถแก้ไขข้อมูลได้"));
     }
   });
 
@@ -63,8 +64,8 @@ export const useProgramMutation = (onSuccess?: () => void) => {
       queryClient.invalidateQueries({ queryKey: ["admin-programs"] });
       toast.success("ลบสาขาวิชาสำเร็จ");
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "ไม่สามารถลบข้อมูลได้");
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถลบข้อมูลได้"));
     }
   });
 

@@ -4,9 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  FileText, ArrowRight, Award, BookOpen, Users, Globe, ChevronRight, MapPin, Phone, Mail
+  FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone
 } from 'lucide-react';
 import { useHomePrograms } from '../hooks/use-home';
+import { Program } from '@/types';
 
 export const LandingView = () => {
   const { data: res } = useHomePrograms();
@@ -83,7 +84,7 @@ export const LandingView = () => {
             <h3 className="text-3xl lg:text-5xl font-black text-navy tracking-tight">หลักสูตรที่เปิดรับสมัคร</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programs.map((prog: any, idx: number) => (
+            {programs.map((prog: Program, idx: number) => (
               <div key={idx} className="group relative bg-white p-10 rounded-[2.5rem] border border-navy/5 hover-lift cursor-pointer overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-brand scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                 <div className="w-16 h-16 rounded-2xl bg-brand/8 flex items-center justify-center mb-8"><BookOpen size={28} className="text-brand" /></div>

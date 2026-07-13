@@ -4,15 +4,13 @@ import { Upload, AlertCircle, CheckCircle, FileCheck, X } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
 
 interface Step4Props {
-  files: Record<string, any>;
+  files: Record<string, File | File[] | null>;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>, type: string) => void;
   removeFile: (type: string, index?: number) => void;
-  setFieldValue: (field: string, value: any) => void;
+  setFieldValue: (field: string, value: string) => void;
 }
 
 export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, removeFile, setFieldValue }) => {
-  const labelClass = "block text-sm font-bold text-navy/70 mb-2";
-
   const documents = [
     { key: 'PHOTO', label: 'รูปถ่ายหน้าตรง 1 นิ้ว (1 รูป)', accept: 'image/*', required: true, multiple: false },
     { key: 'TRANSCRIPT', label: 'สำเนาวุฒิการศึกษา/Transcript (3 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: true },
@@ -103,7 +101,7 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
         <label className="flex items-start gap-4 cursor-pointer group">
           <Field type="checkbox" name="pdpaConsent" className="mt-1 w-5 h-5 accent-brand shrink-0 rounded-lg" />
           <span className="text-sm text-navy/60 leading-relaxed group-hover:text-navy transition-colors italic font-medium">
-            "ข้าพเจ้าขอรับรองว่า ข้อความที่แสดงไว้และเอกสารที่อัปโหลดเป็นความจริงทุกประการ หากข้าพเจ้าได้เป็นนักศึกษาของมหาวิทยาลัยฯ ข้าพเจ้ายินดีปฏิบัติตามกฎระเบียบข้อบังคับของมหาวิทยาลัยทุกประการ"
+            &ldquo;ข้าพเจ้าขอรับรองว่า ข้อความที่แสดงไว้และเอกสารที่อัปโหลดเป็นความจริงทุกประการ หากข้าพเจ้าได้เป็นนักศึกษาของมหาวิทยาลัยฯ ข้าพเจ้ายินดีปฏิบัติตามกฎระเบียบข้อบังคับของมหาวิทยาลัยทุกประการ&rdquo;
           </span>
         </label>
         <ErrorMessage name="pdpaConsent" component="div" className="text-red-500 text-xs mt-2 ml-9 font-bold" />

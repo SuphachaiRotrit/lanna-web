@@ -1,19 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginApi, logoutApi } from "@/services/auth.service";
+import { loginApi, logoutApi, LoginCredentials } from "@/services/auth.service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "../providers/AuthProvider";
+import { getErrorMessage } from "@/lib/call-api";
 
 export const useAuth = () => {
   const router = useRouter();
   const { user, isLoading, refreshUser } = useAuthContext();
 
   const loginMutation = useMutation({
-    mutationFn: async (credentials: any) => {
+    mutationFn: async (credentials: LoginCredentials) => {
       const [promise] = await loginApi(credentials);
       return promise;
     },
-    onSuccess: async (res) => {
+    onSuccess: async () => {
       // รอให้ Browser บันทึก Cookie สักครู่ (100ms) กัน Race Condition
       await new Promise(resolve => setTimeout(resolve, 100));
       
@@ -26,8 +27,8 @@ export const useAuth = () => {
       
       router.push("/admin/dashboard");
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "อีเมลหรือรหัสผ่านไม่ถูกต้อง"));
     }
   });
 

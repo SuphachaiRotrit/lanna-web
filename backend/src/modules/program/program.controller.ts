@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
@@ -38,14 +47,15 @@ export class ProgramController {
   @Post('admin/programs')
   @UseGuards(JwtAuthGuard)
   async create(
-    @Body() data: { 
-      name: string; 
-      nameEn?: string; 
-      faculty: string; 
+    @Body()
+    data: {
+      name: string;
+      nameEn?: string;
+      faculty: string;
       degree: string;
       description?: string;
       duration?: string;
-      maxQuota?: number; 
+      maxQuota?: number;
     },
   ) {
     return this.programService.create(data);
@@ -58,15 +68,16 @@ export class ProgramController {
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
-    @Body() data: Partial<{ 
-      name: string; 
-      nameEn: string; 
-      faculty: string; 
-      degree: string; 
+    @Body()
+    data: Partial<{
+      name: string;
+      nameEn: string;
+      faculty: string;
+      degree: string;
       description: string;
       duration: string;
       maxQuota: number;
-      isActive: boolean; 
+      isActive: boolean;
     }>,
   ) {
     return this.programService.update(id, data);

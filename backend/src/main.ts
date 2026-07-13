@@ -7,12 +7,17 @@ async function bootstrap() {
   const app = await createApp();
 
   const configService = app.get(ConfigService);
-  const port = configService.get('PORT', 4000);
+  const port = configService.get<number>('PORT', 4000);
   const isDev = configService.get('NODE_ENV') === 'development';
 
   await app.listen(port);
   logger.log(`🚀 Server running on http://localhost:${port}`);
-  logger.log(`📋 Mode: ${isDev ? 'Development' : 'Production'} (Storage: Dynamic)`);
+  logger.log(
+    `📋 Mode: ${isDev ? 'Development' : 'Production'} (Storage: Dynamic)`,
+  );
 }
 
-bootstrap();
+bootstrap().catch((err: unknown) => {
+  console.error(err);
+  process.exit(1);
+});

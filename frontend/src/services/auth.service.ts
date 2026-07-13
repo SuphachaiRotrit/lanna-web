@@ -11,10 +11,16 @@ export interface LoginResponse {
   };
 }
 
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  turnstileToken: string;
+}
+
 /**
  * POST /auth/login - เข้าสู่ระบบแอดมิน
  */
-export const loginApi = async (data: any): Promise<[Promise<ApiResponse<LoginResponse>>, AbortFunction]> => {
+export const loginApi = async (data: LoginCredentials): Promise<[Promise<ApiResponse<LoginResponse>>, AbortFunction]> => {
   return callAPI<ApiResponse<LoginResponse>>("POST", "/auth/login", data);
 };
 
@@ -30,4 +36,16 @@ export const logoutApi = async (): Promise<[Promise<ApiResponse<null>>, AbortFun
  */
 export const getMeApi = async (): Promise<[Promise<ApiResponse<{ user: LoginResponse['user'] }>>, AbortFunction]> => {
   return callAPI<ApiResponse<{ user: LoginResponse['user'] }>>("GET", "/auth/me");
+};
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/**
+ * POST /auth/change-password - เปลี่ยนรหัสผ่านของตัวเอง
+ */
+export const changePasswordApi = async (data: ChangePasswordPayload): Promise<[Promise<ApiResponse<{ success: boolean }>>, AbortFunction]> => {
+  return callAPI<ApiResponse<{ success: boolean }>>("POST", "/auth/change-password", data);
 };

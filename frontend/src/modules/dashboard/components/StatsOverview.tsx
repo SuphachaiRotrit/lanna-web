@@ -1,8 +1,9 @@
 import React from 'react';
 import { Users, UserPlus, FileClock, UserCheck, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { DashboardStats } from '@/services/dashboard.service';
 
 interface StatsCardProps {
-  stats: any;
+  stats: DashboardStats | undefined;
 }
 
 export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
@@ -27,7 +28,7 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
     },
     { 
       title: 'รอตรวจสอบ', 
-      value: stats?.statusBreakdown?.find((s: any) => s.status === 'PENDING')?.count || 0, 
+      value: stats?.statusBreakdown?.find((s) => s.status === 'PENDING')?.count || 0,
       icon: FileClock, 
       iconBg: 'bg-amber-50',
       iconColor: 'text-amber-500',
@@ -36,7 +37,7 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
     },
     { 
       title: 'อนุมัติแล้ว', 
-      value: stats?.statusBreakdown?.find((s: any) => s.status === 'APPROVED')?.count || 0, 
+      value: stats?.statusBreakdown?.find((s) => s.status === 'APPROVED')?.count || 0,
       icon: UserCheck, 
       iconBg: 'bg-emerald-50',
       iconColor: 'text-emerald-500',

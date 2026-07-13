@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Trash2, CheckCircle2, XCircle, Clock, MoreHorizontal, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Edit2, Trash2, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import { Program } from '@/types';
 
 interface ProgramTableProps {

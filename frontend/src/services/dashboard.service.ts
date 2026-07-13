@@ -1,5 +1,6 @@
 import { callAPI, AbortFunction } from "@/lib/call-api";
 import { ApiResponse } from "@/types";
+import { Applicant } from "./applicant.service";
 
 export interface DashboardStats {
   overview: {
@@ -10,7 +11,7 @@ export interface DashboardStats {
   statusBreakdown: Array<{ status: string; count: number }>;
   programBreakdown: Array<{ programName: string; count: number }>;
   monthlyTrend: Array<{ month: number; count: number }>;
-  recentApplicants: any[];
+  recentApplicants: Applicant[];
 }
 
 /**

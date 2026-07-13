@@ -13,6 +13,7 @@ import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('api/auth')
@@ -26,7 +27,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const result = await this.authService.login(loginDto);
-    
+
     // ตั้งค่า Cookie สำหรับ Access Token
     response.cookie('accessToken', result.accessToken, {
       httpOnly: true,
@@ -54,8 +55,10 @@ export class AuthController {
     @Body() refreshTokenDto: RefreshTokenDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const result = await this.authService.refreshToken(refreshTokenDto.refreshToken);
-    
+    const result = await this.authService.refreshToken(
+      refreshTokenDto.refreshToken,
+    );
+
     response.cookie('accessToken', result.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -69,7 +72,7 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(@Res({ passthrough: true }) response: Response) {
+  logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('accessToken', { path: '/' });
     response.clearCookie('refreshToken', { path: '/' });
     return { success: true, message: 'Logged out successfully' };
@@ -77,8 +80,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getMe(@Req() req: Request) {
-    const admin = req.user as any;
+  getMe(@Req() req: Request) {
+    const admin = req.user!;
     return {
       user: {
         id: admin.id,
@@ -87,5 +90,20 @@ export class AuthController {
         role: admin.role,
       },
     };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @Req() req: Request,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    const admin = req.user!;
+    return this.authService.changePassword(
+      admin.id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
   }
 }

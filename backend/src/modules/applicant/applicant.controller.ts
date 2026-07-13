@@ -12,6 +12,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import type { Request } from 'express';
 import { ApplicantService } from './applicant.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { QueryApplicantDto } from './dto/query-applicant.dto';
@@ -49,7 +50,7 @@ export class ApplicantController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
     @Query('type') type: string,
-    @Req() req: any,
+    @Req() req: Request,
   ) {
     const isAdmin = !!req.user;
     return this.applicantService.addDocument(id, file, type, isAdmin);
@@ -82,10 +83,7 @@ export class ApplicantController {
    */
   @Patch('admin/applicants/:id/status')
   @UseGuards(JwtAuthGuard)
-  async updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: string,
-  ) {
+  async updateStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.applicantService.updateStatus(id, status);
   }
 }

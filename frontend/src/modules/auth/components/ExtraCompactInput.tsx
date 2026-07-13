@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useField } from 'formik';
-import { AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, LucideIcon } from 'lucide-react';
 
 interface ExtraCompactInputProps {
   label: string;
-  icon: any;
+  icon: LucideIcon;
   type?: string;
   name: string;
   placeholder?: string;

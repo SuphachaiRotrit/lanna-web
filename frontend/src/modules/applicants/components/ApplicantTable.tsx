@@ -1,10 +1,11 @@
 import React from 'react';
 import { Clock, CheckCircle2, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Applicant } from '@/services/applicant.service';
+import { Pagination } from '@/types';
 
 interface ApplicantTableProps {
   applicants: Applicant[];
-  pagination: any;
+  pagination: Partial<Pagination>;
   loading: boolean;
   onUpdateStatus: (id: string, status: string) => void;
   onPageChange: (page: number) => void;

@@ -1,8 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi } from "@/services/applicant.service";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/call-api";
 
-export const useApplicants = (filters: any) => {
+interface ApplicantFilters {
+  [key: string]: unknown;
+  page: number;
+  limit: number;
+  search: string;
+  status: string;
+  year: number;
+}
+
+export const useApplicants = (filters: ApplicantFilters) => {
   return useQuery({
     queryKey: ["applicants", filters],
     queryFn: async () => {
@@ -24,13 +34,13 @@ export const useApplicantMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["applicants"] });
       toast.success("อัปเดตสถานะสำเร็จ");
     },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "ไม่สามารถอัปเดตสถานะได้");
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถอัปเดตสถานะได้"));
     }
   });
 
   const exportData = useMutation({
-    mutationFn: async ({ type, filters }: { type: 'excel' | 'pdf', filters: any }) => {
+    mutationFn: async ({ type, filters }: { type: 'excel' | 'pdf', filters: { status: string; year: number } }) => {
       const [promise] = await exportApplicantsApi(type, { status: filters.status, year: filters.year });
       const blob = await promise;
       
@@ -46,7 +56,7 @@ export const useApplicantMutation = () => {
     onSuccess: () => {
       toast.success("ส่งออกข้อมูลสำเร็จ");
     },
-    onError: (err: any) => {
+    onError: () => {
       toast.error("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
     }
   });

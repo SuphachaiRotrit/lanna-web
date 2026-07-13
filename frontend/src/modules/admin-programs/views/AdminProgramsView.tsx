@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter, GraduationCap, AlertTriangle, XCircle, BookOpen, ToggleLeft } from 'lucide-react';
+import { Plus, Search, GraduationCap, AlertTriangle, BookOpen, ToggleLeft } from 'lucide-react';
 import { usePrograms, useProgramMutation } from '../hooks/use-programs';
 import { ProgramTable } from '../components/ProgramTable';
 import { ProgramModal } from '../components/ProgramModal';
@@ -24,7 +24,7 @@ export const AdminProgramsView = () => {
     setIsModalOpen(true);
   };
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: Partial<Program>) => {
     if (editingProgram) {
       updateMutation.mutate({ id: editingProgram.id, data });
     } else {
@@ -40,7 +40,6 @@ export const AdminProgramsView = () => {
   const activeCount = programs.filter((p: Program) => p.isActive).length;
   const inactiveCount = programs.filter((p: Program) => !p.isActive).length;
   const nearFullCount = programs.filter((p: Program) => !p.isFull && (p.currentApplicants / p.maxQuota) > 0.8).length;
-  const fullCount = programs.filter((p: Program) => p.isFull).length;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -125,7 +124,8 @@ export const AdminProgramsView = () => {
       />
 
       {/* Modal Tool */}
-      <ProgramModal 
+      <ProgramModal
+        key={editingProgram?.id ?? 'new'}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}

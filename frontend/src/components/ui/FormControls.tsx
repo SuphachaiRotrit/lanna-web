@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useField, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { ChevronDown, Check } from 'lucide-react';
 
 interface Option {
@@ -17,24 +17,18 @@ interface PremiumSelectProps extends CommonProps {
   options: Option[];
   placeholder?: string;
   className?: string;
-  value?: any;
-  onChange?: (e: any) => void;
+  value?: string | number;
+  onChange?: (e: { target: { value: string | number; name?: string } }) => void;
 }
 
 export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, required, name, placeholder, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { setFieldValue } = useFormikContext<any>() || {};
+  const formik = useFormikContext<Record<string, unknown>>();
 
   // รองรับทั้ง Formik และ Standalone
-  let field = { value: props.value } as any;
-  let meta = {} as any;
-  
-  if (name) {
-    try {
-      [field, meta] = useField(name);
-    } catch (e) {}
-  }
+  const field = name && formik ? formik.getFieldProps(name) : { value: props.value };
+  const meta: { touched?: boolean; error?: string } = name && formik ? formik.getFieldMeta(name) : {};
 
   const isError = meta?.touched && meta?.error;
   const selectedOption = options.find(opt => opt.value === field.value);
@@ -51,8 +45,8 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
   }, []);
 
   const handleSelect = (val: string | number) => {
-    if (name && setFieldValue) {
-      setFieldValue(name, val);
+    if (name && formik) {
+      formik.setFieldValue(name, val);
     } else if (props.onChange) {
       props.onChange({ target: { value: val, name } });
     }
@@ -127,15 +121,10 @@ interface PremiumInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
 }
 
 export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, prefixIcon, name, ...props }) => {
-  let field = {} as any;
-  let meta = {} as any;
-  
-  if (name) {
-    try {
-      [field, meta] = useField(name);
-    } catch (e) {}
-  }
-  
+  const formik = useFormikContext<Record<string, unknown>>();
+  const field = name && formik ? formik.getFieldProps(name) : undefined;
+  const meta: { touched?: boolean; error?: string } = (name && formik ? formik.getFieldMeta(name) : {}) as { touched?: boolean; error?: string };
+
   const isError = meta?.touched && meta?.error;
 
   return (
@@ -152,7 +141,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
           </div>
         )}
         <input
-          {...(name ? field : {})}
+          {...(field ?? {})}
           {...props}
           className={`
             w-full bg-gray-50/50 border-2 rounded-2xl px-5 py-3.5 text-sm font-bold text-navy transition-all duration-300 outline-none

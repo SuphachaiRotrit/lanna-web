@@ -3,12 +3,10 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
-  UseGuards,
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('api/upload')
 export class UploadController {

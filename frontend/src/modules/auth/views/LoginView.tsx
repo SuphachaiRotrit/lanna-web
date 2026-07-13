@@ -8,6 +8,7 @@ import { Lock, Mail, ChevronRight, ShieldCheck, GraduationCap } from 'lucide-rea
 import Turnstile from '@/components/Turnstile';
 import { ExtraCompactInput } from '../components/ExtraCompactInput';
 import { useAuth } from '../hooks/use-auth';
+import { LoginCredentials } from '@/services/auth.service';
 
 // Validation Schema
 const loginSchema = Yup.object().shape({
@@ -20,7 +21,7 @@ export const LoginView = () => {
   const { loginMutation } = useAuth();
   const isSubmitting = loginMutation.isPending;
 
-  const handleLogin = (values: any) => {
+  const handleLogin = (values: LoginCredentials) => {
     loginMutation.mutate(values);
   };
 

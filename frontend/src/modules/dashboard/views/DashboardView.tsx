@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CalendarDays, Award, BookOpen, Activity, ArrowUpRight, TrendingUp, Users, Clock } from 'lucide-react';
+import { CalendarDays, Award, BookOpen, Activity, Users, Clock } from 'lucide-react';
 import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
 import { TrendChart } from '../components/TrendChart';
@@ -61,7 +61,7 @@ export const DashboardView = () => {
             <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Top 5</span>
           </div>
           <div className="space-y-4">
-            {stats?.programBreakdown?.sort((a: any, b: any) => b.count - a.count).slice(0, 5).map((prog: any, idx: number) => (
+            {stats?.programBreakdown?.sort((a, b) => b.count - a.count).slice(0, 5).map((prog, idx: number) => (
               <div key={idx} className="group">
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">

@@ -17,9 +17,10 @@ export class SanitizeUtil {
    */
   static cleanObject<T extends object>(obj: T): T {
     const cleaned = { ...obj };
-    for (const key of Object.keys(cleaned)) {
-      if (typeof (cleaned as any)[key] === 'string') {
-        (cleaned as any)[key] = this.clean((cleaned as any)[key]);
+    for (const key of Object.keys(cleaned) as (keyof T)[]) {
+      const value = cleaned[key];
+      if (typeof value === 'string') {
+        cleaned[key] = this.clean(value) as T[keyof T];
       }
     }
     return cleaned;

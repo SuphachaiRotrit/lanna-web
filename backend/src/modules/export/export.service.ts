@@ -1,7 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit';
 import { ApplicantService } from '../applicant/applicant.service';
+import { StatusFilterDto } from '../applicant/dto/query-applicant.dto';
+
+interface ExportQuery {
+  status?: StatusFilterDto;
+  year?: number;
+  programId?: string;
+}
 
 @Injectable()
 export class ExportService {
@@ -12,13 +19,10 @@ export class ExportService {
   /**
    * Export to Excel
    */
-  async exportExcel(
-    query: { status?: string; year?: number; programId?: string },
-    ids?: string[],
-  ): Promise<Buffer> {
+  async exportExcel(query: ExportQuery, ids?: string[]): Promise<Buffer> {
     const applicants = ids
       ? await this.applicantService.findByIds(ids)
-      : await this.applicantService.findAllForExport(query as any);
+      : await this.applicantService.findAllForExport(query);
 
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'MBU Lanna Registration System';
@@ -101,8 +105,8 @@ export class ExportService {
         previousSchool: applicant.previousSchool,
         previousEducation: applicant.previousEducation,
         gpa: applicant.gpa || '-',
-        program: (applicant as any).program?.name || '-',
-        faculty: (applicant as any).program?.faculty || '-',
+        program: applicant.program?.name || '-',
+        faculty: applicant.program?.faculty || '-',
         status: statusMap[applicant.status] || applicant.status,
         submittedAt: applicant.submittedAt.toLocaleDateString('th-TH'),
       });
@@ -121,13 +125,10 @@ export class ExportService {
   /**
    * Export to PDF
    */
-  async exportPdf(
-    query: { status?: string; year?: number; programId?: string },
-    ids?: string[],
-  ): Promise<Buffer> {
+  async exportPdf(query: ExportQuery, ids?: string[]): Promise<Buffer> {
     const applicants = ids
       ? await this.applicantService.findByIds(ids)
-      : await this.applicantService.findAllForExport(query as any);
+      : await this.applicantService.findAllForExport(query);
 
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({
@@ -146,14 +147,10 @@ export class ExportService {
       doc.on('error', reject);
 
       // Title
-      doc
-        .fontSize(16)
-        .text('มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา', {
-          align: 'center',
-        });
-      doc
-        .fontSize(14)
-        .text('รายชื่อผู้สมัครเรียน', { align: 'center' });
+      doc.fontSize(16).text('มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา', {
+        align: 'center',
+      });
+      doc.fontSize(14).text('รายชื่อผู้สมัครเรียน', { align: 'center' });
       doc.moveDown();
 
       // Status mapping
@@ -193,7 +190,10 @@ export class ExportService {
         xPos += colWidths[i] + 10;
       });
 
-      doc.moveTo(30, tableTop + 15).lineTo(790, tableTop + 15).stroke();
+      doc
+        .moveTo(30, tableTop + 15)
+        .lineTo(790, tableTop + 15)
+        .stroke();
 
       // Table rows
       let y = tableTop + 20;
@@ -209,19 +209,16 @@ export class ExportService {
           applicant.applicationNumber,
           `${applicant.prefixName}${applicant.firstName} ${applicant.lastName}`,
           applicant.phone,
-          (applicant as any).program?.name || '-',
+          applicant.program?.name || '-',
           applicant.previousSchool,
           statusMap[applicant.status] || applicant.status,
         ];
 
         rowData.forEach((cell, i) => {
-          doc
-            .fontSize(8)
-            .font('Helvetica')
-            .text(cell, xPos, y, {
-              width: colWidths[i],
-              ellipsis: true,
-            });
+          doc.fontSize(8).font('Helvetica').text(cell, xPos, y, {
+            width: colWidths[i],
+            ellipsis: true,
+          });
           xPos += colWidths[i] + 10;
         });
 

@@ -120,7 +120,7 @@ export const ApplyView = () => {
     });
   };
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: typeof initialValues) => {
     const transcriptFiles = (files.TRANSCRIPT as File[]) || [];
     const requiredFiles = ['PHOTO', 'ID_CARD', 'HOUSE_REGISTRATION'];
     const missingFields = requiredFiles.filter(key => !files[key]);

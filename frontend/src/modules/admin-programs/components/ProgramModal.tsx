@@ -1,48 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { XCircle, Users, Clock } from 'lucide-react';
 import { Program } from '@/types';
 
 interface ProgramModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Partial<Program>) => void;
   program?: Program | null;
 }
 
-export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onSubmit, program }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    faculty: 'คณะศึกษาศาสตร์',
-    degree: 'ปริญญาตรี',
-    duration: '4 ปี',
-    description: '',
-    maxQuota: 50,
-    isActive: true
-  });
+const defaultFormData: Partial<Program> = {
+  name: '',
+  faculty: 'คณะศึกษาศาสตร์',
+  degree: 'ปริญญาตรี',
+  duration: '4 ปี',
+  description: '',
+  maxQuota: 50,
+  isActive: true
+};
 
-  useEffect(() => {
-    if (program) {
-      setFormData({
-        name: program.name,
-        faculty: program.faculty,
-        degree: program.degree,
-        duration: program.duration || '4 ปี',
-        description: program.description || '',
-        maxQuota: program.maxQuota,
-        isActive: program.isActive
-      });
-    } else {
-      setFormData({
-        name: '',
-        faculty: 'คณะศึกษาศาสตร์',
-        degree: 'ปริญญาตรี',
-        duration: '4 ปี',
-        description: '',
-        maxQuota: 50,
-        isActive: true
-      });
-    }
-  }, [program]);
+export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onSubmit, program }) => {
+  const [formData, setFormData] = useState<Partial<Program>>(() =>
+    program
+      ? {
+          name: program.name,
+          faculty: program.faculty,
+          degree: program.degree,
+          duration: program.duration || '4 ปี',
+          description: program.description || '',
+          maxQuota: program.maxQuota,
+          isActive: program.isActive
+        }
+      : defaultFormData
+  );
 
   if (!isOpen) return null;
 

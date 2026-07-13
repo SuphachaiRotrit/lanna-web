@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 
@@ -20,7 +20,7 @@ const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB — stays under Vercel's 4.5MB req
 @Injectable()
 export class UploadService {
   private readonly logger = new Logger(UploadService.name);
-  private readonly supabase: SupabaseClient;
+  private readonly supabase: ReturnType<typeof createClient>;
   private readonly supabaseBucket: string;
 
   constructor(private readonly configService: ConfigService) {
@@ -28,12 +28,16 @@ export class UploadService {
       this.configService.get('SUPABASE_URL')!,
       this.configService.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
-    this.supabaseBucket = this.configService.get('SUPABASE_STORAGE_BUCKET', 'documents');
+    this.supabaseBucket = this.configService.get(
+      'SUPABASE_STORAGE_BUCKET',
+      'documents',
+    );
   }
 
   private validateFile(file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No file provided');
-    if (file.size > MAX_FILE_SIZE) throw new BadRequestException('File size exceeds limit');
+    if (file.size > MAX_FILE_SIZE)
+      throw new BadRequestException('File size exceeds limit');
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       throw new BadRequestException(`File type ${file.mimetype} not allowed`);
     }
@@ -42,7 +46,12 @@ export class UploadService {
   async uploadFile(
     file: Express.Multer.File,
     folder: string = 'documents',
-  ): Promise<{ key: string; fileName: string; fileSize: number; mimeType: string }> {
+  ): Promise<{
+    key: string;
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+  }> {
     this.validateFile(file);
     const ext = path.extname(file.originalname);
     const key = `${folder}/${uuidv4()}${ext}`;
@@ -50,12 +59,21 @@ export class UploadService {
     try {
       const { error } = await this.supabase.storage
         .from(this.supabaseBucket)
-        .upload(key, file.buffer, { contentType: file.mimetype, upsert: false });
+        .upload(key, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false,
+        });
       if (error) throw error;
       this.logger.log(`Uploaded: ${key}`);
-      return { key, fileName: file.originalname, fileSize: file.size, mimeType: file.mimetype };
+      return {
+        key,
+        fileName: file.originalname,
+        fileSize: file.size,
+        mimeType: file.mimetype,
+      };
     } catch (error) {
-      this.logger.error(`Upload error: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Upload error: ${message}`);
       throw new InternalServerErrorException('Failed to upload file');
     }
   }
@@ -67,7 +85,7 @@ export class UploadService {
         .createSignedUrl(key, expiresIn);
       if (error) throw error;
       return data.signedUrl;
-    } catch (error) {
+    } catch {
       return '';
     }
   }
@@ -75,6 +93,8 @@ export class UploadService {
   async deleteFile(key: string): Promise<void> {
     try {
       await this.supabase.storage.from(this.supabaseBucket).remove([key]);
-    } catch (error) {}
+    } catch (error) {
+      this.logger.warn(`Failed to delete file: ${key}`, error);
+    }
   }
 }

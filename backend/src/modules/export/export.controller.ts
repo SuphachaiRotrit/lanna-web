@@ -1,14 +1,15 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Res,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { ExportService } from './export.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { StatusFilterDto } from '../applicant/dto/query-applicant.dto';
+
+interface ExportBody {
+  ids?: string[];
+  status?: StatusFilterDto;
+  year?: number;
+  programId?: string;
+}
 
 @Controller('api/admin/export')
 @UseGuards(JwtAuthGuard)
@@ -16,10 +17,7 @@ export class ExportController {
   constructor(private readonly exportService: ExportService) {}
 
   @Post('excel')
-  async exportExcel(
-    @Body() body: { ids?: string[]; status?: string; year?: number; programId?: string },
-    @Res() res: Response,
-  ) {
+  async exportExcel(@Body() body: ExportBody, @Res() res: Response) {
     const buffer = await this.exportService.exportExcel(
       { status: body.status, year: body.year, programId: body.programId },
       body.ids,
@@ -36,10 +34,7 @@ export class ExportController {
   }
 
   @Post('pdf')
-  async exportPdf(
-    @Body() body: { ids?: string[]; status?: string; year?: number; programId?: string },
-    @Res() res: Response,
-  ) {
+  async exportPdf(@Body() body: ExportBody, @Res() res: Response) {
     const buffer = await this.exportService.exportPdf(
       { status: body.status, year: body.year, programId: body.programId },
       body.ids,

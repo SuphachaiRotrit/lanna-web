@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getMeApi } from '@/services/auth.service';
-import { usePathname, useRouter } from 'next/navigation';
+import { getMeApi, LoginResponse } from '@/services/auth.service';
+import { usePathname } from 'next/navigation';
 
 interface AuthContextType {
-  user: any | null;
+  user: LoginResponse['user'] | null;
   isLoading: boolean;
   refreshUser: () => Promise<void>;
 }
@@ -17,21 +17,16 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<LoginResponse['user'] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
-  const router = useRouter();
 
   const refreshUser = async () => {
     try {
       const [promise] = await getMeApi();
       const res = await promise;
-      if (res.success) {
-        setUser(res.data.user);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
+      setUser(res.success ? res.data.user : null);
+    } catch {
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -40,11 +35,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // ดึงข้อมูล User เมื่อโหลดแอปครั้งแรก
-    if (pathname.startsWith('/admin')) {
-        refreshUser();
-    } else {
-        setIsLoading(false);
+    if (!pathname.startsWith('/admin')) {
+      Promise.resolve().then(() => setIsLoading(false));
+      return;
     }
+    getMeApi().then(([promise]) =>
+      promise
+        .then(res => setUser(res.success ? res.data.user : null))
+        .catch(() => setUser(null))
+        .finally(() => setIsLoading(false))
+    );
   }, [pathname]);
 
   return (

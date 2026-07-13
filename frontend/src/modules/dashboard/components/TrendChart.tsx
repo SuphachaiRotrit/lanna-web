@@ -2,7 +2,7 @@ import React from 'react';
 import { TrendingUp, BarChart3 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-export const TrendChart = ({ data, year }: { data: any[], year: number }) => (
+export const TrendChart = ({ data, year }: { data: Array<{ month: number; count: number }>, year: number }) => (
   <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100">
     <div className="flex items-center justify-between mb-6">
       <h3 className="text-sm font-extrabold text-gray-800 flex items-center gap-2">

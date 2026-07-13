@@ -12,7 +12,10 @@ export async function createApp(): Promise<NestExpressApplication> {
   });
 
   const configService = app.get(ConfigService);
-  const frontendUrl = configService.get('FRONTEND_URL', 'http://localhost:3000');
+  const frontendUrl = configService.get<string>(
+    'FRONTEND_URL',
+    'http://localhost:3000',
+  );
   const isDev = configService.get('NODE_ENV') === 'development';
 
   // =============================================
@@ -25,9 +28,13 @@ export async function createApp(): Promise<NestExpressApplication> {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           imgSrc: ["'self'", 'data:', 'https:', isDev ? '*' : ''],
-          scriptSrc: ["'self'", "https://challenges.cloudflare.com"],
-          frameSrc: ["'self'", "https://challenges.cloudflare.com"],
-          connectSrc: ["'self'", frontendUrl, "https://challenges.cloudflare.com"],
+          scriptSrc: ["'self'", 'https://challenges.cloudflare.com'],
+          frameSrc: ["'self'", 'https://challenges.cloudflare.com'],
+          connectSrc: [
+            "'self'",
+            frontendUrl,
+            'https://challenges.cloudflare.com',
+          ],
           frameAncestors: ["'self'"],
         },
       },

@@ -8,25 +8,20 @@ export class AuditLogMiddleware implements NestMiddleware {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  use(req: Request, res: Response, next: NextFunction): void {
     // Only log mutating operations on admin routes
     if (
       req.path.startsWith('/api/admin') &&
       ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)
     ) {
-      const originalSend = res.send;
-      const prisma = this.prisma;
-
-      res.send = function (body) {
-        // Log after response
-        const adminUser = (req as any).user;
-        prisma.auditLog
+      res.on('finish', () => {
+        this.prisma.auditLog
           .create({
             data: {
               action: `${req.method} ${req.path}`,
               entity: req.path.split('/')[3] || 'unknown', // e.g., "applicants"
               entityId: (req.params.id as string) || null,
-              adminId: adminUser?.id || null,
+              adminId: req.user?.id || null,
               ipAddress:
                 (req.headers['x-forwarded-for'] as string) ||
                 req.socket.remoteAddress ||
@@ -39,13 +34,11 @@ export class AuditLogMiddleware implements NestMiddleware {
               },
             },
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             // Don't block response for logging errors
             Logger.error('Failed to create audit log', err);
           });
-
-        return originalSend.call(this, body);
-      };
+      });
     }
     next();
   }

@@ -17,7 +17,7 @@ export type AbortFunction = () => void;
 export const callAPI = <T>(
   method: Method,
   url: string,
-  data?: any,
+  data?: unknown,
   config?: AxiosRequestConfig
 ): [Promise<T>, AbortFunction] => {
   const controller = new AbortController();
@@ -35,4 +35,11 @@ export const callAPI = <T>(
   const abort = () => controller.abort();
 
   return [promise, abort];
+};
+
+export const getErrorMessage = (err: unknown, fallback: string): string => {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.message || fallback;
+  }
+  return fallback;
 };

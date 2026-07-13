@@ -6,7 +6,7 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, DocumentType, ApplicationStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
@@ -55,14 +55,9 @@ export class ApplicantService {
 
     // Check duplicate national ID (need to check encrypted values)
     const encryptedNationalId = EncryptionUtil.encrypt(dto.nationalId);
-    
+
     // Check if already applied this year
     const currentYear = new Date().getFullYear() + 543; // Buddhist era
-    const existing = await this.prisma.applicant.findFirst({
-      where: {
-        applicationYear: currentYear,
-      },
-    });
 
     // Need to check by decrypting - but for performance, we store a hash too
     // For now, use unique constraint on nationalId
@@ -71,7 +66,9 @@ export class ApplicantService {
     });
 
     if (existingById) {
-      throw new ConflictException('This national ID has already been registered');
+      throw new ConflictException(
+        'This national ID has already been registered',
+      );
     }
 
     // Verify program exists
@@ -170,16 +167,21 @@ export class ApplicantService {
     if (!isAdmin) {
       const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
       if (applicant.submittedAt < twoHoursAgo) {
-        throw new ForbiddenException('Public document upload session expired. Please contact admin.');
+        throw new ForbiddenException(
+          'Public document upload session expired. Please contact admin.',
+        );
       }
     }
 
-    const uploaded = await this.uploadService.uploadFile(file, `applicants/${applicantId}`);
+    const uploaded = await this.uploadService.uploadFile(
+      file,
+      `applicants/${applicantId}`,
+    );
 
     return this.prisma.document.create({
       data: {
         applicantId,
-        type: type as any,
+        type: type as DocumentType,
         fileName: uploaded.fileName,
         fileSize: uploaded.fileSize,
         mimeType: uploaded.mimeType,
@@ -226,7 +228,9 @@ export class ApplicantService {
       where.OR = [
         { firstName: { contains: sanitizedSearch, mode: 'insensitive' } },
         { lastName: { contains: sanitizedSearch, mode: 'insensitive' } },
-        { applicationNumber: { contains: sanitizedSearch, mode: 'insensitive' } },
+        {
+          applicationNumber: { contains: sanitizedSearch, mode: 'insensitive' },
+        },
         // Search by phone
         { phone: { contains: sanitizedSearch } },
       ];
@@ -299,13 +303,7 @@ export class ApplicantService {
   /**
    * Update applicant status (admin)
    */
-  async updateStatus(id: string, status: string, checklist?: {
-    hasTranscript?: boolean;
-    hasHouseRegistration?: boolean;
-    hasIdCard?: boolean;
-    hasNameChange?: boolean;
-    hasPhoto?: boolean;
-  }) {
+  async updateStatus(id: string, status: string) {
     const applicant = await this.prisma.applicant.findUnique({
       where: { id },
     });
@@ -317,7 +315,7 @@ export class ApplicantService {
     return this.prisma.applicant.update({
       where: { id },
       data: {
-        status: status as any,
+        status: status as ApplicationStatus,
         reviewedAt: new Date(),
       },
       include: {

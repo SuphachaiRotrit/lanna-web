@@ -1,11 +1,11 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
-import { Smartphone, Mail, Hash, UserCircle2, Calendar, MapPin, GraduationCap, Info, User } from 'lucide-react';
+import { Smartphone, Mail, Hash, Calendar, MapPin, GraduationCap, Info, User, LucideIcon } from 'lucide-react';
 
 // ฟังก์ชันช่วยจัดการอินพุตพิเศษ
 const useFormHelpers = () => {
-  const { setFieldValue } = useFormikContext<any>();
+  const { setFieldValue } = useFormikContext<Record<string, unknown>>();
 
   const handleDisplayChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string, filter: 'number' | 'gpa', maxLength?: number) => {
     let value = e.target.value;
@@ -27,7 +27,7 @@ const useFormHelpers = () => {
   return { handleDisplayChange };
 };
 
-const SectionHeader = ({ icon: Icon, title, desc }: { icon: any, title: string, desc?: string }) => (
+const SectionHeader = ({ icon: Icon, title, desc }: { icon: LucideIcon, title: string, desc?: string }) => (
   <div className="mb-6 pt-2 text-navy">
     <div className="flex items-center gap-3 mb-1">
       <div className="w-8 h-8 rounded-xl bg-brand/10 flex items-center justify-center text-brand">

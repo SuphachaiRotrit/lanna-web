@@ -4,12 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
+import {
   LayoutDashboard,
   Users,
-  FileDown,
   LogOut,
-  Menu, 
+  Menu,
   X,
   Bell,
   Search,
@@ -28,7 +27,6 @@ const menuItems = [
   { title: 'ภาพรวม', icon: LayoutDashboard, href: '/admin/dashboard', badge: null },
   { title: 'จัดการผู้สมัคร', icon: Users, href: '/admin/applicants', badge: 'hot' },
   { title: 'จัดการสาขาวิชา', icon: BookOpen, href: '/admin/programs', badge: null },
-  { title: 'ส่งออกข้อมูล', icon: FileDown, href: '/admin/export', badge: null },
   { title: 'ตั้งค่า', icon: Settings, href: '/admin/settings', badge: null },
 ];
 

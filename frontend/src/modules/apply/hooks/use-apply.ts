@@ -4,6 +4,7 @@ import { listProgramsApi } from "@/services/program.service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { getErrorMessage } from "@/lib/call-api";
 
 export const useApply = () => {
   const router = useRouter();
@@ -20,16 +21,16 @@ export const useApply = () => {
 
   // ยื่นใบสมัคร
   const applyMutation = useMutation({
-    mutationFn: async ({ values, files }: { values: any, files: Record<string, File | File[] | null> }) => {
+    mutationFn: async ({ values, files }: { values: Record<string, unknown>, files: Record<string, File | File[] | null> }) => {
       const loadingToast = toast.loading('กำลังบันทึกข้อมูลใบสมัคร...');
-      
+
       try {
         const [resPromise] = await createApplicantApi(values);
         const res = await resPromise;
         const id = res.data.id;
 
         // อัปโหลดไฟล์แบบขนาน
-        const uploadPromises: Promise<any>[] = [];
+        const uploadPromises: Promise<unknown>[] = [];
 
         Object.entries(files).forEach(([type, fileOrFiles]) => {
           if (!fileOrFiles) return;
@@ -55,8 +56,8 @@ export const useApply = () => {
         toast.success('ส่งใบสมัครเรียนสำเร็จแล้ว!', { id: loadingToast });
         router.push('/');
         return res.data;
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || 'เกิดข้อผิดพลาดในการส่งใบสมัคร', { id: loadingToast });
+      } catch (error) {
+        toast.error(getErrorMessage(error, 'เกิดข้อผิดพลาดในการส่งใบสมัคร'), { id: loadingToast });
         throw error;
       }
     }

@@ -1,5 +1,5 @@
 import { callAPI, AbortFunction } from "@/lib/call-api";
-import { ApiResponse } from "@/types";
+import { ApiResponse, Pagination } from "@/types";
 
 export interface Applicant {
   id: string;
@@ -19,8 +19,8 @@ export interface Applicant {
 /**
  * ADMIN: GET /admin/applicants - รายการผู้สมัคร
  */
-export const listApplicantsApi = async (params: any): Promise<[Promise<ApiResponse<{ rows: Applicant[], pagination: any }>>, AbortFunction]> => {
-  return callAPI<ApiResponse<{ rows: Applicant[], pagination: any }>>("GET", "/admin/applicants", null, { params });
+export const listApplicantsApi = async (params: Record<string, unknown>): Promise<[Promise<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>, AbortFunction]> => {
+  return callAPI<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>("GET", "/admin/applicants", null, { params });
 };
 
 /**
@@ -33,22 +33,22 @@ export const updateApplicantStatusApi = async (id: string, status: string): Prom
 /**
  * ADMIN: POST /admin/export/:type - ส่งออกข้อมูล (Excel/PDF)
  */
-export const exportApplicantsApi = async (type: 'excel' | 'pdf', data: any): Promise<[Promise<Blob>, AbortFunction]> => {
+export const exportApplicantsApi = async (type: 'excel' | 'pdf', data: Record<string, unknown>): Promise<[Promise<Blob>, AbortFunction]> => {
   return callAPI<Blob>("POST", `/admin/export/${type}`, data, { responseType: 'blob' });
 };
 
 /**
  * PUBLIC: POST /applicants - ส่งใบสมัครเรียนใหม่
  */
-export const createApplicantApi = async (data: any): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+export const createApplicantApi = async (data: Record<string, unknown>): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
   return callAPI<ApiResponse<Applicant>>("POST", "/applicants", data);
 };
 
 /**
  * PUBLIC: POST /applicants/:id/documents - อัปโหลดเอกสาร
  */
-export const uploadDocumentApi = async (id: string, type: string, file: File): Promise<[Promise<ApiResponse<any>>, AbortFunction]> => {
+export const uploadDocumentApi = async (id: string, type: string, file: File): Promise<[Promise<ApiResponse<unknown>>, AbortFunction]> => {
   const formData = new FormData();
   formData.append('file', file);
-  return callAPI<ApiResponse<any>>("POST", `/applicants/${id}/documents?type=${type}`, formData);
+  return callAPI<ApiResponse<unknown>>("POST", `/applicants/${id}/documents?type=${type}`, formData);
 };

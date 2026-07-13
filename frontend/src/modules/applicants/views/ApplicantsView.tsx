@@ -80,7 +80,7 @@ export const ApplicantsView = () => {
         <div className="w-44">
           <PremiumSelect
             value={filters.status}
-            onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value, page: 1 }))}
+            onChange={(e) => setFilters(prev => ({ ...prev, status: String(e.target.value), page: 1 }))}
             className="!py-3"
             options={[
               { label: 'ทุกสถานะ', value: '' },
@@ -95,7 +95,7 @@ export const ApplicantsView = () => {
         <div className="w-32">
           <PremiumSelect
             value={filters.year}
-            onChange={(e) => setFilters(prev => ({ ...prev, year: parseInt(e.target.value), page: 1 }))}
+            onChange={(e) => setFilters(prev => ({ ...prev, year: Number(e.target.value), page: 1 }))}
             className="!py-3"
             options={[0, 1, 2].map(i => {
               const year = new Date().getFullYear() + 543 - i;

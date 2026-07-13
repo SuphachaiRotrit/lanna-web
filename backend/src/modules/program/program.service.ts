@@ -34,10 +34,10 @@ export class ProgramService {
     });
   }
 
-  async create(data: { 
-    name: string; 
-    nameEn?: string; 
-    faculty: string; 
+  async create(data: {
+    name: string;
+    nameEn?: string;
+    faculty: string;
     degree: string;
     description?: string;
     duration?: string;
@@ -46,16 +46,19 @@ export class ProgramService {
     return this.prisma.program.create({ data });
   }
 
-  async update(id: string, data: Partial<{ 
-    name: string; 
-    nameEn: string; 
-    faculty: string; 
-    degree: string; 
-    description: string;
-    duration: string;
-    maxQuota: number;
-    isActive: boolean;
-  }>) {
+  async update(
+    id: string,
+    data: Partial<{
+      name: string;
+      nameEn: string;
+      faculty: string;
+      degree: string;
+      description: string;
+      duration: string;
+      maxQuota: number;
+      isActive: boolean;
+    }>,
+  ) {
     return this.prisma.program.update({
       where: { id },
       data,

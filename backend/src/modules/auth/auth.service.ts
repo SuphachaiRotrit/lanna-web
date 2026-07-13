@@ -7,9 +7,11 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { TurnstileService } from '../../common/utils/turnstile.util';
+import { JwtPayload } from './jwt-payload.interface';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_DURATION_MINUTES = 15;
@@ -35,7 +37,9 @@ export class AuthService {
     });
 
     if (!admin || !admin.isActive) {
-      this.logger.warn(`Login attempt for non-existent/inactive account: ${loginDto.email}`);
+      this.logger.warn(
+        `Login attempt for non-existent/inactive account: ${loginDto.email}`,
+      );
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -44,7 +48,9 @@ export class AuthService {
       const remainingMinutes = Math.ceil(
         (admin.lockedUntil.getTime() - Date.now()) / 60000,
       );
-      this.logger.warn(`Login attempt on locked account: ${admin.email} (locked for ${remainingMinutes} more minutes)`);
+      this.logger.warn(
+        `Login attempt on locked account: ${admin.email} (locked for ${remainingMinutes} more minutes)`,
+      );
       throw new ForbiddenException(
         `บัญชีถูกล็อคชั่วคราว กรุณาลองใหม่ในอีก ${remainingMinutes} นาที`,
       );
@@ -59,17 +65,21 @@ export class AuthService {
     if (!isPasswordValid) {
       // Increment failed attempts
       const newAttempts = admin.failedLoginAttempts + 1;
-      const updateData: any = { failedLoginAttempts: newAttempts };
+      const updateData: Prisma.AdminUpdateInput = {
+        failedLoginAttempts: newAttempts,
+      };
 
       // Log Failed Attempt
-      await this.prisma.auditLog.create({
-        data: {
-          action: 'LOGIN_FAILURE',
-          entity: 'auth',
-          adminId: admin.id,
-          details: { email: admin.email, attemptCount: newAttempts },
-        },
-      }).catch(() => {});
+      await this.prisma.auditLog
+        .create({
+          data: {
+            action: 'LOGIN_FAILURE',
+            entity: 'auth',
+            adminId: admin.id,
+            details: { email: admin.email, attemptCount: newAttempts },
+          },
+        })
+        .catch(() => {});
 
       // Lock account if max attempts reached
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
@@ -109,16 +119,18 @@ export class AuthService {
     });
 
     // Audit Log: Success
-    await this.prisma.auditLog.create({
-      data: {
-        action: 'LOGIN_SUCCESS',
-        entity: 'auth',
-        adminId: admin.id,
-        details: { email: admin.email },
-      },
-    }).catch(() => {});
+    await this.prisma.auditLog
+      .create({
+        data: {
+          action: 'LOGIN_SUCCESS',
+          entity: 'auth',
+          adminId: admin.id,
+          details: { email: admin.email },
+        },
+      })
+      .catch(() => {});
 
-    const payload = {
+    const payload: JwtPayload = {
       sub: admin.id,
       email: admin.email,
       role: admin.role,
@@ -146,7 +158,7 @@ export class AuthService {
 
   async refreshToken(token: string) {
     try {
-      const payload = this.jwtService.verify(token, {
+      const payload = this.jwtService.verify<JwtPayload>(token, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
@@ -158,7 +170,7 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      const newPayload = {
+      const newPayload: JwtPayload = {
         sub: admin.id,
         email: admin.email,
         role: admin.role,
@@ -207,5 +219,48 @@ export class AuthService {
         role: true,
       },
     });
+  }
+
+  async changePassword(
+    adminId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      admin.passwordHash,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('รหัสผ่านปัจจุบันไม่ถูกต้อง');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    await this.prisma.admin.update({
+      where: { id: adminId },
+      data: { passwordHash },
+    });
+
+    await this.prisma.auditLog
+      .create({
+        data: {
+          action: 'PASSWORD_CHANGE',
+          entity: 'auth',
+          adminId: admin.id,
+          details: { email: admin.email },
+        },
+      })
+      .catch(() => {});
+
+    return { success: true };
   }
 }
