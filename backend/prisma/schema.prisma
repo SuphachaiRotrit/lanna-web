@@ -108,6 +108,9 @@ model Applicant {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
+  // Review outcome
+  rejectionReason String? @map("rejection_reason") @db.Text
+
   // Relations
   documents Document[]
 
