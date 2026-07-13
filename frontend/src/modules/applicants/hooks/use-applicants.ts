@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi } from "@/services/applicant.service";
+import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi, getApplicantApi } from "@/services/applicant.service";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/call-api";
 
@@ -22,12 +22,23 @@ export const useApplicants = (filters: ApplicantFilters) => {
   });
 };
 
+export const useApplicant = (id: string | null) => {
+  return useQuery({
+    queryKey: ["applicant", id],
+    queryFn: async () => {
+      const [promise] = await getApplicantApi(id as string);
+      return promise;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useApplicantMutation = () => {
   const queryClient = useQueryClient();
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string, status: string }) => {
-      const [promise] = await updateApplicantStatusApi(id, status);
+    mutationFn: async ({ id, status, reason }: { id: string, status: string, reason?: string }) => {
+      const [promise] = await updateApplicantStatusApi(id, status, reason);
       return promise;
     },
     onSuccess: () => {
