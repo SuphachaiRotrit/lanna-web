@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'sonner';
 import { useApply } from '../hooks/use-apply';
@@ -120,13 +120,14 @@ export const ApplyView = () => {
     });
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = (values: typeof initialValues, { setSubmitting }: FormikHelpers<typeof initialValues>) => {
     const transcriptFiles = (files.TRANSCRIPT as File[]) || [];
     const requiredFiles = ['PHOTO', 'ID_CARD', 'HOUSE_REGISTRATION'];
     const missingFields = requiredFiles.filter(key => !files[key]);
 
     if (missingFields.length > 0 || transcriptFiles.length === 0) {
       toast.error('กรุณาอัปโหลดเอกสารที่จำเป็นให้ครบถ้วน');
+      setSubmitting(false);
       return;
     }
 
@@ -139,7 +140,10 @@ export const ApplyView = () => {
       hasNameChange: !!files.NAME_CHANGE,
     };
 
+    // ponytail: applyMutation.isPending already drives the loading UI; reset Formik's own
+    // isSubmitting immediately since it never resolves on its own for a fire-and-forget mutate().
     applyMutation.mutate({ values: finalValues, files });
+    setSubmitting(false);
   };
 
   const stepTitles = [

@@ -6,10 +6,12 @@ const IV_LENGTH = 16;
 export class EncryptionUtil {
   private static getKey(): Buffer {
     const key = process.env.ENCRYPTION_KEY;
-    if (!key || key.length !== 32) {
-      throw new Error('ENCRYPTION_KEY must be exactly 32 characters');
+    if (!key) {
+      throw new Error('ENCRYPTION_KEY is not set');
     }
-    return Buffer.from(key, 'utf8');
+    // ponytail: derive a fixed 32-byte key so any secret length works,
+    // instead of demanding the raw env var be exactly 32 chars.
+    return crypto.createHash('sha256').update(key).digest();
   }
 
   static encrypt(text: string): string {
