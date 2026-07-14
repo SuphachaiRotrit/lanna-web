@@ -54,7 +54,7 @@ export const ApplicantsView = () => {
           >
             Export Excel
           </PremiumButton>
-          <PremiumButton
+          {/* <PremiumButton
             variant="outline"
             size="md"
             className="!bg-red-50/30 !text-red-600 !border-red-100/50 hover:!bg-red-50"
@@ -63,7 +63,7 @@ export const ApplicantsView = () => {
             leftIcon={<Printer size={16} />}
           >
             พิมพ์ PDF
-          </PremiumButton>
+          </PremiumButton> */}
         </div>
       </div>
 

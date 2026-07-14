@@ -53,6 +53,20 @@ const formatFileSize = (bytes: number) => {
   return kb < 1024 ? `${kb.toFixed(0)} KB` : `${(kb / 1024).toFixed(1)} MB`;
 };
 
+const THAI_DIGITS = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+const toThaiNum = (value?: string | number | null) =>
+  value === undefined || value === null || value === '' ? '' : String(value).replace(/[0-9]/g, (d) => THAI_DIGITS[Number(d)]);
+
+const formatThaiDate = (value?: string) =>
+  value ? new Date(value).toLocaleDateString('th-TH-u-nu-thai', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
+const FormField = ({ label, value, className }: { label?: string; value?: string | number | null; className?: string }) => (
+  <div className={`flex items-baseline gap-1.5 py-0.5 ${className || ''}`}>
+    {label && <span className="whitespace-nowrap shrink-0">{label}</span>}
+    <span className="flex-1 border-b border-dotted border-black min-h-[1em] px-1">{value || ''}</span>
+  </div>
+);
+
 const InfoRow = ({ label, value }: { label: string; value?: string | number | null }) => (
   <div>
     <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
@@ -138,12 +152,13 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
           </button>
         </div>
 
+        <div className="print:hidden">
         {isLoading || !applicant ? (
-          <div className="py-20 text-center print:hidden">
+          <div className="py-20 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto"></div>
           </div>
         ) : (
-          <div ref={printRef} className="space-y-8 print:p-10">
+          <div className="space-y-8">
             <div>
               <p className="text-[12px] font-bold text-brand uppercase tracking-[0.2em]">{applicant.applicationNumber}</p>
               <h4 className="text-xl font-black text-navy">{applicant.prefixName}{applicant.firstName} {applicant.lastName}</h4>
@@ -219,14 +234,14 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                     href={doc.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 border border-gray-100 p-3 rounded-xl transition-colors print:border-gray-200"
+                    className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 border border-gray-100 p-3 rounded-xl transition-colors"
                   >
                     <span className="flex items-center gap-2.5 text-sm font-bold text-navy">
-                      <FileText size={16} className="text-gray-400 print:hidden" />
+                      <FileText size={16} className="text-gray-400" />
                       {DOCUMENT_LABELS[doc.type]}
                       {doc.fileName && <span className="text-gray-400 font-medium">({doc.fileName}{formatFileSize(doc.fileSize) ? `, ${formatFileSize(doc.fileSize)}` : ''})</span>}
                     </span>
-                    <ExternalLink size={14} className="text-gray-400 print:hidden" />
+                    <ExternalLink size={14} className="text-gray-400" />
                   </a>
                 ))}
                 {(!applicant.documents || applicant.documents.length === 0) && (
@@ -236,7 +251,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
             </div>
 
             {rejecting && (
-              <div className="print:hidden">
+              <div>
                 <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -247,6 +262,86 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                 />
               </div>
             )}
+          </div>
+        )}
+        </div>
+
+        {applicant && (
+          <div
+            ref={printRef}
+            className="absolute -left-[9999px] top-0 print:static print:left-auto bg-white w-[794px] px-16 py-10 text-black text-[13px] leading-relaxed"
+          >
+            <div className="flex items-start justify-between">
+              <div className="w-20 shrink-0" />
+              <div className="flex flex-col items-center flex-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/img/logo.png" alt="" className="h-16 w-16 object-contain" />
+              </div>
+              <div className="w-24 h-24 border border-black flex flex-col items-center justify-center text-[10px] text-center shrink-0 overflow-hidden">
+                {applicant.documents?.find((d) => d.type === 'PHOTO')?.url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={applicant.documents.find((d) => d.type === 'PHOTO')!.url} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
+                ) : (
+                  <>
+                    <span>รูปถ่าย</span>
+                    <span>ขนาด ๑ นิ้ว</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="text-center mt-2 space-y-0.5">
+              <p className="font-bold text-[15px]">ใบสมัครเข้าศึกษาต่อระดับปริญญาตรี ประจำปีการศึกษา {toThaiNum(applicant.applicationYear)}</p>
+              <p className="font-bold text-[14px]">มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา</p>
+            </div>
+
+            <p className="text-center my-3 tracking-[0.6em]">◆❖◆</p>
+
+            <div className="space-y-3">
+              <div>
+                <p>๑. สมัครเรียน ระดับปริญญาตรี ภาคปกติ หลักสูตร ๔ ปี (โปรดเลือก ๑ สาขาวิชา)</p>
+                <FormField value={applicant.program?.name} />
+              </div>
+
+              <div>
+                <p>๒. คำนำหน้า / ชื่อ / ฉายา / นามสกุล</p>
+                <FormField
+                  label="ชื่อ-ฉายา-นามสกุล"
+                  value={`${applicant.prefixName}${applicant.firstName}${applicant.aliasName ? ` (${applicant.aliasName})` : ''} ${applicant.lastName}`}
+                />
+                <FormField label="หมายเลขบัตรประชาชน" value={toThaiNum(applicant.nationalId)} />
+                <div className="flex gap-4">
+                  <FormField label="เกิด วันที่/เดือน/พ.ศ." value={formatThaiDate(applicant.birthDate)} className="flex-[2]" />
+                  <FormField label="สัญชาติ" value={applicant.nationality} className="flex-1" />
+                </div>
+              </div>
+
+              <div>
+                <p>๓. ที่อยู่ตามทะเบียนบ้าน เลขที่</p>
+                <FormField value={applicant.address} />
+                <FormField value={`ตำบล/แขวง ${applicant.subDistrict} อำเภอ/เขต ${applicant.district} จังหวัด ${applicant.province} รหัสไปรษณีย์ ${toThaiNum(applicant.postalCode)}`} />
+                <FormField label="โทรศัพท์" value={toThaiNum(applicant.phone)} />
+                <FormField label="E-mail" value={applicant.email} />
+                <FormField label="Line ID" value={applicant.lineId} />
+              </div>
+
+              <div>
+                <p>๔. วุฒิการศึกษาที่ใช้ในการสมัคร</p>
+                <div className="flex gap-4">
+                  <FormField label="ระดับการศึกษาที่จบ" value={applicant.previousEducation} className="flex-[2]" />
+                  <FormField label="จบปี พ.ศ." value={toThaiNum(applicant.graduationYear)} className="flex-1" />
+                  <FormField label="เกรดเฉลี่ย" value={toThaiNum(applicant.gpa)} className="flex-1" />
+                </div>
+                <FormField label="จบจากโรงเรียน" value={applicant.previousSchool} />
+                <FormField label="จังหวัด" value={applicant.schoolProvince} />
+              </div>
+
+              <div>
+                <p>๕. เหตุผลการสมัครเรียนในมหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา</p>
+                <FormField value={applicant.applicationReason} />
+                <FormField value="" />
+              </div>
+            </div>
           </div>
         )}
 
