@@ -106,7 +106,7 @@ export class ExportService {
         previousEducation: applicant.previousEducation,
         gpa: applicant.gpa || '-',
         program: applicant.program?.name || '-',
-        faculty: applicant.program?.faculty || '-',
+        faculty: applicant.program?.faculty?.name || '-',
         status: statusMap[applicant.status] || applicant.status,
         submittedAt: applicant.submittedAt.toLocaleDateString('th-TH'),
       });

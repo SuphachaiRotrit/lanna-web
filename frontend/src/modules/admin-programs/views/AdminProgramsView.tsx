@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { Plus, Search, GraduationCap, AlertTriangle, BookOpen, ToggleLeft } from 'lucide-react';
 import { usePrograms, useProgramMutation } from '../hooks/use-programs';
+import { useFaculties } from '@/modules/admin-faculties/hooks/use-faculties';
 import { ProgramTable } from '../components/ProgramTable';
 import { ProgramModal } from '../components/ProgramModal';
 import { Program } from '@/types';
 
 export const AdminProgramsView = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [facultyFilter, setFacultyFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<Program | null>(null);
 
   // TanStack Query Hooks
-  const { data: res, isLoading } = usePrograms();
+  const { data: res, isLoading, progress } = usePrograms();
   const programs = res?.data || [];
-  
+  const { data: facultiesRes } = useFaculties();
+  const faculties = facultiesRes?.data || [];
+
   const { createMutation, updateMutation, deleteMutation } = useProgramMutation(() => {
     setIsModalOpen(false);
     setEditingProgram(null);
@@ -32,9 +36,10 @@ export const AdminProgramsView = () => {
     }
   };
 
-  const filteredPrograms = programs.filter((p: Program) => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.faculty.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPrograms = programs.filter((p: Program) =>
+    (p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.faculty?.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (!facultyFilter || p.facultyId === facultyFilter)
   );
 
   const activeCount = programs.filter((p: Program) => p.isActive).length;
@@ -113,6 +118,16 @@ export const AdminProgramsView = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <select
+          className="px-4 py-2.5 bg-gray-50/50 rounded-lg border border-transparent focus:bg-white focus:border-brand/30 outline-none transition-all text-sm font-medium md:w-56"
+          value={facultyFilter}
+          onChange={(e) => setFacultyFilter(e.target.value)}
+        >
+          <option value="">ทุกคณะ</option>
+          {faculties.map((f) => (
+            <option key={f.id} value={f.id}>{f.name}</option>
+          ))}
+        </select>
       </div>
 
       {/* Content Table */}
@@ -121,6 +136,7 @@ export const AdminProgramsView = () => {
         onEdit={handleOpenModal}
         onDelete={(id) => deleteMutation.mutate(id)}
         isLoading={isLoading}
+        progress={progress}
       />
 
       {/* Modal Tool */}

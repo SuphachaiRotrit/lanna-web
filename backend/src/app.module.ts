@@ -13,6 +13,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ExportModule } from './modules/export/export.module';
 import { ProgramModule } from './modules/program/program.module';
+import { FacultyModule } from './modules/faculty/faculty.module';
+import { UserModule } from './modules/user/user.module';
 
 // Common
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
@@ -50,6 +52,8 @@ import { CommonModule } from './common/common.module';
     DashboardModule,
     ExportModule,
     ProgramModule,
+    FacultyModule,
+    UserModule,
   ],
   providers: [
     // Global rate limit guard

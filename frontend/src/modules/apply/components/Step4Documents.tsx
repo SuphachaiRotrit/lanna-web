@@ -41,6 +41,11 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
                 <label className="text-sm font-bold text-navy/70 uppercase tracking-tight">
                   {doc.label} {doc.required && <span className="text-red-500">*</span>}
                 </label>
+                {doc.key === 'PHOTO' && !hasFiles && (
+                  <span className="text-[11px] text-gray-400 font-medium text-right">
+                    2.5×3.25 ซม. (≈300×384px) ระบบครอบตัด/ปรับขนาดให้อัตโนมัติ
+                  </span>
+                )}
                 {hasFiles && (
                   <span className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider border border-emerald-100">
                     <FileCheck size={12} />

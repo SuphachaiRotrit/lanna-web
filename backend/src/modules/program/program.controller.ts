@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { CreateProgramDto } from './dto/create-program.dto';
+import { UpdateProgramDto } from './dto/update-program.dto';
 
 @Controller('api')
 export class ProgramController {
@@ -46,18 +48,7 @@ export class ProgramController {
    */
   @Post('admin/programs')
   @UseGuards(JwtAuthGuard)
-  async create(
-    @Body()
-    data: {
-      name: string;
-      nameEn?: string;
-      faculty: string;
-      degree: string;
-      description?: string;
-      duration?: string;
-      maxQuota?: number;
-    },
-  ) {
+  async create(@Body() data: CreateProgramDto) {
     return this.programService.create(data);
   }
 
@@ -66,20 +57,7 @@ export class ProgramController {
    */
   @Put('admin/programs/:id')
   @UseGuards(JwtAuthGuard)
-  async update(
-    @Param('id') id: string,
-    @Body()
-    data: Partial<{
-      name: string;
-      nameEn: string;
-      faculty: string;
-      degree: string;
-      description: string;
-      duration: string;
-      maxQuota: number;
-      isActive: boolean;
-    }>,
-  ) {
+  async update(@Param('id') id: string, @Body() data: UpdateProgramDto) {
     return this.programService.update(id, data);
   }
 

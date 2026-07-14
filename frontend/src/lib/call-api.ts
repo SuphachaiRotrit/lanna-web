@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, Method } from "axios";
+import axios, { AxiosProgressEvent, AxiosRequestConfig, Method } from "axios";
 
 // สร้าง Instance ของ Axios เพื่อกำหนดค่าพื้นฐาน
 const api = axios.create({
@@ -36,6 +36,10 @@ export const callAPI = <T>(
 
   return [promise, abort];
 };
+
+// เอาไว้แปลง AxiosProgressEvent เป็น % จำนวนเต็ม สำหรับแสดงผลระหว่างโหลด
+export const onProgress = (cb?: (percent: number) => void) =>
+  cb && ((e: AxiosProgressEvent) => cb(Math.round((e.progress ?? 0) * 100)));
 
 export const getErrorMessage = (err: unknown, fallback: string): string => {
   if (axios.isAxiosError(err)) {

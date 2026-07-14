@@ -92,11 +92,11 @@ export const LandingView = () => {
                    <h4 className="text-xl font-bold text-navy leading-snug group-hover:text-brand">{prog.name}</h4>
                    {prog.duration && (
                      <span className="text-[12px] font-black text-brand bg-brand/5 px-2 py-0.5 rounded">
-                       {prog.duration}
+                       {prog.duration} ปี
                      </span>
                    )}
                 </div>
-                <p className="text-sm text-navy/40 font-bold uppercase tracking-wider">{prog.faculty}</p>
+                <p className="text-sm text-navy/40 font-bold uppercase tracking-wider">{prog.faculty?.name}</p>
                 {prog.description && (
                   <p className="text-[12px] text-brand font-bold mt-2 uppercase tracking-widest bg-brand/5 inline-block px-3 py-1 rounded-lg">
                     {prog.description}

@@ -1,4 +1,4 @@
-import { callAPI, AbortFunction } from "@/lib/call-api";
+import { callAPI, onProgress, AbortFunction } from "@/lib/call-api";
 import { Program, ApiResponse } from "@/types";
 
 /**
@@ -11,8 +11,8 @@ export const listProgramsApi = async (): Promise<[Promise<ApiResponse<Program[]>
 /**
  * ADMIN: GET /admin/programs - รายการหลักสูตรทั้งหมด (รวมที่ปิดรับ)
  */
-export const listProgramsAdminApi = async (): Promise<[Promise<ApiResponse<Program[]>>, AbortFunction]> => {
-  return callAPI<ApiResponse<Program[]>>("GET", "/admin/programs");
+export const listProgramsAdminApi = async (onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<Program[]>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Program[]>>("GET", "/admin/programs", undefined, { onDownloadProgress: onProgress(onDownloadProgress) });
 };
 
 /**

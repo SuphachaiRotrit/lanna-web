@@ -18,7 +18,7 @@ export const ApplicantsView = () => {
   });
   const [viewingApplicantId, setViewingApplicantId] = useState<string | null>(null);
 
-  const { data: res, isLoading } = useApplicants(filters);
+  const { data: res, isLoading, progress } = useApplicants(filters);
   const applicants = res?.data?.rows || [];
   const pagination = res?.data?.pagination || {};
 
@@ -112,6 +112,7 @@ export const ApplicantsView = () => {
         applicants={applicants}
         pagination={pagination}
         loading={isLoading}
+        progress={progress}
         currentPage={filters.page}
         onPageChange={handlePageChange}
         onUpdateStatus={(id, status) => updateStatus.mutate({ id, status })}

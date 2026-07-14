@@ -16,18 +16,29 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
-  role: 'ADMIN' | 'USER' | 'SUPER_ADMIN';
+  role: 'SUPER_ADMIN' | 'STAFF';
+  isActive: boolean;
+  lastLoginAt: string | null;
   createdAt: string;
 }
+
+export interface Faculty {
+  id: string;
+  name: string;
+}
+
+export type ProgramTrack = 'REGULAR' | 'SPECIAL';
 
 export interface Program {
   id: string;
   name: string;
   nameEn?: string;
-  faculty: string;
+  facultyId: string;
+  faculty: Faculty;
   degree: string;
+  track: ProgramTrack;
   description?: string;
-  duration?: string;
+  duration?: number;
   maxQuota: number;
   currentApplicants: number;
   isFull: boolean;

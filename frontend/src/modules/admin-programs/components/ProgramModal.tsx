@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { XCircle, Users, Clock } from 'lucide-react';
-import { Program } from '@/types';
+import { XCircle, Users } from 'lucide-react';
+import { Program, ProgramTrack } from '@/types';
+import { useFaculties } from '@/modules/admin-faculties/hooks/use-faculties';
+import { Switch } from '@/components/ui/Switch';
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -9,24 +11,31 @@ interface ProgramModalProps {
   program?: Program | null;
 }
 
+const DEGREE_OPTIONS = ['ปริญญาตรี', 'ปริญญาโท', 'ปริญญาเอก'];
+
 const defaultFormData: Partial<Program> = {
   name: '',
-  faculty: 'คณะศึกษาศาสตร์',
+  facultyId: '',
   degree: 'ปริญญาตรี',
-  duration: '4 ปี',
+  track: 'REGULAR',
+  duration: 4,
   description: '',
   maxQuota: 50,
   isActive: true
 };
 
 export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onSubmit, program }) => {
+  const { data: facultiesRes } = useFaculties();
+  const faculties = facultiesRes?.data || [];
+
   const [formData, setFormData] = useState<Partial<Program>>(() =>
     program
       ? {
           name: program.name,
-          faculty: program.faculty,
+          facultyId: program.facultyId,
           degree: program.degree,
-          duration: program.duration || '4 ปี',
+          track: program.track,
+          duration: program.duration || 4,
           description: program.description || '',
           maxQuota: program.maxQuota,
           isActive: program.isActive
@@ -41,10 +50,14 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
     onSubmit(formData);
   };
 
+  const handleTrackChange = (track: ProgramTrack) => {
+    setFormData(prev => ({ ...prev, track, description: track === 'REGULAR' ? '' : prev.description }));
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300">
+      <div className="relative bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300">
          <div className="flex items-center justify-between mb-8">
             <h3 className="text-2xl font-black text-navy tracking-tight">
                {program ? 'แก้ไขสาขาวิชา' : 'เพิ่มสาขาวิชาใหม่'}
@@ -57,8 +70,8 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อสาขาวิชา</label>
-               <input 
-                 type="text" 
+               <input
+                 type="text"
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                  placeholder="เช่น การสอนภาษาอังกฤษ"
                  value={formData.name}
@@ -70,46 +83,47 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             <div className="grid grid-cols-2 gap-4">
                <div>
                   <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">คณะ</label>
-                  <select 
+                  <select
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                    value={formData.faculty}
-                    onChange={(e) => setFormData({...formData, faculty: e.target.value})}
+                    value={formData.facultyId}
+                    onChange={(e) => setFormData({...formData, facultyId: e.target.value})}
+                    required
                   >
-                     <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
-                     <option value="คณะสังคมศาสตร์">คณะสังคมศาสตร์</option>
-                     <option value="คณะมนุษยศาสตร์">คณะมนุษยศาสตร์</option>
-                     <option value="คณะศาสนาและปรัชญา">คณะศาสนาและปรัชญา</option>
+                     <option value="" disabled>เลือกคณะ</option>
+                     {faculties.map((f) => (
+                       <option key={f.id} value={f.id}>{f.name}</option>
+                     ))}
                   </select>
                </div>
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระยะเวลาหลักสูตร</label>
-                  <div className="relative">
-                    <input 
-                      className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm pl-10"
-                      value={formData.duration}
-                      placeholder="เช่น 4 ปี"
-                      onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                    />
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                  </div>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระยะเวลาหลักสูตร (ปี)</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
+                    value={formData.duration ?? ''}
+                    onChange={(e) => setFormData({...formData, duration: e.target.value ? parseInt(e.target.value) : undefined})}
+                  />
                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระดับการศึกษา</label>
-                  <input 
+                  <select
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                     value={formData.degree}
-                    placeholder="เช่น ปริญญาตรี"
                     onChange={(e) => setFormData({...formData, degree: e.target.value})}
-                  />
+                  >
+                     {DEGREE_OPTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
+                  </select>
                 </div>
                 <div>
                    <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">โควตารับ (คน)</label>
                    <div className="relative">
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                         value={formData.maxQuota}
                         onChange={(e) => setFormData({...formData, maxQuota: parseInt(e.target.value)})}
@@ -122,26 +136,36 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             </div>
 
             <div>
-               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">รายละเอียดเพิ่มเติม/หมายเหตุ</label>
-               <input 
-                 type="text" 
+               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">หลักสูตร</label>
+               <select
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                 placeholder="เช่น ภาคพิเศษ เรียนเสาร์-อาทิตย์"
-                 value={formData.description}
-                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-               />
+                 value={formData.track}
+                 onChange={(e) => handleTrackChange(e.target.value as ProgramTrack)}
+               >
+                  <option value="REGULAR">ภาคปกติ</option>
+                  <option value="SPECIAL">ภาคพิเศษ</option>
+               </select>
             </div>
 
+            {formData.track === 'SPECIAL' && (
+              <div>
+                 <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">หมายเหตุ (เช่น เรียนเสาร์-อาทิตย์)</label>
+                 <input
+                   type="text"
+                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
+                   placeholder="เช่น เรียนเสาร์-อาทิตย์"
+                   value={formData.description}
+                   onChange={(e) => setFormData({...formData, description: e.target.value})}
+                 />
+              </div>
+            )}
+
             <div className="flex items-center pt-2">
-               <label className="flex items-center gap-3 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="w-5 h-5 accent-brand"
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
-                  />
-                  <span className="text-xs font-black text-navy uppercase tracking-widest">เปิดรับสมัคร</span>
-               </label>
+               <Switch
+                 checked={!!formData.isActive}
+                 onChange={(checked) => setFormData({...formData, isActive: checked})}
+                 label="เปิดรับสมัคร"
+               />
             </div>
 
             <div className="pt-6 flex gap-4">

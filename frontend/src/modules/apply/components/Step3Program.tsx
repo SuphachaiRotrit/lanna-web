@@ -37,7 +37,7 @@ export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId
                 {program.duration && (
                    <span className="inline-flex items-center gap-1 text-brand font-bold text-sm">
                       <Clock size={14} />
-                      หลักสูตร {program.duration}
+                      หลักสูตร {program.duration} ปี
                    </span>
                 )}
                 {program.isFull && (
@@ -45,7 +45,7 @@ export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId
                 )}
               </div>
               <p className="text-sm text-gray-400 mt-0.5">
-                {program.faculty} • {program.degree}
+                {program.faculty?.name} • {program.degree}
               </p>
               {program.description && (
                 <p className="text-xs text-brand font-bold mt-1.5 p-2 bg-brand/5 rounded-lg inline-block">

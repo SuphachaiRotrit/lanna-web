@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CreateProgramDto } from './dto/create-program.dto';
+import { UpdateProgramDto } from './dto/update-program.dto';
 
 @Injectable()
 export class ProgramService {
@@ -9,6 +11,7 @@ export class ProgramService {
     const programs = await this.prisma.program.findMany({
       where: adminOnly ? {} : { isActive: true },
       include: {
+        faculty: true,
         _count: {
           select: { applicants: true },
         },
@@ -27,6 +30,7 @@ export class ProgramService {
     return this.prisma.program.findUnique({
       where: { id },
       include: {
+        faculty: true,
         _count: {
           select: { applicants: true },
         },
@@ -34,31 +38,11 @@ export class ProgramService {
     });
   }
 
-  async create(data: {
-    name: string;
-    nameEn?: string;
-    faculty: string;
-    degree: string;
-    description?: string;
-    duration?: string;
-    maxQuota?: number;
-  }) {
+  async create(data: CreateProgramDto) {
     return this.prisma.program.create({ data });
   }
 
-  async update(
-    id: string,
-    data: Partial<{
-      name: string;
-      nameEn: string;
-      faculty: string;
-      degree: string;
-      description: string;
-      duration: string;
-      maxQuota: number;
-      isActive: boolean;
-    }>,
-  ) {
+  async update(id: string, data: UpdateProgramDto) {
     return this.prisma.program.update({
       where: { id },
       data,

@@ -7,6 +7,7 @@ interface ApplicantTableProps {
   applicants: Applicant[];
   pagination: Partial<Pagination>;
   loading: boolean;
+  progress: number;
   onUpdateStatus: (id: string, status: string) => void;
   onView: (id: string) => void;
   onPageChange: (page: number) => void;
@@ -14,7 +15,7 @@ interface ApplicantTableProps {
 }
 
 export const ApplicantTable: React.FC<ApplicantTableProps> = ({
-  applicants, pagination, loading, onUpdateStatus, onView, onPageChange, currentPage
+  applicants, pagination, loading, progress, onUpdateStatus, onView, onPageChange, currentPage
 }) => {
   return (
     <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
@@ -33,7 +34,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
             {loading ? (
               <tr>
                 <td colSpan={5} className="py-20 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto"></div>
+                  <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
                 </td>
               </tr>
             ) : applicants.map((app) => (
@@ -51,7 +52,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 </td>
                 <td className="px-6 py-6">
                   <p className="text-sm font-bold text-gray-700 truncate w-48">{app.program?.name}</p>
-                  <p className="text-[12px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty}</p>
+                  <p className="text-[12px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty?.name}</p>
                 </td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
                 <td className="px-6 py-6">

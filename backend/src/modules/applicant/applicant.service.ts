@@ -131,7 +131,13 @@ export class ApplicantService {
         hasPhoto: dto.hasPhoto || false,
       },
       include: {
-        program: { select: { name: true, faculty: true, degree: true } },
+        program: {
+          select: {
+            name: true,
+            faculty: { select: { name: true } },
+            degree: true,
+          },
+        },
       },
     });
 
@@ -245,7 +251,13 @@ export class ApplicantService {
         take: limit,
         orderBy: { [sortBy]: sortOrder },
         include: {
-          program: { select: { name: true, faculty: true, degree: true } },
+          program: {
+            select: {
+              name: true,
+              faculty: { select: { name: true } },
+              degree: true,
+            },
+          },
           documents: { select: { id: true, type: true, fileName: true } },
         },
       }),
@@ -322,7 +334,9 @@ export class ApplicantService {
           : {}),
       },
       include: {
-        program: { select: { name: true, faculty: true } },
+        program: {
+          select: { name: true, faculty: { select: { name: true } } },
+        },
       },
     });
   }
@@ -341,7 +355,13 @@ export class ApplicantService {
       where,
       orderBy: { submittedAt: 'desc' },
       include: {
-        program: { select: { name: true, faculty: true, degree: true } },
+        program: {
+          select: {
+            name: true,
+            faculty: { select: { name: true } },
+            degree: true,
+          },
+        },
       },
     });
 
@@ -358,7 +378,13 @@ export class ApplicantService {
     const applicants = await this.prisma.applicant.findMany({
       where: { id: { in: ids } },
       include: {
-        program: { select: { name: true, faculty: true, degree: true } },
+        program: {
+          select: {
+            name: true,
+            faculty: { select: { name: true } },
+            degree: true,
+          },
+        },
       },
     });
 

@@ -1,22 +1,19 @@
 'use client';
 
 import React from 'react';
-import { CalendarDays, Award, BookOpen, Activity, Users, Clock } from 'lucide-react';
+import { CalendarDays, Award, BookOpen, Users, Clock } from 'lucide-react';
 import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
 import { TrendChart } from '../components/TrendChart';
 
 export const DashboardView = () => {
-  const { data: res, isLoading } = useDashboardStats();
+  const { data: res, isLoading, progress } = useDashboardStats();
   const stats = res?.data;
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-[60vh]">
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-gray-200 border-t-brand"></div>
-          <Activity size={16} className="absolute inset-0 m-auto text-brand animate-pulse" />
-        </div>
+      <div className="flex flex-col items-center gap-3">
+        <p className="text-4xl font-black text-brand tabular-nums">{progress}%</p>
         <p className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูลแดชบอร์ด...</p>
       </div>
     </div>

@@ -7,12 +7,13 @@ interface ProgramTableProps {
   onEdit: (program: Program) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
+  progress: number;
 }
 
-export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading }) => {
+export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading, progress }) => {
   if (isLoading) return (
-    <div className="p-16 text-center flex flex-col items-center gap-3 bg-white rounded-2xl border border-gray-100">
-      <div className="animate-spin rounded-full h-10 w-10 border-[3px] border-gray-200 border-t-brand"></div>
+    <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
+      <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
       <span className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูล...</span>
     </div>
   );
@@ -60,7 +61,7 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                               ? 'bg-gray-100 text-gray-400' 
                               : 'bg-brand/8 text-brand'
                           }`}>
-                            <Clock size={9} /> {program.duration}
+                            <Clock size={9} /> {program.duration} ปี
                           </span>
                         )}
                       </div>
@@ -70,7 +71,7 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <p className={`text-xs font-bold ${!program.isActive ? 'text-gray-400' : 'text-gray-600'}`}>{program.faculty}</p>
+                    <p className={`text-xs font-bold ${!program.isActive ? 'text-gray-400' : 'text-gray-600'}`}>{program.faculty?.name}</p>
                     <p className="text-[12px] text-gray-300 font-medium mt-0.5">{program.degree}</p>
                   </td>
                   <td className="px-5 py-4">

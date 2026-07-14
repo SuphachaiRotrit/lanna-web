@@ -95,10 +95,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
   @HttpCode(HttpStatus.OK)
-  async changePassword(
-    @Req() req: Request,
-    @Body() dto: ChangePasswordDto,
-  ) {
+  async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
     const admin = req.user!;
     return this.authService.changePassword(
       admin.id,

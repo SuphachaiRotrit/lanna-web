@@ -137,18 +137,35 @@ enum ApplicationStatus {
 }
 
 // =============================================
+// Faculties (คณะ)
+// =============================================
+model Faculty {
+  id   String @id @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  programs Program[]
+
+  @@map("faculties")
+}
+
+// =============================================
 // Programs (หลักสูตร)
 // =============================================
 model Program {
-  id          String  @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String  // ชื่อหลักสูตร
-  nameEn      String? @map("name_en")
-  faculty     String  // คณะ
-  degree      String  // ระดับปริญญา
+  nameEn      String?      @map("name_en")
+  facultyId   String       @map("faculty_id")
+  faculty     Faculty      @relation(fields: [facultyId], references: [id])
+  degree      String  // ระดับปริญญา (ปริญญาตรี/โท/เอก)
+  track       ProgramTrack @default(REGULAR) // ภาคปกติ/ภาคพิเศษ
   description String? // หมายเหตุเพิ่มเติม (เช่น ภาคพิเศษ, เรียนเสาร์-อาทิตย์)
-  duration    String? // ระยะเวลาหลักสูตร (เช่น 4 ปี)
-  maxQuota    Int     @default(50) @map("max_quota") // จำนวนที่เปิดรับ
-  isActive    Boolean @default(true) @map("is_active")
+  duration    Int? // ระยะเวลาหลักสูตร (ปี)
+  maxQuota    Int          @default(50) @map("max_quota") // จำนวนที่เปิดรับ
+  isActive    Boolean      @default(true) @map("is_active")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -156,6 +173,11 @@ model Program {
   applicants Applicant[]
 
   @@map("programs")
+}
+
+enum ProgramTrack {
+  REGULAR
+  SPECIAL
 }
 
 // =============================================

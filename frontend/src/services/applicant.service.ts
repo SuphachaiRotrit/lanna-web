@@ -1,4 +1,4 @@
-import { callAPI, AbortFunction } from "@/lib/call-api";
+import { callAPI, onProgress, AbortFunction } from "@/lib/call-api";
 import { ApiResponse, Pagination, Applicant } from "@/types";
 
 export type { Applicant };
@@ -6,15 +6,15 @@ export type { Applicant };
 /**
  * ADMIN: GET /admin/applicants - รายการผู้สมัคร
  */
-export const listApplicantsApi = async (params: Record<string, unknown>): Promise<[Promise<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>, AbortFunction]> => {
-  return callAPI<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>("GET", "/admin/applicants", null, { params });
+export const listApplicantsApi = async (params: Record<string, unknown>, onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>, AbortFunction]> => {
+  return callAPI<ApiResponse<{ rows: Applicant[], pagination: Pagination }>>("GET", "/admin/applicants", null, { params, onDownloadProgress: onProgress(onDownloadProgress) });
 };
 
 /**
  * ADMIN: GET /admin/applicants/:id - รายละเอียดผู้สมัคร
  */
-export const getApplicantApi = async (id: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
-  return callAPI<ApiResponse<Applicant>>("GET", `/admin/applicants/${id}`);
+export const getApplicantApi = async (id: string, onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Applicant>>("GET", `/admin/applicants/${id}`, undefined, { onDownloadProgress: onProgress(onDownloadProgress) });
 };
 
 /**

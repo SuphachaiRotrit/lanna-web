@@ -6,6 +6,7 @@ import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'sonner';
 import { useApply } from '../hooks/use-apply';
+import { resizeToPhotoSize } from '@/lib/resize-photo';
 import { Step1Personal, Step2Education } from '../components/FormSteps';
 import { Step0Intro } from '../components/Step0Intro';
 import { Step3Program } from '../components/Step3Program';
@@ -88,7 +89,7 @@ export const ApplyView = () => {
     NAME_CHANGE: null
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length === 0) return;
 
@@ -105,6 +106,9 @@ export const ApplyView = () => {
         const combined = [...current, ...selectedFiles].slice(0, 3);
         return { ...prev, [type]: combined };
       });
+    } else if (type === 'PHOTO') {
+      const resized = await resizeToPhotoSize(selectedFiles[0]);
+      setFiles(prev => ({ ...prev, [type]: resized }));
     } else {
       setFiles(prev => ({ ...prev, [type]: selectedFiles[0] }));
     }

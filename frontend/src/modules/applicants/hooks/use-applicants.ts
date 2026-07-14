@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi, getApplicantApi } from "@/services/applicant.service";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/call-api";
@@ -13,24 +14,34 @@ interface ApplicantFilters {
 }
 
 export const useApplicants = (filters: ApplicantFilters) => {
-  return useQuery({
+  const [progress, setProgress] = useState(0);
+  const query = useQuery({
     queryKey: ["applicants", filters],
     queryFn: async () => {
-      const [promise] = await listApplicantsApi(filters);
-      return promise;
+      setProgress(0);
+      const [promise] = await listApplicantsApi(filters, setProgress);
+      const data = await promise;
+      setProgress(100);
+      return data;
     },
   });
+  return { ...query, progress };
 };
 
 export const useApplicant = (id: string | null) => {
-  return useQuery({
+  const [progress, setProgress] = useState(0);
+  const query = useQuery({
     queryKey: ["applicant", id],
     queryFn: async () => {
-      const [promise] = await getApplicantApi(id as string);
-      return promise;
+      setProgress(0);
+      const [promise] = await getApplicantApi(id as string, setProgress);
+      const data = await promise;
+      setProgress(100);
+      return data;
     },
     enabled: !!id,
   });
+  return { ...query, progress };
 };
 
 export const useApplicantMutation = () => {

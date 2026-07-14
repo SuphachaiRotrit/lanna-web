@@ -1,22 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  listProgramsAdminApi, 
-  createProgramApi, 
-  updateProgramApi, 
-  deleteProgramApi 
+import { useState } from "react";
+import {
+  listProgramsAdminApi,
+  createProgramApi,
+  updateProgramApi,
+  deleteProgramApi
 } from "@/services/program.service";
 import { toast } from "sonner";
 import { Program } from "@/types";
 import { getErrorMessage } from "@/lib/call-api";
 
 export const usePrograms = () => {
-  return useQuery({
+  const [progress, setProgress] = useState(0);
+  const query = useQuery({
     queryKey: ["admin-programs"],
     queryFn: async () => {
-      const [resPromise] = await listProgramsAdminApi();
-      return resPromise;
+      setProgress(0);
+      const [resPromise] = await listProgramsAdminApi(setProgress);
+      const data = await resPromise;
+      setProgress(100);
+      return data;
     },
   });
+  return { ...query, progress };
 };
 
 export const useProgramMutation = (onSuccess?: () => void) => {

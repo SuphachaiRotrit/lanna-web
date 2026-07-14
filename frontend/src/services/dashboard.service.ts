@@ -1,4 +1,4 @@
-import { callAPI, AbortFunction } from "@/lib/call-api";
+import { callAPI, onProgress, AbortFunction } from "@/lib/call-api";
 import { ApiResponse } from "@/types";
 import { Applicant } from "./applicant.service";
 
@@ -17,6 +17,6 @@ export interface DashboardStats {
 /**
  * ADMIN: GET /admin/dashboard - สถิติภาพรวมทั้งหมด
  */
-export const fetchDashboardStatsApi = async (): Promise<[Promise<ApiResponse<DashboardStats>>, AbortFunction]> => {
-  return callAPI<ApiResponse<DashboardStats>>("GET", "/admin/dashboard");
+export const fetchDashboardStatsApi = async (onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<DashboardStats>>, AbortFunction]> => {
+  return callAPI<ApiResponse<DashboardStats>>("GET", "/admin/dashboard", undefined, { onDownloadProgress: onProgress(onDownloadProgress) });
 };

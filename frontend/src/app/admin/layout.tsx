@@ -15,19 +15,23 @@ import {
   ChevronRight,
   Settings,
   BookOpen,
+  Building2,
   Shield,
   Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
-  CircleUser
+  CircleUser,
+  UserCog
 } from 'lucide-react';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
 
 const menuItems = [
-  { title: 'ภาพรวม', icon: LayoutDashboard, href: '/admin/dashboard', badge: null },
-  { title: 'จัดการผู้สมัคร', icon: Users, href: '/admin/applicants', badge: 'hot' },
-  { title: 'จัดการสาขาวิชา', icon: BookOpen, href: '/admin/programs', badge: null },
-  { title: 'ตั้งค่า', icon: Settings, href: '/admin/settings', badge: null },
+  { title: 'ภาพรวม', icon: LayoutDashboard, href: '/admin/dashboard', badge: null, superAdminOnly: false },
+  { title: 'จัดการผู้สมัคร', icon: Users, href: '/admin/applicants', badge: 'hot', superAdminOnly: false },
+  { title: 'จัดการสาขาวิชา', icon: BookOpen, href: '/admin/programs', badge: null, superAdminOnly: false },
+  { title: 'จัดการคณะ', icon: Building2, href: '/admin/faculties', badge: null, superAdminOnly: false },
+  { title: 'จัดการผู้ใช้', icon: UserCog, href: '/admin/users', badge: null, superAdminOnly: true },
+  { title: 'ตั้งค่า', icon: Settings, href: '/admin/settings', badge: null, superAdminOnly: false },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -46,6 +50,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const handleLogout = async () => {
     await logout();
   };
+
+  const visibleMenuItems = menuItems.filter(
+    (item) => !item.superAdminOnly || user?.role === 'SUPER_ADMIN'
+  );
 
   // Get current page title
   const currentPage = menuItems.find(
@@ -147,7 +155,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Nav */}
         <nav className={`flex-1 ${isCollapsed ? 'px-2' : 'px-3'} space-y-0.5 ${isCollapsed ? 'pt-4' : ''} overflow-y-auto`}>
-          {menuItems.map((item) => {
+          {visibleMenuItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
             const Icon = item.icon;
             return (

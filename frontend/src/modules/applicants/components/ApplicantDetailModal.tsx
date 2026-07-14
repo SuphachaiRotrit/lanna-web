@@ -67,6 +67,13 @@ const FormField = ({ label, value, className }: { label?: string; value?: string
   </div>
 );
 
+const CheckField = ({ checked, label }: { checked: boolean; label: string }) => (
+  <div className="flex items-baseline gap-1.5 py-0.5">
+    <span className="shrink-0">({checked ? '✓' : ' '})</span>
+    <span>{label}</span>
+  </div>
+);
+
 const InfoRow = ({ label, value }: { label: string; value?: string | number | null }) => (
   <div>
     <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
@@ -86,9 +93,10 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
   const [reason, setReason] = useState('');
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
-  const { data: res, isLoading } = useApplicant(applicantId);
+  const { data: res, isLoading, progress } = useApplicant(applicantId);
   const { updateStatus } = useApplicantMutation();
   const applicant = res?.data;
+  const hasDoc = (type: ApplicantDocument['type']) => !!applicant?.documents?.some((d) => d.type === type);
 
   if (!applicantId) return null;
 
@@ -109,32 +117,47 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
     );
   };
 
-  const handlePrint = () => window.print();
+  const buildPdf = async () => {
+    const canvas = await html2canvas(printRef.current!, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    return pdf;
+  };
+
+  const handlePrint = async () => {
+    if (!printRef.current || !applicant) return;
+    setGeneratingPdf(true);
+    try {
+      const pdf = await buildPdf();
+      pdf.autoPrint();
+      window.open(pdf.output('bloburl'), '_blank');
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
 
   const handleDownloadPdf = async () => {
     if (!printRef.current || !applicant) return;
     setGeneratingPdf(true);
     try {
-      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgHeight = (canvas.height * pageWidth) / canvas.width;
-
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
+      const pdf = await buildPdf();
       pdf.save(`ใบสมัคร_${applicant.applicationNumber}.pdf`);
     } finally {
       setGeneratingPdf(false);
@@ -155,7 +178,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
         <div className="print:hidden">
         {isLoading || !applicant ? (
           <div className="py-20 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto"></div>
+            <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
           </div>
         ) : (
           <div className="space-y-8">
@@ -202,9 +225,9 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
             <Section title="หลักสูตรที่สมัคร">
               <InfoRow label="สาขาวิชา" value={applicant.program?.name} />
-              <InfoRow label="คณะ" value={applicant.program?.faculty} />
+              <InfoRow label="คณะ" value={applicant.program?.faculty?.name} />
               <InfoRow label="ระดับการศึกษา" value={applicant.program?.degree} />
-              <InfoRow label="ระยะเวลาเรียน" value={applicant.program?.duration} />
+              <InfoRow label="ระยะเวลาเรียน" value={applicant.program?.duration ? `${applicant.program.duration} ปี` : undefined} />
               <InfoRow label="เหตุผลการสมัคร" value={applicant.applicationReason} />
             </Section>
 
@@ -341,6 +364,34 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                 <FormField value={applicant.applicationReason} />
                 <FormField value="" />
               </div>
+
+              <div className="pt-2">
+                <p>
+                  ข้าพเจ้าขอรับรองข้อความแสดงไว้เป็นความจริงทุกประการ หากข้าพเจ้าได้เป็นนักศึกษาของมหาวิทยาลัยมหามกุฏราชวิทยาลัย
+                  วิทยาเขตล้านนา ข้าพเจ้ายินยอมปฏิบัติตามระเบียบข้อบังคับของมหาวิทยาลัยทุกประการ
+                </p>
+                <p className="mt-2">ทั้งนี้ ข้าพเจ้าได้แนบหลักฐานการสมัครมาพร้อมนี้ ดังนี้</p>
+                <div className="grid grid-cols-2 gap-x-4 mt-1">
+                  <CheckField checked={hasDoc('TRANSCRIPT')} label="สำเนาระเบียนผลการศึกษา จำนวน ๑ ฉบับ" />
+                  <CheckField checked={hasDoc('HOUSE_REGISTRATION')} label="สำเนาทะเบียนบ้าน จำนวน ๑ ฉบับ" />
+                  <CheckField checked={hasDoc('ID_CARD')} label="สำเนาบัตรประจำตัวประชาชน จำนวน ๑ ฉบับ" />
+                  <CheckField checked={hasDoc('NAME_CHANGE')} label="สำเนาการเปลี่ยนชื่อ-นามสกุล (ถ้ามี)" />
+                  <CheckField checked={hasDoc('PHOTO')} label="รูปถ่ายขนาด ๑ นิ้ว จำนวน ๑ รูป" />
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-8 text-center">
+                <div>
+                  <p>(ลงชื่อ)..................................................... ผู้สมัคร</p>
+                  <p className="mt-1">(......................................)</p>
+                  <p className="mt-1">........... / ........... / ...........</p>
+                </div>
+                <div>
+                  <p>(ลงชื่อ)..................................................... เจ้าหน้าที่รับสมัคร</p>
+                  <p className="mt-1">(......................................)</p>
+                  <p className="mt-1">........... / ........... / ...........</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -356,11 +407,11 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
             </button>
             <button
               type="button"
-              disabled={!applicant}
+              disabled={!applicant || generatingPdf}
               onClick={handlePrint}
               className="flex items-center gap-2 py-3 px-5 rounded-2xl border-2 border-gray-100 text-navy font-bold hover:bg-gray-50 disabled:opacity-40 transition-all text-sm uppercase tracking-widest"
             >
-              <Printer size={16} />
+              {generatingPdf ? <Loader2 size={16} className="animate-spin" /> : <Printer size={16} />}
               พิมพ์
             </button>
             <button
