@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { useApplicant, useApplicantMutation } from '../hooks/use-applicants';
 import { Applicant, ApplicantDocument } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface ApplicantDetailModalProps {
   applicantId: string | null;
@@ -93,7 +94,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
   const [reason, setReason] = useState('');
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
-  const { data: res, isLoading, progress } = useApplicant(applicantId);
+  const { data: res, isLoading } = useApplicant(applicantId);
   const { updateStatus } = useApplicantMutation();
   const applicant = res?.data;
   const hasDoc = (type: ApplicantDocument['type']) => !!applicant?.documents?.some((d) => d.type === type);
@@ -177,8 +178,21 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
         <div className="print:hidden">
         {isLoading || !applicant ? (
-          <div className="py-20 text-center">
-            <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-28" />
+              <Skeleton className="h-6 w-56" />
+            </div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="space-y-3">
+                <Skeleton className="h-3 w-32" />
+                <div className="grid grid-cols-2 gap-4">
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <Skeleton key={j} className="h-4 w-full" />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="space-y-8">

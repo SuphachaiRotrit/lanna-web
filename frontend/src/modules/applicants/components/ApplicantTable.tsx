@@ -2,12 +2,12 @@ import React from 'react';
 import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, RotateCcw, Loader2 } from 'lucide-react';
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface ApplicantTableProps {
   applicants: Applicant[];
   pagination: Partial<Pagination>;
   loading: boolean;
-  progress: number;
   onUpdateStatus: (id: string, status: string) => void;
   onView: (id: string) => void;
   onPageChange: (page: number) => void;
@@ -16,7 +16,7 @@ interface ApplicantTableProps {
 }
 
 export const ApplicantTable: React.FC<ApplicantTableProps> = ({
-  applicants, pagination, loading, progress, onUpdateStatus, onView, onPageChange, currentPage, pendingStatusId
+  applicants, pagination, loading, onUpdateStatus, onView, onPageChange, currentPage, pendingStatusId
 }) => {
   return (
     <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
@@ -32,13 +32,23 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {loading ? (
-              <tr>
-                <td colSpan={5} className="py-20 text-center">
-                  <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
+            {loading ? Array.from({ length: 6 }).map((_, i) => (
+              <tr key={i}>
+                <td className="px-8 py-6">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="w-12 h-12 rounded-full" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-36" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
                 </td>
+                <td className="px-6 py-6"><Skeleton className="h-4 w-32" /></td>
+                <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                <td className="px-8 py-6 text-right"><Skeleton className="h-4 w-16 ml-auto" /></td>
               </tr>
-            ) : applicants.map((app) => (
+            )) : applicants.map((app) => (
               <tr key={app.id} className="hover:bg-gray-50/50 transition-colors group">
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">

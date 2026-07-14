@@ -5,16 +5,32 @@ import { CalendarDays, Award, BookOpen, Users, Clock } from 'lucide-react';
 import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
 import { TrendChart } from '../components/TrendChart';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const DashboardView = () => {
-  const { data: res, isLoading, progress } = useDashboardStats();
+  const { data: res, isLoading } = useDashboardStats();
   const stats = res?.data;
 
   if (isLoading) return (
-    <div className="flex items-center justify-center h-[60vh]">
-      <div className="flex flex-col items-center gap-3">
-        <p className="text-4xl font-black text-brand tabular-nums">{progress}%</p>
-        <p className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูลแดชบอร์ด...</p>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+            <Skeleton className="w-10 h-10 rounded-xl" />
+            <Skeleton className="h-7 w-20" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 bg-white p-7 rounded-2xl shadow-sm border border-gray-100">
+          <Skeleton className="h-64 w-full" />
+        </div>
+        <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-4 w-full" />
+          ))}
+        </div>
       </div>
     </div>
   );

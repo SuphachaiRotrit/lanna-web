@@ -1,4 +1,4 @@
-import { callAPI, onProgress, AbortFunction } from "@/lib/call-api";
+import { callAPI, AbortFunction } from "@/lib/call-api";
 import { User, ApiResponse } from "@/types";
 
 export interface CreateUserPayload {
@@ -18,8 +18,8 @@ export interface UpdateUserPayload {
 /**
  * ADMIN: GET /admin/users - รายการผู้ใช้ทั้งหมด
  */
-export const listUsersApi = async (onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<User[]>>, AbortFunction]> => {
-  return callAPI<ApiResponse<User[]>>("GET", "/admin/users", undefined, { onDownloadProgress: onProgress(onDownloadProgress) });
+export const listUsersApi = async (): Promise<[Promise<ApiResponse<User[]>>, AbortFunction]> => {
+  return callAPI<ApiResponse<User[]>>("GET", "/admin/users");
 };
 
 /**

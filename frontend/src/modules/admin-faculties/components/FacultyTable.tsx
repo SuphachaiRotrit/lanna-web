@@ -1,25 +1,18 @@
 import React from 'react';
 import { Edit2, Trash2, Loader2 } from 'lucide-react';
 import { Faculty } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface FacultyTableProps {
   faculties: Faculty[];
   onEdit: (faculty: Faculty) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
-  progress: number;
   deletingId?: string;
 }
 
-export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, onDelete, isLoading, progress, deletingId }) => {
-  if (isLoading) return (
-    <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
-      <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
-      <span className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูล...</span>
-    </div>
-  );
-
-  if (faculties.length === 0) return (
+export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, onDelete, isLoading, deletingId }) => {
+  if (!isLoading && faculties.length === 0) return (
     <div className="p-16 text-center text-gray-400 font-bold bg-white rounded-2xl border border-gray-100">
       ไม่พบข้อมูลคณะ
     </div>
@@ -35,7 +28,12 @@ export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, o
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
-          {faculties.map((faculty) => (
+          {isLoading ? Array.from({ length: 5 }).map((_, i) => (
+            <tr key={i}>
+              <td className="px-6 py-4"><Skeleton className="h-4 w-40" /></td>
+              <td className="px-6 py-4 text-right"><Skeleton className="h-4 w-8 ml-auto" /></td>
+            </tr>
+          )) : faculties.map((faculty) => (
             <tr key={faculty.id} className="group hover:bg-gray-50/50 transition-colors">
               <td className="px-6 py-4 text-sm font-bold text-gray-800">{faculty.name}</td>
               <td className="px-6 py-4 text-right">

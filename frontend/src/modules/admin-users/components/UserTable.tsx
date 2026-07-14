@@ -1,6 +1,7 @@
 import React from 'react';
 import { Edit2, Power, PowerOff, ShieldCheck, Loader2 } from 'lucide-react';
 import { User } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface UserTableProps {
   users: User[];
@@ -9,7 +10,6 @@ interface UserTableProps {
   onDeactivate: (id: string) => void;
   onReactivate: (id: string) => void;
   isLoading: boolean;
-  progress: number;
   deactivatingId?: string;
   reactivatingId?: string;
 }
@@ -26,18 +26,10 @@ export const UserTable: React.FC<UserTableProps> = ({
   onDeactivate,
   onReactivate,
   isLoading,
-  progress,
   deactivatingId,
   reactivatingId,
 }) => {
-  if (isLoading) return (
-    <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
-      <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
-      <span className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูล...</span>
-    </div>
-  );
-
-  if (users.length === 0) return (
+  if (!isLoading && users.length === 0) return (
     <div className="p-16 text-center text-gray-400 font-bold bg-white rounded-2xl border border-gray-100">
       ไม่พบข้อมูลผู้ใช้
     </div>
@@ -57,7 +49,16 @@ export const UserTable: React.FC<UserTableProps> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
-          {users.map((user) => {
+          {isLoading ? Array.from({ length: 5 }).map((_, i) => (
+            <tr key={i}>
+              <td className="px-6 py-4"><Skeleton className="h-4 w-32" /></td>
+              <td className="px-6 py-4"><Skeleton className="h-4 w-40" /></td>
+              <td className="px-6 py-4"><Skeleton className="h-6 w-20 rounded-full" /></td>
+              <td className="px-6 py-4"><Skeleton className="h-6 w-20 rounded-full" /></td>
+              <td className="px-6 py-4"><Skeleton className="h-4 w-28" /></td>
+              <td className="px-6 py-4 text-right"><Skeleton className="h-4 w-8 ml-auto" /></td>
+            </tr>
+          )) : users.map((user) => {
             const isSelf = user.id === currentUserId;
             return (
               <tr key={user.id} className="group hover:bg-gray-50/50 transition-colors">

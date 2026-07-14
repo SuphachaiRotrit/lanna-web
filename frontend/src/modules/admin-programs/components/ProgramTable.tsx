@@ -1,25 +1,18 @@
 import React from 'react';
 import { Edit2, Trash2, CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react';
 import { Program } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface ProgramTableProps {
   programs: Program[];
   onEdit: (program: Program) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
-  progress: number;
   deletingId?: string;
 }
 
-export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading, progress, deletingId }) => {
-  if (isLoading) return (
-    <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
-      <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
-      <span className="text-gray-400 text-sm font-bold">กำลังโหลดข้อมูล...</span>
-    </div>
-  );
-  
-  if (programs.length === 0) return (
+export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading, deletingId }) => {
+  if (!isLoading && programs.length === 0) return (
     <div className="p-16 text-center text-gray-400 font-bold bg-white rounded-2xl border border-gray-100">
       ไม่พบข้อมูลสาขาวิชา
     </div>
@@ -39,7 +32,15 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {programs.map((program) => {
+            {isLoading ? Array.from({ length: 5 }).map((_, i) => (
+              <tr key={i}>
+                <td className="px-6 py-4"><Skeleton className="h-4 w-48" /></td>
+                <td className="px-5 py-4"><Skeleton className="h-4 w-32" /></td>
+                <td className="px-5 py-4"><Skeleton className="h-4 w-28" /></td>
+                <td className="px-5 py-4"><Skeleton className="h-6 w-20 rounded-lg" /></td>
+                <td className="px-6 py-4 text-right"><Skeleton className="h-4 w-8 ml-auto" /></td>
+              </tr>
+            )) : programs.map((program) => {
               const quotaPercent = Math.min((program.currentApplicants / program.maxQuota) * 100, 100);
               const isNearFull = quotaPercent >= 80;
               
@@ -137,21 +138,23 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
       </div>
 
       {/* Table Footer */}
-      <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-        <span className="text-[12px] font-bold text-gray-400">
-          แสดง {programs.length} รายการ
-        </span>
-        <div className="flex items-center gap-3 text-[12px] font-bold text-gray-400">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
-            เปิดรับ {programs.filter(p => p.isActive).length}
+      {!isLoading && (
+        <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+          <span className="text-[12px] font-bold text-gray-400">
+            แสดง {programs.length} รายการ
           </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 bg-gray-300 rounded-full"></span>
-            ปิดรับ {programs.filter(p => !p.isActive).length}
-          </span>
+          <div className="flex items-center gap-3 text-[12px] font-bold text-gray-400">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
+              เปิดรับ {programs.filter(p => p.isActive).length}
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-gray-300 rounded-full"></span>
+              ปิดรับ {programs.filter(p => !p.isActive).length}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

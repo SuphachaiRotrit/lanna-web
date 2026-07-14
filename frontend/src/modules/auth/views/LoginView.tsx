@@ -4,7 +4,8 @@ import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import { Lock, Mail, ChevronRight, ShieldCheck, GraduationCap } from 'lucide-react';
+import Link from 'next/link';
+import { Lock, Mail, ChevronRight, ChevronLeft, ShieldCheck, GraduationCap } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
 import { ExtraCompactInput } from '../components/ExtraCompactInput';
 import { useAuth } from '../hooks/use-auth';
@@ -71,6 +72,11 @@ export const LoginView = () => {
       {/* Login Area */}
       <div className="flex-1 flex flex-col items-center justify-center p-4 bg-gray-50/20 overflow-hidden">
         <div className="w-full max-w-[320px]">
+          <Link href="/" className="mb-4 inline-flex items-center gap-1 text-[12px] font-bold text-gray-400 hover:text-brand transition-colors">
+            <ChevronLeft size={14} strokeWidth={3} />
+            กลับหน้าแรก
+          </Link>
+
           <div className="mb-6">
              <h3 className="text-2xl font-black text-navy mb-1 tracking-tight">เข้าสู่ระบบ</h3>
              <p className="text-gray-400 text-[12px] font-bold uppercase tracking-widest">ระบบจัดการการรับสมัครนักศึกษา</p>

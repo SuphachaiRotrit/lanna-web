@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import {
   listUsersApi,
   createUserApi,
@@ -12,18 +11,13 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/call-api";
 
 export const useUsers = () => {
-  const [progress, setProgress] = useState(0);
-  const query = useQuery({
+  return useQuery({
     queryKey: ["admin-users"],
     queryFn: async () => {
-      setProgress(0);
-      const [resPromise] = await listUsersApi(setProgress);
-      const data = await resPromise;
-      setProgress(100);
-      return data;
+      const [resPromise] = await listUsersApi();
+      return resPromise;
     },
   });
-  return { ...query, progress };
 };
 
 export const useUserMutation = (onSuccess?: () => void) => {

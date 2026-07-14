@@ -11,7 +11,7 @@ export const AdminFacultiesView = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFaculty, setEditingFaculty] = useState<Faculty | null>(null);
 
-  const { data: res, isLoading, progress } = useFaculties();
+  const { data: res, isLoading } = useFaculties();
   const faculties = res?.data || [];
 
   const { createMutation, updateMutation, deleteMutation } = useFacultyMutation(() => {
@@ -66,7 +66,6 @@ export const AdminFacultiesView = () => {
         onEdit={handleOpenModal}
         onDelete={(id) => deleteMutation.mutate(id)}
         isLoading={isLoading}
-        progress={progress}
         deletingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
       />
 

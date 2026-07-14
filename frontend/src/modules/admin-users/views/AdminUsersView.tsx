@@ -22,7 +22,7 @@ export const AdminUsersView = () => {
     }
   }, [isAuthLoading, currentUser, router]);
 
-  const { data: res, isLoading, progress } = useUsers();
+  const { data: res, isLoading } = useUsers();
   const users = res?.data || [];
 
   const { createMutation, updateMutation, deleteMutation } = useUserMutation(() => {
@@ -83,7 +83,6 @@ export const AdminUsersView = () => {
         onDeactivate={(id) => deleteMutation.mutate(id)}
         onReactivate={(id) => updateMutation.mutate({ id, data: { isActive: true } })}
         isLoading={isLoading}
-        progress={progress}
         deactivatingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
         reactivatingId={updateMutation.isPending ? updateMutation.variables?.id : undefined}
       />

@@ -13,7 +13,7 @@ export const AdminProgramsView = () => {
   const [editingProgram, setEditingProgram] = useState<Program | null>(null);
 
   // TanStack Query Hooks
-  const { data: res, isLoading, progress } = usePrograms();
+  const { data: res, isLoading } = usePrograms();
   const programs = res?.data || [];
   const { data: facultiesRes } = useFaculties();
   const faculties = facultiesRes?.data || [];
@@ -136,7 +136,6 @@ export const AdminProgramsView = () => {
         onEdit={handleOpenModal}
         onDelete={(id) => deleteMutation.mutate(id)}
         isLoading={isLoading}
-        progress={progress}
         deletingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
       />
 

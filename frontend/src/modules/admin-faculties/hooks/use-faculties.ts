@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import {
   listFacultiesAdminApi,
   createFacultyApi,
@@ -10,18 +9,13 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/call-api";
 
 export const useFaculties = () => {
-  const [progress, setProgress] = useState(0);
-  const query = useQuery({
+  return useQuery({
     queryKey: ["admin-faculties"],
     queryFn: async () => {
-      setProgress(0);
-      const [resPromise] = await listFacultiesAdminApi(setProgress);
-      const data = await resPromise;
-      setProgress(100);
-      return data;
+      const [resPromise] = await listFacultiesAdminApi();
+      return resPromise;
     },
   });
-  return { ...query, progress };
 };
 
 export const useFacultyMutation = (onSuccess?: () => void) => {
