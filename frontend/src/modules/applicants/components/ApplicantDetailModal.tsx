@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { XCircle, FileText, ExternalLink } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { XCircle, FileText, ExternalLink, Printer, Download, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 import { useApplicant, useApplicantMutation } from '../hooks/use-applicants';
-import { ApplicantDocument } from '@/types';
+import { Applicant, ApplicantDocument } from '@/types';
 
 interface ApplicantDetailModalProps {
   applicantId: string | null;
@@ -20,6 +22,37 @@ const DOCUMENT_LABELS: Record<ApplicantDocument['type'], string> = {
   OTHER: 'เอกสารอื่นๆ',
 };
 
+const GENDER_LABELS: Record<Applicant['gender'], string> = {
+  MALE: 'ชาย',
+  FEMALE: 'หญิง',
+  OTHER: 'อื่นๆ',
+};
+
+const STATUS_LABELS: Record<Applicant['status'], string> = {
+  PENDING: 'รอตรวจสอบ',
+  REVIEWING: 'กำลังตรวจสอบ',
+  APPROVED: 'อนุมัติแล้ว',
+  REJECTED: 'ไม่ผ่าน',
+  CANCELLED: 'ยกเลิก',
+};
+
+const STATUS_STYLES: Record<Applicant['status'], string> = {
+  PENDING: 'bg-orange-100 text-orange-600',
+  REVIEWING: 'bg-blue-100 text-blue-600',
+  APPROVED: 'bg-emerald-100 text-emerald-600',
+  REJECTED: 'bg-red-100 text-red-600',
+  CANCELLED: 'bg-gray-100 text-gray-500',
+};
+
+const formatDateTime = (value?: string) =>
+  value ? new Date(value).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : undefined;
+
+const formatFileSize = (bytes: number) => {
+  if (!bytes) return undefined;
+  const kb = bytes / 1024;
+  return kb < 1024 ? `${kb.toFixed(0)} KB` : `${(kb / 1024).toFixed(1)} MB`;
+};
+
 const InfoRow = ({ label, value }: { label: string; value?: string | number | null }) => (
   <div>
     <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
@@ -27,9 +60,18 @@ const InfoRow = ({ label, value }: { label: string; value?: string | number | nu
   </div>
 );
 
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div>
+    <p className="text-[12px] font-black text-brand uppercase tracking-widest mb-3">{title}</p>
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5">{children}</div>
+  </div>
+);
+
 export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ applicantId, onClose }) => {
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const { data: res, isLoading } = useApplicant(applicantId);
   const { updateStatus } = useApplicantMutation();
   const applicant = res?.data;
@@ -53,11 +95,43 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
     );
   };
 
+  const handlePrint = () => window.print();
+
+  const handleDownloadPdf = async () => {
+    if (!printRef.current || !applicant) return;
+    setGeneratingPdf(true);
+    try {
+      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`ใบสมัคร_${applicant.applicationNumber}.pdf`);
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" onClick={handleClose} />
-      <div className="relative bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300">
-        <div className="flex items-center justify-between mb-8">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:static print:block print:p-0">
+      <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm print:hidden" onClick={handleClose} />
+      <div className="relative bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300 print:static print:max-w-none print:max-h-none print:overflow-visible print:rounded-none print:shadow-none print:p-0 print:animate-none">
+        <div className="flex items-center justify-between mb-8 print:hidden">
           <h3 className="text-2xl font-black text-navy tracking-tight">รายละเอียดผู้สมัคร</h3>
           <button onClick={handleClose} className="p-2 text-gray-300 hover:bg-gray-100 rounded-full transition-colors">
             <XCircle size={24} />
@@ -65,35 +139,79 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
         </div>
 
         {isLoading || !applicant ? (
-          <div className="py-20 text-center">
+          <div className="py-20 text-center print:hidden">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto"></div>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div ref={printRef} className="space-y-8 print:p-10">
             <div>
               <p className="text-[12px] font-bold text-brand uppercase tracking-[0.2em]">{applicant.applicationNumber}</p>
               <h4 className="text-xl font-black text-navy">{applicant.prefixName}{applicant.firstName} {applicant.lastName}</h4>
-              <p className="text-sm font-bold text-gray-500">{applicant.program?.name}</p>
+              {applicant.aliasName && <p className="text-sm font-bold text-gray-400">ชื่อเล่น {applicant.aliasName}</p>}
+              <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-[12px] font-black uppercase tracking-wider ${STATUS_STYLES[applicant.status]}`}>
+                {STATUS_LABELS[applicant.status] || applicant.status}
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5">
+            <Section title="ข้อมูลส่วนตัว">
               <InfoRow label="เลขบัตรประชาชน" value={applicant.nationalId} />
-              <InfoRow label="เพศ" value={applicant.gender} />
+              <InfoRow label="เพศ" value={GENDER_LABELS[applicant.gender] || applicant.gender} />
               <InfoRow label="วันเกิด" value={new Date(applicant.birthDate).toLocaleDateString('th-TH')} />
+              <InfoRow label="เชื้อชาติ" value={applicant.ethnicity} />
+              <InfoRow label="สัญชาติ" value={applicant.nationality} />
+              <InfoRow label="ศาสนา" value={applicant.religion} />
+              <InfoRow label="กรุ๊ปเลือด" value={applicant.bloodType} />
+            </Section>
+
+            <Section title="ข้อมูลติดต่อ">
               <InfoRow label="เบอร์โทรศัพท์" value={applicant.phone} />
               <InfoRow label="อีเมล" value={applicant.email} />
               <InfoRow label="LINE ID" value={applicant.lineId} />
-              <InfoRow label="ที่อยู่" value={`${applicant.address} ต.${applicant.subDistrict} อ.${applicant.district} จ.${applicant.province} ${applicant.postalCode}`} />
+            </Section>
+
+            <Section title="ที่อยู่">
+              <InfoRow label="บ้านเลขที่ / ถนน" value={applicant.address} />
+              <InfoRow label="ตำบล/แขวง" value={applicant.subDistrict} />
+              <InfoRow label="อำเภอ/เขต" value={applicant.district} />
+              <InfoRow label="จังหวัด" value={applicant.province} />
+              <InfoRow label="รหัสไปรษณีย์" value={applicant.postalCode} />
+            </Section>
+
+            <Section title="ประวัติการศึกษา">
               <InfoRow label="โรงเรียนเดิม" value={applicant.previousSchool} />
+              <InfoRow label="จังหวัดโรงเรียนเดิม" value={applicant.schoolProvince} />
               <InfoRow label="วุฒิการศึกษาเดิม" value={applicant.previousEducation} />
+              <InfoRow label="ปีที่จบการศึกษา" value={applicant.graduationYear} />
               <InfoRow label="เกรดเฉลี่ย" value={applicant.gpa} />
-              <InfoRow label="ผู้ปกครอง" value={applicant.parentName} />
-              <InfoRow label="เบอร์โทรผู้ปกครอง" value={applicant.parentPhone} />
+            </Section>
+
+            <Section title="หลักสูตรที่สมัคร">
+              <InfoRow label="สาขาวิชา" value={applicant.program?.name} />
+              <InfoRow label="คณะ" value={applicant.program?.faculty} />
+              <InfoRow label="ระดับการศึกษา" value={applicant.program?.degree} />
+              <InfoRow label="ระยะเวลาเรียน" value={applicant.program?.duration} />
               <InfoRow label="เหตุผลการสมัคร" value={applicant.applicationReason} />
-            </div>
+            </Section>
+
+            <Section title="ข้อมูลผู้ปกครอง">
+              <InfoRow label="ชื่อผู้ปกครอง" value={applicant.parentName} />
+              <InfoRow label="เบอร์โทรผู้ปกครอง" value={applicant.parentPhone} />
+              <InfoRow label="ความเกี่ยวข้อง" value={applicant.parentRelation} />
+            </Section>
+
+            <Section title="สถานะและการยินยอม">
+              <InfoRow label="ปีการศึกษาที่สมัคร" value={applicant.applicationYear} />
+              <InfoRow label="วันที่ยื่นใบสมัคร" value={formatDateTime(applicant.submittedAt)} />
+              <InfoRow label="วันที่ตรวจสอบ" value={formatDateTime(applicant.reviewedAt)} />
+              <InfoRow label="ยินยอม PDPA" value={applicant.pdpaConsent ? 'ยินยอม' : 'ไม่ยินยอม'} />
+              <InfoRow label="วันที่ให้ความยินยอม" value={formatDateTime(applicant.consentedAt)} />
+              {applicant.status === 'REJECTED' && applicant.rejectionReason && (
+                <InfoRow label="เหตุผลที่ไม่ผ่าน" value={applicant.rejectionReason} />
+              )}
+            </Section>
 
             <div>
-              <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest mb-3">เอกสารแนบ</p>
+              <p className="text-[12px] font-black text-brand uppercase tracking-widest mb-3">เอกสารแนบ</p>
               <div className="space-y-2">
                 {(applicant.documents || []).map((doc) => (
                   <a
@@ -101,13 +219,14 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                     href={doc.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 border border-gray-100 p-3 rounded-xl transition-colors"
+                    className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 border border-gray-100 p-3 rounded-xl transition-colors print:border-gray-200"
                   >
                     <span className="flex items-center gap-2.5 text-sm font-bold text-navy">
-                      <FileText size={16} className="text-gray-400" />
+                      <FileText size={16} className="text-gray-400 print:hidden" />
                       {DOCUMENT_LABELS[doc.type]}
+                      {doc.fileName && <span className="text-gray-400 font-medium">({doc.fileName}{formatFileSize(doc.fileSize) ? `, ${formatFileSize(doc.fileSize)}` : ''})</span>}
                     </span>
-                    <ExternalLink size={14} className="text-gray-400" />
+                    <ExternalLink size={14} className="text-gray-400 print:hidden" />
                   </a>
                 ))}
                 {(!applicant.documents || applicant.documents.length === 0) && (
@@ -117,7 +236,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
             </div>
 
             {rejecting && (
-              <div>
+              <div className="print:hidden">
                 <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -131,14 +250,34 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
           </div>
         )}
 
-        <div className="pt-8 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="py-3 px-6 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest"
-          >
-            ปิด
-          </button>
+        <div className="pt-8 flex flex-wrap items-center justify-between gap-4 print:hidden">
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="py-3 px-6 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest"
+            >
+              ปิด
+            </button>
+            <button
+              type="button"
+              disabled={!applicant}
+              onClick={handlePrint}
+              className="flex items-center gap-2 py-3 px-5 rounded-2xl border-2 border-gray-100 text-navy font-bold hover:bg-gray-50 disabled:opacity-40 transition-all text-sm uppercase tracking-widest"
+            >
+              <Printer size={16} />
+              พิมพ์
+            </button>
+            <button
+              type="button"
+              disabled={!applicant || generatingPdf}
+              onClick={handleDownloadPdf}
+              className="flex items-center gap-2 py-3 px-5 rounded-2xl border-2 border-gray-100 text-navy font-bold hover:bg-gray-50 disabled:opacity-40 transition-all text-sm uppercase tracking-widest"
+            >
+              {generatingPdf ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              ดาวน์โหลด PDF
+            </button>
+          </div>
 
           {applicant?.status === 'REVIEWING' && (
             rejecting ? (
