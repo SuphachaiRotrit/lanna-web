@@ -41,7 +41,7 @@ export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId
                    </span>
                 )}
                 {program.isFull && (
-                   <span className="px-2 py-0.5 rounded-md bg-red-100 text-red-600 text-[9px] font-black uppercase">เต็มแล้ว</span>
+                   <span className="px-2 py-0.5 rounded-md bg-red-100 text-red-600 text-[12px] font-black uppercase">เต็มแล้ว</span>
                 )}
               </div>
               <p className="text-sm text-gray-400 mt-0.5">

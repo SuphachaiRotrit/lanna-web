@@ -91,7 +91,7 @@ html {
 body {
   background-color: var(--color-cream);
   color: hsl(var(--foreground));
-  font-family: var(--font-prompt), var(--font-inter), sans-serif;
+  font-family: var(--font-sarabun), var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

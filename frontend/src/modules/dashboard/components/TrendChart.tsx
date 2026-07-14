@@ -11,7 +11,7 @@ export const TrendChart = ({ data, year }: { data: Array<{ month: number; count:
         </div>
         แนวโน้มการสมัครรายเดือน
       </h3>
-      <div className="flex items-center gap-1.5 bg-gray-50 rounded-lg px-3 py-1.5 text-[10px] font-bold text-gray-400">
+      <div className="flex items-center gap-1.5 bg-gray-50 rounded-lg px-3 py-1.5 text-[12px] font-bold text-gray-400">
         <BarChart3 size={12} />
         ปี {year}
       </div>

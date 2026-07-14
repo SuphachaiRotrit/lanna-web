@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
 
@@ -22,11 +22,11 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-50/50">
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">ข้อมูลผู้สมัคร</th>
-              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
-              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
-              <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
+              <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ข้อมูลผู้สมัคร</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
+              <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
@@ -45,17 +45,17 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     </div>
                     <div>
                       <p className="text-sm font-black text-navy leading-tight">{app.prefixName}{app.firstName} {app.lastName}</p>
-                      <p className="text-[11px] text-gray-400 font-bold mt-0.5">{app.applicationNumber}</p>
+                      <p className="text-[13px] text-gray-400 font-bold mt-0.5">{app.applicationNumber}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-6">
                   <p className="text-sm font-bold text-gray-700 truncate w-48">{app.program?.name}</p>
-                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty}</p>
+                  <p className="text-[12px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty}</p>
                 </td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
                 <td className="px-6 py-6">
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                  <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${
                     app.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
                     app.status === 'REVIEWING' ? 'bg-blue-100 text-blue-600' :
                     app.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
@@ -68,13 +68,13 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     {app.status === 'REJECTED' && <XCircle size={12} />}
                     {app.status === 'PENDING' ? 'รอตรวจสอบ' :
                      app.status === 'REVIEWING' ? 'กำลังตรวจสอบ' :
-                     app.status === 'APPROVED' ? 'เบื้องต้นผ่าน' :
+                     app.status === 'APPROVED' ? 'อนุมัติแล้ว' :
                      app.status === 'REJECTED' ? 'ไม่ผ่าน' :
                      app.status === 'CANCELLED' ? 'ยกเลิก' : app.status}
                   </div>
                 </td>
                 <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end">
+                  <div className="flex items-center justify-end gap-1">
                     {app.status === 'PENDING' ? (
                       <button
                         onClick={() => { onUpdateStatus(app.id, 'REVIEWING'); onView(app.id); }}
@@ -91,6 +91,35 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                         <Eye size={16} />
                         ดูรายละเอียด
                       </button>
+                    )}
+                    {app.status === 'APPROVED' && (
+                      <details className="relative">
+                        <summary className="list-none flex items-center gap-1.5 px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors text-xs font-black cursor-pointer">
+                          <RotateCcw size={16} />
+                          ปรับสถานะ
+                        </summary>
+                        <div className="absolute right-0 mt-1 w-44 bg-white border border-gray-100 rounded-xl shadow-xl z-10 overflow-hidden text-left">
+                          <button
+                            onClick={(e) => {
+                              onUpdateStatus(app.id, 'PENDING');
+                              (e.currentTarget.closest('details') as HTMLDetailsElement)?.removeAttribute('open');
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-orange-600 hover:bg-orange-50"
+                          >
+                            ส่งกลับไปรอตรวจใหม่
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              onUpdateStatus(app.id, 'REVIEWING');
+                              onView(app.id);
+                              (e.currentTarget.closest('details') as HTMLDetailsElement)?.removeAttribute('open');
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50"
+                          >
+                            ปรับเป็นไม่ผ่าน
+                          </button>
+                        </div>
+                      </details>
                     )}
                   </div>
                 </td>

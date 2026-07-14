@@ -22,7 +22,7 @@ const DOCUMENT_LABELS: Record<ApplicantDocument['type'], string> = {
 
 const InfoRow = ({ label, value }: { label: string; value?: string | number | null }) => (
   <div>
-    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
+    <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
     <p className="text-sm font-bold text-navy mt-0.5">{value || '-'}</p>
   </div>
 );
@@ -71,7 +71,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
         ) : (
           <div className="space-y-8">
             <div>
-              <p className="text-[10px] font-bold text-brand uppercase tracking-[0.2em]">{applicant.applicationNumber}</p>
+              <p className="text-[12px] font-bold text-brand uppercase tracking-[0.2em]">{applicant.applicationNumber}</p>
               <h4 className="text-xl font-black text-navy">{applicant.prefixName}{applicant.firstName} {applicant.lastName}</h4>
               <p className="text-sm font-bold text-gray-500">{applicant.program?.name}</p>
             </div>
@@ -93,7 +93,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
             </div>
 
             <div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">เอกสารแนบ</p>
+              <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest mb-3">เอกสารแนบ</p>
               <div className="space-y-2">
                 {(applicant.documents || []).map((doc) => (
                   <a
@@ -118,7 +118,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
             {rejecting && (
               <div>
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
+                <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                   rows={3}

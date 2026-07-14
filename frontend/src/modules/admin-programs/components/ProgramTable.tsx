@@ -29,11 +29,11 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-50/80 border-b border-gray-100">
-              <th className="px-6 py-4 text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">สาขาวิชา</th>
-              <th className="px-5 py-4 text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">คณะ / วุฒิ</th>
-              <th className="px-5 py-4 text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">โควตา</th>
-              <th className="px-5 py-4 text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">สถานะ</th>
-              <th className="px-6 py-4 text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.15em] text-right">จัดการ</th>
+              <th className="px-6 py-4 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">สาขาวิชา</th>
+              <th className="px-5 py-4 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">คณะ / วุฒิ</th>
+              <th className="px-5 py-4 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">โควตา</th>
+              <th className="px-5 py-4 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.15em]">สถานะ</th>
+              <th className="px-6 py-4 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.15em] text-right">จัดการ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
@@ -55,7 +55,7 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                           {program.name}
                         </p>
                         {program.duration && (
-                          <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold flex items-center gap-0.5 ${
+                          <span className={`px-1.5 py-0.5 rounded-md text-[12px] font-bold flex items-center gap-0.5 ${
                             !program.isActive 
                               ? 'bg-gray-100 text-gray-400' 
                               : 'bg-brand/8 text-brand'
@@ -64,24 +64,24 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                           </span>
                         )}
                       </div>
-                      <p className={`text-[10px] font-semibold ${!program.isActive ? 'text-gray-300' : 'text-brand/70'}`}>
+                      <p className={`text-[12px] font-semibold ${!program.isActive ? 'text-gray-300' : 'text-brand/70'}`}>
                         {program.description || 'หลักสูตรปกติ'}
                       </p>
                     </div>
                   </td>
                   <td className="px-5 py-4">
                     <p className={`text-xs font-bold ${!program.isActive ? 'text-gray-400' : 'text-gray-600'}`}>{program.faculty}</p>
-                    <p className="text-[10px] text-gray-300 font-medium mt-0.5">{program.degree}</p>
+                    <p className="text-[12px] text-gray-300 font-medium mt-0.5">{program.degree}</p>
                   </td>
                   <td className="px-5 py-4">
                     <div className="min-w-[120px]">
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className={`text-[11px] font-extrabold tabular-nums ${
+                        <span className={`text-[13px] font-extrabold tabular-nums ${
                           program.isFull ? 'text-red-500' : isNearFull ? 'text-amber-500' : 'text-gray-700'
                         }`}>
                           {program.currentApplicants}/{program.maxQuota}
                         </span>
-                        <span className={`text-[9px] font-bold ${
+                        <span className={`text-[12px] font-bold ${
                           program.isFull ? 'text-red-400' : 'text-gray-300'
                         }`}>
                           {Math.round(quotaPercent)}%
@@ -99,11 +99,11 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                   </td>
                   <td className="px-5 py-4">
                     {program.isActive ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold border border-emerald-100">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[12px] font-bold border border-emerald-100">
                         <CheckCircle2 size={11} /> เปิดรับ
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-400 text-[10px] font-bold border border-gray-150">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-400 text-[12px] font-bold border border-gray-150">
                         <XCircle size={11} /> ปิดรับ
                       </span>
                     )}
@@ -135,10 +135,10 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
 
       {/* Table Footer */}
       <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-        <span className="text-[10px] font-bold text-gray-400">
+        <span className="text-[12px] font-bold text-gray-400">
           แสดง {programs.length} รายการ
         </span>
-        <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400">
+        <div className="flex items-center gap-3 text-[12px] font-bold text-gray-400">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
             เปิดรับ {programs.filter(p => p.isActive).length}

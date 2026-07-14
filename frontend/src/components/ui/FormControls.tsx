@@ -56,7 +56,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
   return (
     <div className="w-full space-y-2" ref={containerRef}>
       {label && (
-        <label className="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
+        <label className="block text-[12px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
@@ -108,7 +108,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
       </div>
 
       {isError && (
-        <p className="text-[10px] font-black text-red-500 uppercase tracking-tighter ml-1 animate-in fade-in slide-in-from-top-1">
+        <p className="text-[12px] font-black text-red-500 uppercase tracking-tighter ml-1 animate-in fade-in slide-in-from-top-1">
           {meta.error}
         </p>
       )}
@@ -130,7 +130,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
   return (
     <div className="w-full space-y-2">
       {label && (
-        <label className="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
+        <label className="block text-[12px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
@@ -155,7 +155,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
         />
       </div>
       {isError && (
-        <p className="text-[10px] font-black text-red-500 uppercase tracking-tighter ml-1 animate-in fade-in slide-in-from-top-1">
+        <p className="text-[12px] font-black text-red-500 uppercase tracking-tighter ml-1 animate-in fade-in slide-in-from-top-1">
           {meta.error}
         </p>
       )}

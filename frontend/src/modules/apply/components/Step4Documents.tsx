@@ -42,7 +42,7 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
                   {doc.label} {doc.required && <span className="text-red-500">*</span>}
                 </label>
                 {hasFiles && (
-                  <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider border border-emerald-100">
+                  <span className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider border border-emerald-100">
                     <FileCheck size={12} />
                     {currentFiles.length} File(s)
                   </span>
@@ -83,7 +83,7 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
                     onChange={(e) => onFileChange(e, doc.key)}
                   />
                   <Upload className="text-gray-300 group-hover:text-brand" size={24} />
-                  <p className="mt-2 text-[11px] font-bold text-gray-400">
+                  <p className="mt-2 text-[13px] font-bold text-gray-400">
                     คลิกเพื่อเพิ่มไฟล์ {doc.multiple && `(สูงสุด ๓)`}
                   </p>
                 </div>

@@ -28,12 +28,12 @@ export const DashboardView = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Dashboard</span>
+            <span className="text-[12px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Dashboard</span>
           </div>
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">ภาพรวมการรับสมัคร</h2>
           <p className="text-gray-400 text-sm font-medium mt-0.5">สรุปข้อมูลการรับสมัครนักศึกษาและสถิติที่สำคัญ</p>
         </div>
-        <div className="flex items-center gap-2 px-3.5 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[11px] font-bold text-gray-400">
+        <div className="flex items-center gap-2 px-3.5 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[13px] font-bold text-gray-400">
           <CalendarDays size={14} className="text-brand" />
           ปีการศึกษา {stats?.overview?.currentYear}
           <span className="text-gray-200 mx-1">|</span>
@@ -58,14 +58,14 @@ export const DashboardView = () => {
               </div>
               หลักสูตรยอดนิยม
             </h3>
-            <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Top 5</span>
+            <span className="text-[12px] font-bold text-gray-300 uppercase tracking-widest">Top 5</span>
           </div>
           <div className="space-y-4">
             {stats?.programBreakdown?.sort((a, b) => b.count - a.count).slice(0, 5).map((prog, idx: number) => (
               <div key={idx} className="group">
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black ${
+                    <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[12px] font-black ${
                       idx === 0 ? 'bg-amber-50 text-amber-600' : idx === 1 ? 'bg-gray-100 text-gray-500' : 'bg-gray-50 text-gray-400'
                     }`}>
                       {idx + 1}

@@ -60,7 +60,7 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
                 <Icon size={18} className={card.iconColor} strokeWidth={2} />
               </div>
               {card.trend && (
-                <div className={`flex items-center gap-0.5 px-2 py-1 rounded-md text-[10px] font-bold ${
+                <div className={`flex items-center gap-0.5 px-2 py-1 rounded-md text-[12px] font-bold ${
                   card.trend === 'up' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
                 }`}>
                   {card.trend === 'up' ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
@@ -71,8 +71,8 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
             <h3 className="text-2xl font-extrabold text-gray-900 mb-0.5 tabular-nums tracking-tight">
               {card.value.toLocaleString()}
             </h3>
-            <p className="text-[11px] font-bold text-gray-400">{card.title}</p>
-            <p className="text-[9px] font-medium text-gray-300 mt-0.5">{card.subtitle}</p>
+            <p className="text-[13px] font-bold text-gray-400">{card.title}</p>
+            <p className="text-[12px] font-medium text-gray-300 mt-0.5">{card.subtitle}</p>
           </div>
         );
       })}

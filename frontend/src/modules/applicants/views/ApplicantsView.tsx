@@ -38,7 +38,7 @@ export const ApplicantsView = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Applicants</span>
+            <span className="text-[12px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Applicants</span>
           </div>
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">จัดการผู้สมัคร</h2>
           <p className="text-gray-400 text-sm font-medium mt-0.5">ตรวจสอบเอกสารและอนุมัติใบสมัครเรียน</p>

@@ -38,7 +38,7 @@ export const LoginView = () => {
             </div>
             <div>
               <h1 className="text-white text-lg font-black tracking-tighter leading-none uppercase">MBU<span className="text-brand">LANNA</span></h1>
-              <span className="text-[8px] text-white/40 font-bold uppercase tracking-[0.3em]">เจ้าหน้าที่รับสมัครสารสนเทศ</span>
+              <span className="text-[12px] text-white/40 font-bold uppercase tracking-[0.3em]">เจ้าหน้าที่รับสมัครสารสนเทศ</span>
             </div>
           </div>
 
@@ -52,18 +52,18 @@ export const LoginView = () => {
                <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-brand">
                   <GraduationCap size={16} />
                </div>
-               <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-none">Admission Control Authority</p>
+               <p className="text-white/30 text-[12px] font-bold uppercase tracking-widest leading-none">Admission Control Authority</p>
             </div>
             <div className="flex items-center gap-3">
                <div className="p-2 rounded-lg bg-white/5 border border-white/5 text-blue-400">
                   <ShieldCheck size={16} />
                </div>
-               <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-none">ความปลอดภัยข้อมูลผู้สมัคร</p>
+               <p className="text-white/30 text-[12px] font-bold uppercase tracking-widest leading-none">ความปลอดภัยข้อมูลผู้สมัคร</p>
             </div>
           </div>
         </div>
 
-        <div className="absolute bottom-10 left-16 text-[8px] font-bold text-white/5 uppercase tracking-[0.4em]">
+        <div className="absolute bottom-10 left-16 text-[12px] font-bold text-white/5 uppercase tracking-[0.4em]">
           University Student Admission System
         </div>
       </div>
@@ -73,7 +73,7 @@ export const LoginView = () => {
         <div className="w-full max-w-[320px]">
           <div className="mb-6">
              <h3 className="text-2xl font-black text-navy mb-1 tracking-tight">เข้าสู่ระบบ</h3>
-             <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">ระบบจัดการการรับสมัครนักศึกษา</p>
+             <p className="text-gray-400 text-[12px] font-bold uppercase tracking-widest">ระบบจัดการการรับสมัครนักศึกษา</p>
           </div>
 
           <Formik
@@ -98,7 +98,7 @@ export const LoginView = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting || !values.turnstileToken}
-                  className="w-full py-4 bg-brand text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 active:scale-[0.98]"
+                  className="w-full py-4 bg-brand text-white rounded-xl font-black text-[13px] uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 active:scale-[0.98]"
                 >
                   {isSubmitting ? 'กำลังตรวจสอบ...' : 'ลงชื่อเข้าใช้งาน'}
                   <ChevronRight size={14} strokeWidth={3} />
@@ -108,7 +108,7 @@ export const LoginView = () => {
           </Formik>
 
           <footer className="mt-8 pt-6 border-t border-gray-100 text-center">
-             <div className="flex items-center justify-between text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-4">
+             <div className="flex items-center justify-between text-[12px] font-bold text-gray-300 uppercase tracking-widest mb-4">
                 <div className="flex items-center gap-1.5">
                    <ShieldCheck size={12} className="text-brand/30" />
                    <span>เฉพาะเจ้าหน้าที่แอดมิน</span>
@@ -116,7 +116,7 @@ export const LoginView = () => {
                 <span>ปลอดภัย</span>
              </div>
              
-             <p className="text-[8px] text-gray-200 font-medium leading-relaxed px-4">
+             <p className="text-[12px] text-gray-200 font-medium leading-relaxed px-4">
                 ระบบจัดการผู้สมัครเรียน มมร. วิทยาเขตล้านนา <br />
                 สงวนสิทธิ์การเข้าถึงเฉพาะบุคคลที่ได้รับอนุญาต
              </p>

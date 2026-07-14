@@ -100,7 +100,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <h1 className="text-[13px] font-extrabold text-white leading-none tracking-tight">
                   MBU <span className="text-brand">LANNA</span>
                 </h1>
-                <span className="text-[9px] text-white/25 font-bold uppercase tracking-[0.2em]">Admin Console</span>
+                <span className="text-[12px] text-white/25 font-bold uppercase tracking-[0.2em]">Admin Console</span>
               </div>
             </div>
           )}
@@ -121,14 +121,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </div>
                   <div className="overflow-hidden flex-1">
                     <p className="text-[12px] font-bold text-white truncate">{user?.fullName || 'Administrator'}</p>
-                    <p className="text-[9px] text-white/25 font-semibold uppercase tracking-wider">
+                    <p className="text-[12px] text-white/25 font-semibold uppercase tracking-wider">
                       {user?.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Staff'}
                     </p>
                   </div>
                 </div>
                 <button 
                   onClick={handleLogout}
-                  className="w-full py-2 bg-white/[0.04] text-red-400/80 text-[11px] font-bold rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2 bg-white/[0.04] text-red-400/80 text-[13px] font-bold rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all flex items-center justify-center gap-1.5"
                 >
                   <LogOut size={13} />
                   ออกจากระบบ
@@ -141,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Menu Label */}
         {!isCollapsed && (
           <div className="px-6 pt-6 pb-2">
-            <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.25em]">เมนูหลัก</p>
+            <p className="text-[12px] font-bold text-white/20 uppercase tracking-[0.25em]">เมนูหลัก</p>
           </div>
         )}
 
@@ -216,7 +216,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 placeholder="ค้นหา..." 
                 className="bg-transparent border-none outline-none px-2 text-sm w-full placeholder:text-gray-300 font-medium"
               />
-              <kbd className="hidden xl:inline-flex text-[9px] font-bold text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
+              <kbd className="hidden xl:inline-flex text-[12px] font-bold text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
             </div>
 
             {/* Notification */}
@@ -234,8 +234,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <CircleUser size={16} className="text-brand" />
               </div>
               <div className="text-right">
-                <p className="text-[11px] font-bold text-gray-700 leading-none">{user?.fullName || 'Admin'}</p>
-                <p className="text-[9px] text-gray-400 font-medium mt-0.5">{user?.email || ''}</p>
+                <p className="text-[13px] font-bold text-gray-700 leading-none">{user?.fullName || 'Admin'}</p>
+                <p className="text-[12px] text-gray-400 font-medium mt-0.5">{user?.email || ''}</p>
               </div>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Footer */}
-        <footer className="px-8 py-4 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-300 font-medium">
+        <footer className="px-8 py-4 border-t border-gray-100 flex items-center justify-between text-[12px] text-gray-300 font-medium">
           <span>© {new Date().getFullYear()} MBU Lanna Admin Portal</span>
           <span className="flex items-center gap-1">
             <Sparkles size={10} />

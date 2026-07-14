@@ -38,7 +38,7 @@ export const SettingsView = () => {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Settings</span>
+          <span className="text-[12px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Settings</span>
         </div>
         <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">ตั้งค่า</h1>
         <p className="text-gray-400 text-sm font-medium mt-0.5">จัดการความปลอดภัยบัญชีผู้ใช้งานของคุณ</p>
@@ -70,7 +70,7 @@ export const SettingsView = () => {
             <button
               type="submit"
               disabled={changePasswordMutation.isPending}
-              className="w-full mt-2 py-3.5 bg-brand text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-brand-dark transition-all active:scale-[0.98] disabled:opacity-60"
+              className="w-full mt-2 py-3.5 bg-brand text-white rounded-xl font-black text-[13px] uppercase tracking-[0.2em] hover:bg-brand-dark transition-all active:scale-[0.98] disabled:opacity-60"
             >
               {changePasswordMutation.isPending ? 'กำลังบันทึก...' : 'บันทึกรหัสผ่านใหม่'}
             </button>

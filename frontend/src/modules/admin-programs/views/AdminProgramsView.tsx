@@ -47,7 +47,7 @@ export const AdminProgramsView = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Programs</span>
+            <span className="text-[12px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Programs</span>
           </div>
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">จัดการสาขาวิชา</h1>
           <p className="text-gray-400 text-sm font-medium mt-0.5">ตั้งค่าหลักสูตรและควบคุมโควตาการรับสมัคร</p>
@@ -68,7 +68,7 @@ export const AdminProgramsView = () => {
               <GraduationCap size={18} />
            </div>
            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">ทั้งหมด</p>
+              <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wide">ทั้งหมด</p>
               <h4 className="text-xl font-extrabold text-gray-800">{programs.length}</h4>
            </div>
         </div>
@@ -77,7 +77,7 @@ export const AdminProgramsView = () => {
               <BookOpen size={18} />
            </div>
            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">เปิดรับ</p>
+              <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wide">เปิดรับ</p>
               <h4 className="text-xl font-extrabold text-gray-800">{activeCount}</h4>
            </div>
         </div>
@@ -86,7 +86,7 @@ export const AdminProgramsView = () => {
               <AlertTriangle size={18} />
            </div>
            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">ใกล้เต็ม</p>
+              <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wide">ใกล้เต็ม</p>
               <h4 className="text-xl font-extrabold text-gray-800">{nearFullCount}</h4>
            </div>
         </div>
@@ -95,7 +95,7 @@ export const AdminProgramsView = () => {
               <ToggleLeft size={18} />
            </div>
            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">ปิดรับ</p>
+              <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wide">ปิดรับ</p>
               <h4 className="text-xl font-extrabold text-gray-800">{inactiveCount}</h4>
            </div>
         </div>

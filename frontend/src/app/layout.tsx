@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Prompt } from "next/font/google";
+import { Inter, Sarabun } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const prompt = Prompt({ 
-  subsets: ["thai", "latin"], 
+const sarabun = Sarabun({
+  subsets: ["thai", "latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-prompt" 
+  variable: "--font-sarabun"
 });
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body className={`${prompt.variable} ${inter.variable} font-sans antialiased`}>
+      <body className={`${sarabun.variable} ${inter.variable} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>

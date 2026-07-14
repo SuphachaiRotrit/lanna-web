@@ -56,7 +56,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อสาขาวิชา</label>
+               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อสาขาวิชา</label>
                <input 
                  type="text" 
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -69,7 +69,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
             <div className="grid grid-cols-2 gap-4">
                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">คณะ</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">คณะ</label>
                   <select 
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                     value={formData.faculty}
@@ -82,7 +82,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   </select>
                </div>
                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระยะเวลาหลักสูตร</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระยะเวลาหลักสูตร</label>
                   <div className="relative">
                     <input 
                       className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm pl-10"
@@ -97,7 +97,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระดับการศึกษา</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระดับการศึกษา</label>
                   <input 
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                     value={formData.degree}
@@ -106,7 +106,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   />
                 </div>
                 <div>
-                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">โควตารับ (คน)</label>
+                   <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">โควตารับ (คน)</label>
                    <div className="relative">
                       <input 
                         type="number" 
@@ -122,7 +122,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             </div>
 
             <div>
-               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">รายละเอียดเพิ่มเติม/หมายเหตุ</label>
+               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">รายละเอียดเพิ่มเติม/หมายเหตุ</label>
                <input 
                  type="text" 
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"

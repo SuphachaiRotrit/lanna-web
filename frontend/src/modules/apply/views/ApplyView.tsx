@@ -175,7 +175,7 @@ export const ApplyView = () => {
                     }`}>
                     {currentStep > step ? <CheckCircle size={20} strokeWidth={3} /> : step}
                   </div>
-                  <span className={`text-[10px] font-black mt-3 uppercase tracking-wider text-center max-w-[80px] leading-tight ${currentStep >= step ? 'text-navy' : 'text-gray-300'}`}>
+                  <span className={`text-[12px] font-black mt-3 uppercase tracking-wider text-center max-w-[80px] leading-tight ${currentStep >= step ? 'text-navy' : 'text-gray-300'}`}>
                     {stepTitles[step - 1]}
                   </span>
                 </div>

@@ -35,7 +35,7 @@ const SectionHeader = ({ icon: Icon, title, desc }: { icon: LucideIcon, title: s
       </div>
       <h3 className="text-sm font-black text-navy uppercase tracking-widest">{title}</h3>
     </div>
-    {desc && <p className="text-[10px] font-bold text-navy/30 ml-11">{desc}</p>}
+    {desc && <p className="text-[12px] font-bold text-navy/30 ml-11">{desc}</p>}
   </div>
 );
 

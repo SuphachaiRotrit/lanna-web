@@ -28,7 +28,7 @@ export const ProgressStepper = ({ currentStep }: { currentStep: number }) => {
             >
               {currentStep > step.id ? <CheckCircle size={20} /> : step.icon}
             </div>
-            <span className={`mt-3 text-[11px] font-bold transition-colors ${currentStep >= step.id ? 'text-brand' : 'text-gray-300'}`}>
+            <span className={`mt-3 text-[13px] font-bold transition-colors ${currentStep >= step.id ? 'text-brand' : 'text-gray-300'}`}>
               {step.title}
             </span>
           </div>

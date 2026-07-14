@@ -22,7 +22,7 @@ export const LandingView = () => {
             <Image src="/img/logo.png" alt="ตราสัญลักษณ์ มมร" width={48} height={48} className="drop-shadow-md group-hover:scale-105 transition-transform" />
             <div className="hidden sm:block">
               <h1 className="text-base font-bold text-navy leading-tight tracking-tight">มหาวิทยาลัยมหามกุฏราชวิทยาลัย</h1>
-              <p className="text-[11px] font-semibold text-brand tracking-widest uppercase">Lanna Campus • วิทยาเขตล้านนา</p>
+              <p className="text-[13px] font-semibold text-brand tracking-widest uppercase">Lanna Campus • วิทยาเขตล้านนา</p>
             </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -91,14 +91,14 @@ export const LandingView = () => {
                 <div className="flex items-center gap-2 mb-2">
                    <h4 className="text-xl font-bold text-navy leading-snug group-hover:text-brand">{prog.name}</h4>
                    {prog.duration && (
-                     <span className="text-[10px] font-black text-brand bg-brand/5 px-2 py-0.5 rounded">
+                     <span className="text-[12px] font-black text-brand bg-brand/5 px-2 py-0.5 rounded">
                        {prog.duration}
                      </span>
                    )}
                 </div>
                 <p className="text-sm text-navy/40 font-bold uppercase tracking-wider">{prog.faculty}</p>
                 {prog.description && (
-                  <p className="text-[10px] text-brand font-bold mt-2 uppercase tracking-widest bg-brand/5 inline-block px-3 py-1 rounded-lg">
+                  <p className="text-[12px] text-brand font-bold mt-2 uppercase tracking-widest bg-brand/5 inline-block px-3 py-1 rounded-lg">
                     {prog.description}
                   </p>
                 )}
@@ -121,7 +121,7 @@ export const LandingView = () => {
                 <Image src="/img/logo.png" alt="MBU Logo" width={56} height={56} className="brightness-0 invert opacity-70" />
                 <div>
                   <p className="font-black text-white text-base leading-none">มหาวิทยาลัยมหามกุฏราชวิทยาลัย</p>
-                  <p className="text-[10px] text-white/60 font-bold uppercase tracking-[0.2em] mt-1.5">วิทยาเขตล้านนา • เชียงใหม่</p>
+                  <p className="text-[12px] text-white/60 font-bold uppercase tracking-[0.2em] mt-1.5">วิทยาเขตล้านนา • เชียงใหม่</p>
                 </div>
               </div>
             </div>
