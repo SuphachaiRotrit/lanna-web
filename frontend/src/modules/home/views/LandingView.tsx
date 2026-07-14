@@ -11,7 +11,7 @@ import { useHomePrograms } from '../hooks/use-home';
 import { ProgramDetailModal } from '../components/ProgramDetailModal';
 import { Program } from '@/types';
 
-const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=11392335271996416831&output=embed';
+const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=5141882952009849250&output=embed';
 
 export const LandingView = () => {
   const { data: res, isLoading } = useHomePrograms();
