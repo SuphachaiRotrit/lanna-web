@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { ChevronDown, Check } from 'lucide-react';
+import { ChevronDown, Check, Search } from 'lucide-react';
 
 interface Option {
   label: string;
@@ -23,8 +23,10 @@ interface PremiumSelectProps extends CommonProps {
 
 export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, required, name, placeholder, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const formik = useFormikContext<Record<string, unknown>>();
+  const filteredOptions = search ? options.filter((opt) => opt.label.toLowerCase().includes(search.toLowerCase())) : options;
 
   // รองรับทั้ง Formik และ Standalone
   const field = name && formik ? formik.getFieldProps(name) : { value: props.value };
@@ -38,6 +40,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setSearch('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -51,6 +54,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
       props.onChange({ target: { value: val, name } });
     }
     setIsOpen(false);
+    setSearch('');
   };
 
   return (
@@ -60,11 +64,11 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => { setIsOpen(!isOpen); setSearch(''); }}
           className={`
             w-full flex items-center justify-between bg-gray-50/50 border-2 rounded-2xl px-5 py-3.5 text-sm font-bold text-navy transition-all duration-300 outline-none
             ${isOpen ? 'border-brand/30 bg-white shadow-xl shadow-brand/5 ring-4 ring-brand/5' : 'border-transparent hover:bg-gray-50'}
@@ -85,16 +89,33 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
         {/* Dropdown Menu */}
         {isOpen && (
           <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-navy/10 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden transform-gpu">
+            {options.length > 6 && (
+              <div className="relative px-3 pb-2 mb-1 border-b border-gray-50">
+                <Search size={14} className="absolute left-6 top-1/2 -translate-y-1/2 text-navy/20" />
+                <input
+                  autoFocus
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder="ค้นหา..."
+                  className="w-full pl-8 pr-2 py-2 text-sm font-bold text-navy bg-gray-50/50 rounded-xl outline-none placeholder:text-navy/20"
+                />
+              </div>
+            )}
             <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100">
-              {options.map((opt) => (
+              {filteredOptions.length === 0 && (
+                <p className="px-5 py-3 text-sm font-bold text-navy/30">ไม่พบรายการ</p>
+              )}
+              {filteredOptions.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => handleSelect(opt.value)}
                   className={`
                     w-full flex items-center justify-between px-5 py-3 text-sm font-bold transition-all
-                    ${field.value === opt.value 
-                      ? 'bg-brand/10 text-brand' 
+                    ${field.value === opt.value
+                      ? 'bg-brand/10 text-brand'
                       : 'text-navy/70 hover:bg-gray-50 hover:text-navy'}
                   `}
                 >

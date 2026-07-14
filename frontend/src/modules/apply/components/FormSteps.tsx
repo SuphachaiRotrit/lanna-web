@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
 import { Smartphone, Mail, Hash, Calendar, MapPin, GraduationCap, Info, User, LucideIcon } from 'lucide-react';
+import { getProvinceOptions, getDistrictOptions, getSubDistrictOptions, getPostalCode } from '@/lib/thai-address';
 
 // ฟังก์ชันช่วยจัดการอินพุตพิเศษ
 const useFormHelpers = () => {
@@ -41,6 +42,29 @@ const SectionHeader = ({ icon: Icon, title, desc }: { icon: LucideIcon, title: s
 
 export const Step1Personal = () => {
   const { handleDisplayChange } = useFormHelpers();
+  const { values, setFieldValue } = useFormikContext<Record<string, string>>();
+  const province = values.province;
+  const district = values.district;
+  const subDistrict = values.subDistrict;
+
+  // เคลียร์อำเภอเมื่อจังหวัดเปลี่ยนจนอำเภอเดิมไม่อยู่ในลิสต์แล้ว
+  useEffect(() => {
+    if (district && !getDistrictOptions(province).some((d) => d.value === district)) {
+      setFieldValue('district', '');
+    }
+  }, [province]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // เคลียร์ตำบลเมื่ออำเภอเปลี่ยนจนตำบลเดิมไม่อยู่ในลิสต์แล้ว
+  useEffect(() => {
+    if (subDistrict && !getSubDistrictOptions(province, district).some((s) => s.value === subDistrict)) {
+      setFieldValue('subDistrict', '');
+    }
+  }, [province, district]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // เติมรหัสไปรษณีย์อัตโนมัติเมื่อเลือกตำบลครบ
+  useEffect(() => {
+    setFieldValue('postalCode', subDistrict ? (getPostalCode(province, district, subDistrict) ?? '') : '');
+  }, [province, district, subDistrict]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -131,16 +155,28 @@ export const Step1Personal = () => {
         <SectionHeader icon={MapPin} title="ข้อมูลที่อยู่ปัจจุบัน" desc="ใช้สำหรับจัดส่งเอกสารและข้อมูลการศึกษา" />
         <div className="space-y-7">
           <PremiumInput label="ที่อยู่ปัจจุบัน" name="address" required placeholder="บ้านเลขที่, หมู่ที่, ซอย, ถนน..." />
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-7">
-            <PremiumInput label="ตำบล / แขวง" name="subDistrict" required placeholder="ระบุตำบล" />
-            <PremiumInput label="อำเภอ / เขต" name="district" required placeholder="ระบุอำเภอ" />
-            <PremiumInput label="จังหวัด" name="province" required placeholder="ชื่อจังหวัด" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-7">
+            <PremiumSelect label="จังหวัด" name="province" required placeholder="เลือกจังหวัด" options={getProvinceOptions()} />
+            <PremiumSelect
+              label="อำเภอ / เขต"
+              name="district"
+              required
+              placeholder={province ? 'เลือกอำเภอ' : 'เลือกจังหวัดก่อน'}
+              options={getDistrictOptions(province)}
+            />
+            <PremiumSelect
+              label="ตำบล / แขวง"
+              name="subDistrict"
+              required
+              placeholder={district ? 'เลือกตำบล' : 'เลือกอำเภอก่อน'}
+              options={getSubDistrictOptions(province, district)}
+            />
             <PremiumInput
               label="รหัสไปรษณีย์"
               name="postalCode"
               required
-              placeholder="ตัวเลข 5 หลัก"
-              onChange={(e) => handleDisplayChange(e, 'postalCode', 'number', 5)}
+              readOnly
+              placeholder="เลือกตำบล"
             />
           </div>
         </div>
