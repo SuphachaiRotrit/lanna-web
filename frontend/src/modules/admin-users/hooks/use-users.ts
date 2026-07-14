@@ -17,7 +17,7 @@ export const useUsers = () => {
     queryKey: ["admin-users"],
     queryFn: async () => {
       setProgress(0);
-      const [resPromise] = await listUsersApi();
+      const [resPromise] = await listUsersApi(setProgress);
       const data = await resPromise;
       setProgress(100);
       return data;

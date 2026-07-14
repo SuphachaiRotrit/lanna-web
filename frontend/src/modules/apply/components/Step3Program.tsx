@@ -1,14 +1,22 @@
 import React from 'react';
 import { Field, ErrorMessage } from 'formik';
-import { CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { CheckCircle, AlertCircle, Clock, Loader2 } from 'lucide-react';
 import { Program } from '@/types';
 
 interface Step3Props {
   programs: Program[];
   selectedProgramId: string;
+  isLoading?: boolean;
 }
 
-export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId }) => {
+export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId, isLoading }) => {
+  if (isLoading) return (
+    <div className="flex flex-col items-center gap-3 py-16 text-navy/30">
+      <Loader2 size={28} className="animate-spin" />
+      <p className="text-sm font-bold">กำลังโหลดรายการสาขาวิชา...</p>
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       <p className="text-sm font-bold text-navy/70 text-base mb-6">เลือกสาขาวิชาที่ต้องการเข้าศึกษา *</p>

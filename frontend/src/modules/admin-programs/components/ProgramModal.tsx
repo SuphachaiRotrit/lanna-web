@@ -9,6 +9,7 @@ interface ProgramModalProps {
   onClose: () => void;
   onSubmit: (data: Partial<Program>) => void;
   program?: Program | null;
+  isSubmitting?: boolean;
 }
 
 const DEGREE_OPTIONS = ['ปริญญาตรี', 'ปริญญาโท', 'ปริญญาเอก'];
@@ -20,11 +21,14 @@ const defaultFormData: Partial<Program> = {
   track: 'REGULAR',
   duration: 4,
   description: '',
+  curriculum: '',
+  skills: '',
+  careerPaths: '',
   maxQuota: 50,
   isActive: true
 };
 
-export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onSubmit, program }) => {
+export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onSubmit, program, isSubmitting }) => {
   const { data: facultiesRes } = useFaculties();
   const faculties = facultiesRes?.data || [];
 
@@ -37,6 +41,9 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
           track: program.track,
           duration: program.duration || 4,
           description: program.description || '',
+          curriculum: program.curriculum || '',
+          skills: program.skills || '',
+          careerPaths: program.careerPaths || '',
           maxQuota: program.maxQuota,
           isActive: program.isActive
         }
@@ -160,6 +167,40 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
               </div>
             )}
 
+            <div className="pt-2 border-t border-gray-100 space-y-4">
+               <p className="text-[11px] font-black text-gray-300 uppercase tracking-widest pt-4">ข้อมูลแสดงหน้าเว็บสาธารณะ (กดดูรายละเอียดสาขา)</p>
+               <div>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เรียนเกี่ยวกับอะไรบ้าง</label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
+                    placeholder="เนื้อหาที่เรียนในหลักสูตรนี้..."
+                    value={formData.curriculum}
+                    onChange={(e) => setFormData({...formData, curriculum: e.target.value})}
+                  />
+               </div>
+               <div>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ทักษะ/ความรู้ที่จะได้รับ</label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
+                    placeholder="ทักษะและความรู้ที่ผู้เรียนจะได้รับ..."
+                    value={formData.skills}
+                    onChange={(e) => setFormData({...formData, skills: e.target.value})}
+                  />
+               </div>
+               <div>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">แนวทางอาชีพหลังจบการศึกษา</label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
+                    placeholder="อาชีพที่สามารถทำได้หลังจบการศึกษา..."
+                    value={formData.careerPaths}
+                    onChange={(e) => setFormData({...formData, careerPaths: e.target.value})}
+                  />
+               </div>
+            </div>
+
             <div className="flex items-center pt-2">
                <Switch
                  checked={!!formData.isActive}
@@ -169,9 +210,9 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             </div>
 
             <div className="pt-6 flex gap-4">
-               <button type="button" onClick={onClose} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest">ยกเลิก</button>
-               <button type="submit" className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95">
-                 {program ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มสาขา'}
+               <button type="button" onClick={onClose} disabled={isSubmitting} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest disabled:opacity-50">ยกเลิก</button>
+               <button type="submit" disabled={isSubmitting} className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95 disabled:opacity-60 disabled:active:scale-100">
+                 {isSubmitting ? 'กำลังบันทึก...' : program ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มสาขา'}
                </button>
             </div>
          </form>

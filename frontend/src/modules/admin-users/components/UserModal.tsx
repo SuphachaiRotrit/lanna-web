@@ -9,9 +9,10 @@ interface UserModalProps {
   onClose: () => void;
   onSubmit: (data: CreateUserPayload | UpdateUserPayload) => void;
   user?: User | null;
+  isSubmitting?: boolean;
 }
 
-export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit, user }) => {
+export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit, user, isSubmitting }) => {
   const [email, setEmail] = useState(user?.email || '');
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [role, setRole] = useState<'SUPER_ADMIN' | 'STAFF'>(user?.role || 'STAFF');
@@ -49,6 +50,8 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
             <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">อีเมล</label>
             <input
               type="email"
+              pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+              title="อีเมลต้องมีโดเมนที่ถูกต้อง เช่น name@example.com"
               className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
               placeholder="name@example.com"
               value={email}
@@ -106,9 +109,9 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
           )}
 
           <div className="pt-6 flex gap-4">
-            <button type="button" onClick={onClose} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest">ยกเลิก</button>
-            <button type="submit" className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95">
-              {user ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มผู้ใช้'}
+            <button type="button" onClick={onClose} disabled={isSubmitting} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest disabled:opacity-50">ยกเลิก</button>
+            <button type="submit" disabled={isSubmitting} className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95 disabled:opacity-60 disabled:active:scale-100">
+              {isSubmitting ? 'กำลังบันทึก...' : user ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มผู้ใช้'}
             </button>
           </div>
         </form>

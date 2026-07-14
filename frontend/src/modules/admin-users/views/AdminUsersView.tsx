@@ -84,6 +84,8 @@ export const AdminUsersView = () => {
         onReactivate={(id) => updateMutation.mutate({ id, data: { isActive: true } })}
         isLoading={isLoading}
         progress={progress}
+        deactivatingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
+        reactivatingId={updateMutation.isPending ? updateMutation.variables?.id : undefined}
       />
 
       <UserModal
@@ -92,6 +94,7 @@ export const AdminUsersView = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
         user={editingUser}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
       />
     </div>
   );

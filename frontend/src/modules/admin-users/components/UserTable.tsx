@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Power, PowerOff, ShieldCheck } from 'lucide-react';
+import { Edit2, Power, PowerOff, ShieldCheck, Loader2 } from 'lucide-react';
 import { User } from '@/types';
 
 interface UserTableProps {
@@ -10,6 +10,8 @@ interface UserTableProps {
   onReactivate: (id: string) => void;
   isLoading: boolean;
   progress: number;
+  deactivatingId?: string;
+  reactivatingId?: string;
 }
 
 const formatLastLogin = (value: string | null) => {
@@ -25,6 +27,8 @@ export const UserTable: React.FC<UserTableProps> = ({
   onReactivate,
   isLoading,
   progress,
+  deactivatingId,
+  reactivatingId,
 }) => {
   if (isLoading) return (
     <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
@@ -96,19 +100,20 @@ export const UserTable: React.FC<UserTableProps> = ({
                     {user.isActive ? (
                       <button
                         onClick={() => onDeactivate(user.id)}
-                        disabled={isSelf}
+                        disabled={isSelf || deactivatingId === user.id}
                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:cursor-not-allowed"
                         title={isSelf ? 'ไม่สามารถปิดใช้งานบัญชีตัวเองได้' : 'ปิดใช้งาน'}
                       >
-                        <PowerOff size={14} />
+                        {deactivatingId === user.id ? <Loader2 size={14} className="animate-spin" /> : <PowerOff size={14} />}
                       </button>
                     ) : (
                       <button
                         onClick={() => onReactivate(user.id)}
-                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                        disabled={reactivatingId === user.id}
+                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         title="เปิดใช้งาน"
                       >
-                        <Power size={14} />
+                        {reactivatingId === user.id ? <Loader2 size={14} className="animate-spin" /> : <Power size={14} />}
                       </button>
                     )}
                   </div>

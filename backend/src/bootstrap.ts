@@ -48,6 +48,7 @@ export async function createApp(): Promise<NestExpressApplication> {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
+    exposedHeaders: ['Content-Length'],
     maxAge: 86400,
   });
 

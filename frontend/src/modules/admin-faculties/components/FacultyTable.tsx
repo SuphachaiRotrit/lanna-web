@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, Loader2 } from 'lucide-react';
 import { Faculty } from '@/types';
 
 interface FacultyTableProps {
@@ -8,9 +8,10 @@ interface FacultyTableProps {
   onDelete: (id: string) => void;
   isLoading: boolean;
   progress: number;
+  deletingId?: string;
 }
 
-export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, onDelete, isLoading, progress }) => {
+export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, onDelete, isLoading, progress, deletingId }) => {
   if (isLoading) return (
     <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
       <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
@@ -48,10 +49,11 @@ export const FacultyTable: React.FC<FacultyTableProps> = ({ faculties, onEdit, o
                   </button>
                   <button
                     onClick={() => onDelete(faculty.id)}
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    disabled={deletingId === faculty.id}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     title="ลบ"
                   >
-                    <Trash2 size={14} />
+                    {deletingId === faculty.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                   </button>
                 </div>
               </td>

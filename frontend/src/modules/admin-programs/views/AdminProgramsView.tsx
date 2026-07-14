@@ -131,12 +131,13 @@ export const AdminProgramsView = () => {
       </div>
 
       {/* Content Table */}
-      <ProgramTable 
-        programs={filteredPrograms} 
+      <ProgramTable
+        programs={filteredPrograms}
         onEdit={handleOpenModal}
         onDelete={(id) => deleteMutation.mutate(id)}
         isLoading={isLoading}
         progress={progress}
+        deletingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
       />
 
       {/* Modal Tool */}
@@ -146,6 +147,7 @@ export const AdminProgramsView = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
         program={editingProgram}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
       />
     </div>
   );

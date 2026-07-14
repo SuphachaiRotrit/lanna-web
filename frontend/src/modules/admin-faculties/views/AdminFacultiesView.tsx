@@ -67,6 +67,7 @@ export const AdminFacultiesView = () => {
         onDelete={(id) => deleteMutation.mutate(id)}
         isLoading={isLoading}
         progress={progress}
+        deletingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
       />
 
       <FacultyModal
@@ -75,6 +76,7 @@ export const AdminFacultiesView = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
         faculty={editingFaculty}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
       />
     </div>
   );

@@ -32,25 +32,30 @@ export const useAuth = () => {
     }
   });
 
-  const logout = async () => {
-    try {
-      const [promise] = await logoutApi();
-      await promise;
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      // เคลียร์ทุกอย่างรวมถึง Cache ใน LocalStorage ที่อาจจะเคยมี
-      localStorage.clear();
-      await refreshUser(); // จะกลายเป็น null
-      router.push("/admin/login");
-      toast.info("ออกจากระบบแล้ว");
-    }
-  };
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const [promise] = await logoutApi();
+        await promise;
+      } catch (error) {
+        console.error("Logout error:", error);
+      } finally {
+        // เคลียร์ทุกอย่างรวมถึง Cache ใน LocalStorage ที่อาจจะเคยมี
+        localStorage.clear();
+        await refreshUser(); // จะกลายเป็น null
+        router.push("/admin/login");
+        toast.info("ออกจากระบบแล้ว");
+      }
+    },
+  });
+
+  const logout = () => logoutMutation.mutateAsync();
 
   return {
     user,
     isLoading,
     loginMutation,
-    logout
+    logout,
+    isLoggingOut: logoutMutation.isPending
   };
 };

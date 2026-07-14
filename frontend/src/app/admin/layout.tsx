@@ -37,7 +37,7 @@ const menuItems = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading, logout, isLoggingOut } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -134,12 +134,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={handleLogout}
-                  className="w-full py-2 bg-white/[0.04] text-red-400/80 text-[13px] font-bold rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all flex items-center justify-center gap-1.5"
+                  disabled={isLoggingOut}
+                  className="w-full py-2 bg-white/[0.04] text-red-400/80 text-[13px] font-bold rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
                 >
-                  <LogOut size={13} />
-                  ออกจากระบบ
+                  <LogOut size={13} className={isLoggingOut ? 'animate-spin' : undefined} />
+                  {isLoggingOut ? 'กำลังออกจากระบบ...' : 'ออกจากระบบ'}
                 </button>
               </>
             )}

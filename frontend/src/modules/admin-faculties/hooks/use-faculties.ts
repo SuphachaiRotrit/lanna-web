@@ -15,7 +15,7 @@ export const useFaculties = () => {
     queryKey: ["admin-faculties"],
     queryFn: async () => {
       setProgress(0);
-      const [resPromise] = await listFacultiesAdminApi();
+      const [resPromise] = await listFacultiesAdminApi(setProgress);
       const data = await resPromise;
       setProgress(100);
       return data;

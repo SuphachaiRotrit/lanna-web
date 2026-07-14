@@ -38,6 +38,9 @@ export interface Program {
   degree: string;
   track: ProgramTrack;
   description?: string;
+  curriculum?: string;
+  skills?: string;
+  careerPaths?: string;
   duration?: number;
   maxQuota: number;
   currentApplicants: number;

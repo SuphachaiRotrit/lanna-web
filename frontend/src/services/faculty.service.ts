@@ -1,11 +1,11 @@
-import { callAPI, AbortFunction } from "@/lib/call-api";
+import { callAPI, onProgress, AbortFunction } from "@/lib/call-api";
 import { Faculty, ApiResponse } from "@/types";
 
 /**
  * ADMIN: GET /admin/faculties - รายการคณะทั้งหมด
  */
-export const listFacultiesAdminApi = async (): Promise<[Promise<ApiResponse<Faculty[]>>, AbortFunction]> => {
-  return callAPI<ApiResponse<Faculty[]>>("GET", "/admin/faculties");
+export const listFacultiesAdminApi = async (onDownloadProgress?: (percent: number) => void): Promise<[Promise<ApiResponse<Faculty[]>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Faculty[]>>("GET", "/admin/faculties", undefined, { onDownloadProgress: onProgress(onDownloadProgress) });
 };
 
 /**

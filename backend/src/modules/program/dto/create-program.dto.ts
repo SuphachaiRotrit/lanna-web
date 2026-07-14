@@ -40,6 +40,18 @@ export class CreateProgramDto {
   @IsOptional()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  curriculum?: string;
+
+  @IsString()
+  @IsOptional()
+  skills?: string;
+
+  @IsString()
+  @IsOptional()
+  careerPaths?: string;
+
   @IsInt()
   @Min(1)
   @Max(10)

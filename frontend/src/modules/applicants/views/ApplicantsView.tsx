@@ -117,6 +117,7 @@ export const ApplicantsView = () => {
         onPageChange={handlePageChange}
         onUpdateStatus={(id, status) => updateStatus.mutate({ id, status })}
         onView={setViewingApplicantId}
+        pendingStatusId={updateStatus.isPending ? updateStatus.variables?.id : undefined}
       />
 
       <ApplicantDetailModal

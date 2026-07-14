@@ -4,14 +4,19 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone
+  FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone, Loader2
 } from 'lucide-react';
+import { useState } from 'react';
 import { useHomePrograms } from '../hooks/use-home';
+import { ProgramDetailModal } from '../components/ProgramDetailModal';
 import { Program } from '@/types';
 
+const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=11392335271996416831&output=embed';
+
 export const LandingView = () => {
-  const { data: res } = useHomePrograms();
+  const { data: res, isLoading } = useHomePrograms();
   const programs = res?.data || [];
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
 
   return (
     <div className="min-h-screen bg-cream">
@@ -83,9 +88,19 @@ export const LandingView = () => {
             <p className="text-sm font-bold text-brand uppercase tracking-widest mb-3">Programs Available</p>
             <h3 className="text-3xl lg:text-5xl font-black text-navy tracking-tight">หลักสูตรที่เปิดรับสมัคร</h3>
           </div>
+          {isLoading && (
+            <div className="flex flex-col items-center gap-3 py-16 text-navy/30">
+              <Loader2 size={28} className="animate-spin" />
+              <p className="text-sm font-bold">กำลังโหลดหลักสูตร...</p>
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programs.map((prog: Program, idx: number) => (
-              <div key={idx} className="group relative bg-white p-10 rounded-[2.5rem] border border-navy/5 hover-lift cursor-pointer overflow-hidden">
+            {!isLoading && programs.map((prog: Program, idx: number) => (
+              <div
+                key={idx}
+                onClick={() => setSelectedProgram(prog)}
+                className="group relative bg-white p-10 rounded-[2.5rem] border border-navy/5 hover-lift cursor-pointer overflow-hidden"
+              >
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-brand scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                 <div className="w-16 h-16 rounded-2xl bg-brand/8 flex items-center justify-center mb-8"><BookOpen size={28} className="text-brand" /></div>
                 <div className="flex items-center gap-2 mb-2">
@@ -111,6 +126,29 @@ export const LandingView = () => {
           </div>
         </div>
       </section>
+
+      {/* MAP SECTION */}
+      <section className="pb-24 lg:pb-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-sm font-bold text-brand uppercase tracking-widest mb-3">Visit Us</p>
+            <h3 className="text-3xl lg:text-5xl font-black text-navy tracking-tight">แผนที่มหาวิทยาลัย</h3>
+          </div>
+          <div className="rounded-[2.5rem] overflow-hidden border border-navy/5 shadow-lg">
+            <iframe
+              src={MAP_EMBED_SRC}
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="แผนที่มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา"
+            />
+          </div>
+        </div>
+      </section>
+
+      <ProgramDetailModal program={selectedProgram} onClose={() => setSelectedProgram(null)} />
 
       {/* FOOTER */}
       <footer className="bg-brand text-white border-t border-white/5 py-20">

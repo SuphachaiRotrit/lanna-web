@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'sonner';
@@ -78,7 +78,9 @@ const initialValues = {
 
 export const ApplyView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { currentStep, nextStep, prevStep, programsQuery, applyMutation } = useApply();
+  const formInitialValues = { ...initialValues, programId: searchParams.get('programId') || '' };
 
   // สถานะสำหรับเก็บไฟล์แยกตามประเภท (Transcript รองรับหลายไฟล์)
   const [files, setFiles] = useState<Record<string, File | File[] | null>>({
@@ -188,7 +190,7 @@ export const ApplyView = () => {
           )}
 
           <Formik
-            initialValues={initialValues}
+            initialValues={formInitialValues}
             validationSchema={applicationSchema}
             onSubmit={handleSubmit}
           >
@@ -197,7 +199,7 @@ export const ApplyView = () => {
                 {currentStep === 0 && <Step0Intro onStart={nextStep} />}
                 {currentStep === 1 && <Step1Personal />}
                 {currentStep === 2 && <Step2Education />}
-                {currentStep === 3 && <Step3Program programs={programsQuery.data?.data || []} selectedProgramId={values.programId} />}
+                {currentStep === 3 && <Step3Program programs={programsQuery.data?.data || []} selectedProgramId={values.programId} isLoading={programsQuery.isLoading} />}
                 {currentStep === 4 && <Step4Documents files={files} onFileChange={handleFileChange} removeFile={removeFile} setFieldValue={setFieldValue} />}
 
                 {currentStep > 0 && (

@@ -7,9 +7,10 @@ interface FacultyModalProps {
   onClose: () => void;
   onSubmit: (data: { name: string }) => void;
   faculty?: Faculty | null;
+  isSubmitting?: boolean;
 }
 
-export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onSubmit, faculty }) => {
+export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onSubmit, faculty, isSubmitting }) => {
   const [name, setName] = useState(faculty?.name || '');
 
   if (!isOpen) return null;
@@ -47,9 +48,9 @@ export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onS
           </div>
 
           <div className="pt-6 flex gap-4">
-            <button type="button" onClick={onClose} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest">ยกเลิก</button>
-            <button type="submit" className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95">
-              {faculty ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มคณะ'}
+            <button type="button" onClick={onClose} disabled={isSubmitting} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest disabled:opacity-50">ยกเลิก</button>
+            <button type="submit" disabled={isSubmitting} className="flex-[2] py-4 rounded-2xl bg-brand text-white font-black hover:bg-brand-dark shadow-xl shadow-brand/20 transition-all text-sm uppercase tracking-widest active:scale-95 disabled:opacity-60 disabled:active:scale-100">
+              {isSubmitting ? 'กำลังบันทึก...' : faculty ? 'อัปเดตข้อมูล' : 'ยืนยันเพิ่มคณะ'}
             </button>
           </div>
         </form>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Trash2, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { Edit2, Trash2, CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react';
 import { Program } from '@/types';
 
 interface ProgramTableProps {
@@ -8,9 +8,10 @@ interface ProgramTableProps {
   onDelete: (id: string) => void;
   isLoading: boolean;
   progress: number;
+  deletingId?: string;
 }
 
-export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading, progress }) => {
+export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, onDelete, isLoading, progress, deletingId }) => {
   if (isLoading) return (
     <div className="p-16 text-center flex flex-col items-center gap-2 bg-white rounded-2xl border border-gray-100">
       <span className="text-3xl font-black text-brand tabular-nums">{progress}%</span>
@@ -118,12 +119,13 @@ export const ProgramTable: React.FC<ProgramTableProps> = ({ programs, onEdit, on
                       >
                         <Edit2 size={14} />
                       </button>
-                      <button 
-                        onClick={() => onDelete(program.id)} 
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                      <button
+                        onClick={() => onDelete(program.id)}
+                        disabled={deletingId === program.id}
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         title="ลบ"
                       >
-                        <Trash2 size={14} />
+                        {deletingId === program.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                       </button>
                     </div>
                   </td>

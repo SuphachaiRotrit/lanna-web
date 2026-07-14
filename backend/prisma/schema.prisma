@@ -163,6 +163,9 @@ model Program {
   degree      String  // ระดับปริญญา (ปริญญาตรี/โท/เอก)
   track       ProgramTrack @default(REGULAR) // ภาคปกติ/ภาคพิเศษ
   description String? // หมายเหตุเพิ่มเติม (เช่น ภาคพิเศษ, เรียนเสาร์-อาทิตย์)
+  curriculum  String? @db.Text // เรียนเกี่ยวกับอะไรบ้าง
+  skills      String? @db.Text // ทักษะ/ความรู้ที่จะได้รับ
+  careerPaths String? @map("career_paths") @db.Text // แนวทางอาชีพหลังจบการศึกษา
   duration    Int? // ระยะเวลาหลักสูตร (ปี)
   maxQuota    Int          @default(50) @map("max_quota") // จำนวนที่เปิดรับ
   isActive    Boolean      @default(true) @map("is_active")

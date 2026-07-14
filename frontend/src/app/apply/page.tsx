@@ -1,7 +1,12 @@
 'use client';
 
+import { Suspense } from "react";
 import { ApplyView } from "@/modules/apply/views/ApplyView";
 
 export default function ApplyPage() {
-  return <ApplyView />;
+  return (
+    <Suspense fallback={null}>
+      <ApplyView />
+    </Suspense>
+  );
 }
