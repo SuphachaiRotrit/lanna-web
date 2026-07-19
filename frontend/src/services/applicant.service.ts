@@ -25,6 +25,20 @@ export const updateApplicantStatusApi = async (id: string, status: string, reaso
 };
 
 /**
+ * ADMIN: PATCH /admin/applicants/:id/exam - บันทึกผลสอบ
+ */
+export const updateApplicantExamApi = async (id: string, examResult: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Applicant>>("PATCH", `/admin/applicants/${id}/exam`, { examResult });
+};
+
+/**
+ * ADMIN: PATCH /admin/applicants/:id/report-in - อนุมัติ/ปฏิเสธการรายงานตัว
+ */
+export const updateApplicantReportInApi = async (id: string, reportInStatus: string, reason?: string): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
+  return callAPI<ApiResponse<Applicant>>("PATCH", `/admin/applicants/${id}/report-in`, { reportInStatus, reason });
+};
+
+/**
  * ADMIN: POST /admin/export/:type - ส่งออกข้อมูล (Excel/PDF)
  */
 export const exportApplicantsApi = async (type: 'excel' | 'pdf', data: Record<string, unknown>): Promise<[Promise<Blob>, AbortFunction]> => {

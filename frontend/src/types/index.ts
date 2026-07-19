@@ -58,6 +58,9 @@ export interface ApplicantDocument {
   url: string;
 }
 
+export type ExamResult = 'NOT_YET' | 'PASSED' | 'FAILED';
+export type ReportInStatus = 'NOT_YET' | 'CONFIRMED' | 'REJECTED';
+
 export interface Applicant {
   id: string;
   prefixName: string;
@@ -95,6 +98,10 @@ export interface Applicant {
   programId: string;
   program?: Program;
   status: 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+  examResult: ExamResult;
+  reportInStatus: ReportInStatus;
+  reportInReason?: string;
+  reportInAt?: string;
   applicationNumber: string;
   applicationYear: number;
   submittedAt: string;
