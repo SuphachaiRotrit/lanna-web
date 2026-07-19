@@ -45,6 +45,30 @@ const STATUS_STYLES: Record<Applicant['status'], string> = {
   CANCELLED: 'bg-gray-100 text-gray-500',
 };
 
+const EXAM_RESULT_LABELS: Record<Applicant['examResult'], string> = {
+  NOT_YET: 'รอสอบ',
+  PASSED: 'สอบผ่าน',
+  FAILED: 'สอบไม่ผ่าน',
+};
+
+const EXAM_RESULT_STYLES: Record<Applicant['examResult'], string> = {
+  NOT_YET: 'bg-gray-100 text-gray-500',
+  PASSED: 'bg-emerald-100 text-emerald-600',
+  FAILED: 'bg-red-100 text-red-600',
+};
+
+const REPORT_IN_LABELS: Record<Applicant['reportInStatus'], string> = {
+  NOT_YET: 'ยังไม่รายงานตัว',
+  CONFIRMED: 'รายงานตัวแล้ว',
+  REJECTED: 'ปฏิเสธรายงานตัว',
+};
+
+const REPORT_IN_STYLES: Record<Applicant['reportInStatus'], string> = {
+  NOT_YET: 'bg-gray-100 text-gray-500',
+  CONFIRMED: 'bg-emerald-100 text-emerald-600',
+  REJECTED: 'bg-red-100 text-red-600',
+};
+
 const formatDateTime = (value?: string) =>
   value ? new Date(value).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : undefined;
 
@@ -92,10 +116,12 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ applicantId, onClose }) => {
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
+  const [reportInRejecting, setReportInRejecting] = useState(false);
+  const [reportInReason, setReportInReason] = useState('');
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
   const { data: res, isLoading } = useApplicant(applicantId);
-  const { updateStatus } = useApplicantMutation();
+  const { updateStatus, updateExam, updateReportIn } = useApplicantMutation();
   const applicant = res?.data;
   const hasDoc = (type: ApplicantDocument['type']) => !!applicant?.documents?.some((d) => d.type === type);
 
@@ -104,6 +130,8 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
   const handleClose = () => {
     setRejecting(false);
     setReason('');
+    setReportInRejecting(false);
+    setReportInReason('');
     onClose();
   };
 
@@ -114,6 +142,21 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
   const handleConfirmReject = () => {
     updateStatus.mutate(
       { id: applicantId, status: 'REJECTED', reason },
+      { onSuccess: handleClose },
+    );
+  };
+
+  const handleSetExamResult = (examResult: 'PASSED' | 'FAILED') => {
+    updateExam.mutate({ id: applicantId, examResult });
+  };
+
+  const handleConfirmReportIn = () => {
+    updateReportIn.mutate({ id: applicantId, reportInStatus: 'CONFIRMED' }, { onSuccess: handleClose });
+  };
+
+  const handleConfirmReportInReject = () => {
+    updateReportIn.mutate(
+      { id: applicantId, reportInStatus: 'REJECTED', reason: reportInReason },
       { onSuccess: handleClose },
     );
   };
@@ -262,6 +305,24 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
               )}
             </Section>
 
+            <Section title="ผลสอบและการรายงานตัว">
+              <div>
+                <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">ผลสอบ</p>
+                <div className={`inline-flex items-center px-3 py-1 mt-1 rounded-full text-[12px] font-black uppercase tracking-wider ${EXAM_RESULT_STYLES[applicant.examResult]}`}>
+                  {EXAM_RESULT_LABELS[applicant.examResult]}
+                </div>
+              </div>
+              <div>
+                <p className="text-[12px] font-black text-gray-400 uppercase tracking-widest">รายงานตัว</p>
+                <div className={`inline-flex items-center px-3 py-1 mt-1 rounded-full text-[12px] font-black uppercase tracking-wider ${REPORT_IN_STYLES[applicant.reportInStatus]}`}>
+                  {REPORT_IN_LABELS[applicant.reportInStatus]}
+                </div>
+              </div>
+              {applicant.reportInStatus === 'REJECTED' && applicant.reportInReason && (
+                <InfoRow label="เหตุผลที่ปฏิเสธรายงานตัว" value={applicant.reportInReason} />
+              )}
+            </Section>
+
             <div>
               <p className="text-[12px] font-black text-brand uppercase tracking-widest mb-3">เอกสารแนบ</p>
               <div className="space-y-2">
@@ -296,6 +357,19 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="เช่น เอกสารไม่ครบถ้วน"
+                />
+              </div>
+            )}
+
+            {reportInRejecting && (
+              <div>
+                <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ปฏิเสธการรายงานตัว</label>
+                <textarea
+                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
+                  rows={3}
+                  value={reportInReason}
+                  onChange={(e) => setReportInReason(e.target.value)}
+                  placeholder="เช่น ไม่มารายงานตัวตามกำหนด"
                 />
               </div>
             )}
@@ -475,6 +549,68 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
                 >
                   อนุมัติผ่าน
+                </button>
+              </div>
+            )
+          )}
+
+          {applicant?.status === 'APPROVED' && applicant.examResult === 'NOT_YET' && (
+            <div className="flex gap-3">
+              <button
+                type="button"
+                disabled={updateExam.isPending}
+                onClick={() => handleSetExamResult('FAILED')}
+                className="py-3 px-5 rounded-2xl border-2 border-red-100 text-red-500 font-black hover:bg-red-50 transition-all text-sm uppercase tracking-widest"
+              >
+                สอบไม่ผ่าน
+              </button>
+              <button
+                type="button"
+                disabled={updateExam.isPending}
+                onClick={() => handleSetExamResult('PASSED')}
+                className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
+              >
+                สอบผ่าน
+              </button>
+            </div>
+          )}
+
+          {applicant?.examResult === 'PASSED' && applicant.reportInStatus === 'NOT_YET' && (
+            reportInRejecting ? (
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setReportInRejecting(false); setReportInReason(''); }}
+                  className="py-3 px-5 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="button"
+                  disabled={!reportInReason.trim() || updateReportIn.isPending}
+                  onClick={handleConfirmReportInReject}
+                  className="py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
+                >
+                  ยืนยันปฏิเสธรายงานตัว
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  disabled={updateReportIn.isPending}
+                  onClick={() => setReportInRejecting(true)}
+                  className="py-3 px-5 rounded-2xl border-2 border-red-100 text-red-500 font-black hover:bg-red-50 transition-all text-sm uppercase tracking-widest"
+                >
+                  ปฏิเสธรายงานตัว
+                </button>
+                <button
+                  type="button"
+                  disabled={updateReportIn.isPending}
+                  onClick={handleConfirmReportIn}
+                  className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
+                >
+                  อนุมัติรายงานตัว
                 </button>
               </div>
             )
