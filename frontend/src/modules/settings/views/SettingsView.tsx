@@ -1,13 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { KeyRound, Lock, ShieldCheck } from 'lucide-react';
+import { KeyRound, Lock, ShieldCheck, Trash2 } from 'lucide-react';
 import { ExtraCompactInput } from '@/modules/auth/components/ExtraCompactInput';
+import { PremiumSelect } from '@/components/ui/FormControls';
 import { changePasswordApi, ChangePasswordPayload } from '@/services/auth.service';
+import { purgeApplicantsApi } from '@/services/applicant.service';
+import { useAuth } from '@/modules/auth/hooks/use-auth';
 import { getErrorMessage } from '@/lib/call-api';
 
 const changePasswordSchema = Yup.object().shape({
@@ -21,6 +24,39 @@ const changePasswordSchema = Yup.object().shape({
 });
 
 export const SettingsView = () => {
+  const { user } = useAuth();
+  const [purgeYear, setPurgeYear] = useState(new Date().getFullYear() + 543 - 3);
+
+  const purgeMutation = useMutation({
+    mutationFn: async (year: number) => {
+      const [promise] = await purgeApplicantsApi(year);
+      const blob = await promise;
+
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `applicants_purged_${year}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      return true;
+    },
+    onSuccess: () => {
+      toast.success('ส่งออกและลบข้อมูลเก่าสำเร็จ');
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err, 'ไม่สามารถลบข้อมูลเก่าได้'));
+    },
+  });
+
+  const handlePurge = () => {
+    const confirmed = window.confirm(
+      `ต้องการลบข้อมูลผู้สมัครปีการศึกษา ${purgeYear} อย่างถาวรใช่หรือไม่?\nระบบจะดาวน์โหลดไฟล์ Excel สำรองให้ก่อนลบ การกระทำนี้ไม่สามารถย้อนกลับได้`,
+    );
+    if (!confirmed) return;
+    purgeMutation.mutate(purgeYear);
+  };
+
   const changePasswordMutation = useMutation({
     mutationFn: async (payload: ChangePasswordPayload) => {
       const [promise] = await changePasswordApi(payload);
@@ -77,6 +113,37 @@ export const SettingsView = () => {
           </Form>
         </Formik>
       </div>
+
+      {user?.role === 'SUPER_ADMIN' && (
+        <div className="max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="p-2 rounded-lg bg-red-50 text-red-500">
+              <Trash2 size={16} />
+            </div>
+            <h2 className="text-sm font-black text-navy uppercase tracking-wider">จัดการข้อมูลเก่า</h2>
+          </div>
+          <p className="text-xs text-gray-400 font-bold mb-4">
+            ระบบเก็บข้อมูลผู้สมัคร 3 ปีล่าสุด ปีที่เก่ากว่านั้นสามารถ export เป็น Excel แล้วลบออกจากระบบได้
+          </p>
+          <PremiumSelect
+            label="ปีที่ต้องการลบ"
+            value={purgeYear}
+            onChange={(e) => setPurgeYear(Number(e.target.value))}
+            options={Array.from({ length: 5 }).map((_, i) => {
+              const year = new Date().getFullYear() + 543 - 3 - i;
+              return { label: `ปีการศึกษา ${year}`, value: year };
+            })}
+          />
+          <button
+            type="button"
+            disabled={purgeMutation.isPending}
+            onClick={handlePurge}
+            className="w-full mt-4 py-3.5 bg-red-500 text-white rounded-xl font-black text-[13px] uppercase tracking-[0.2em] hover:bg-red-600 transition-all active:scale-[0.98] disabled:opacity-60"
+          >
+            {purgeMutation.isPending ? 'กำลังดำเนินการ...' : `Export และลบข้อมูลปี ${purgeYear}`}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
