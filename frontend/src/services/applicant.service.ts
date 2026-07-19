@@ -46,6 +46,13 @@ export const exportApplicantsApi = async (type: 'excel' | 'pdf', data: Record<st
 };
 
 /**
+ * ADMIN (SUPER_ADMIN only): POST /admin/export/purge - export ปีเก่า แล้วลบออกจากระบบ
+ */
+export const purgeApplicantsApi = async (year: number): Promise<[Promise<Blob>, AbortFunction]> => {
+  return callAPI<Blob>("POST", "/admin/export/purge", { year }, { responseType: 'blob' });
+};
+
+/**
  * PUBLIC: POST /applicants - ส่งใบสมัครเรียนใหม่
  */
 export const createApplicantApi = async (data: Record<string, unknown>): Promise<[Promise<ApiResponse<Applicant>>, AbortFunction]> => {
