@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Download, Printer } from 'lucide-react';
+import { Search, Download, Printer, ArrowLeft } from 'lucide-react';
 import { useApplicants, useApplicantMutation } from '../hooks/use-applicants';
+import { usePrograms } from '@/modules/admin-programs/hooks/use-programs';
 import { ApplicantTable } from '../components/ApplicantTable';
 import { ApplicantDetailModal } from '../components/ApplicantDetailModal';
+import { ProgramCardGrid } from '../components/ProgramCardGrid';
 import { PremiumButton, PremiumCard } from '../../../components/ui/PremiumBase';
 import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
 
@@ -15,8 +17,13 @@ export const ApplicantsView = () => {
     search: '',
     status: '',
     year: new Date().getFullYear() + 543,
+    programId: '',
   });
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [viewingApplicantId, setViewingApplicantId] = useState<string | null>(null);
+
+  const { data: programsRes, isLoading: programsLoading } = usePrograms();
+  const programs = programsRes?.data || [];
 
   const { data: res, isLoading } = useApplicants(filters);
   const applicants = res?.data?.rows || [];
@@ -30,6 +37,11 @@ export const ApplicantsView = () => {
 
   const handleSearchChange = (search: string) => {
     setFilters(prev => ({ ...prev, search, page: 1 }));
+  };
+
+  const handleSelectProgram = (programId: string | null) => {
+    setSelectedProgramId(programId ?? '');
+    setFilters(prev => ({ ...prev, programId: programId ?? '', page: 1 }));
   };
 
   return (
@@ -66,6 +78,19 @@ export const ApplicantsView = () => {
           </PremiumButton> */}
         </div>
       </div>
+
+      {selectedProgramId === null ? (
+        <ProgramCardGrid programs={programs} loading={programsLoading} onSelect={handleSelectProgram} />
+      ) : (
+      <>
+      <button
+        type="button"
+        onClick={() => setSelectedProgramId(null)}
+        className="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-navy transition-colors"
+      >
+        <ArrowLeft size={16} />
+        กลับไปเลือกสาขา
+      </button>
 
       {/* Filters Bar */}
       <PremiumCard className="p-2 flex flex-wrap items-center gap-3 border-gray-100/50">
@@ -118,6 +143,8 @@ export const ApplicantsView = () => {
         onView={setViewingApplicantId}
         pendingStatusId={updateStatus.isPending ? updateStatus.variables?.id : undefined}
       />
+      </>
+      )}
 
       <ApplicantDetailModal
         applicantId={viewingApplicantId}
