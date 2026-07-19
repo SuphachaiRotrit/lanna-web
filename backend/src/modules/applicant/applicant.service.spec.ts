@@ -1,4 +1,5 @@
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus, ExamResult, ReportInStatus } from '@prisma/client';
+import { BadRequestException } from '@nestjs/common';
 import { ApplicantService } from './applicant.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
@@ -49,5 +50,85 @@ describe('ApplicantService.updateStatus', () => {
 
     const dataArg = update.mock.calls[0][0].data;
     expect(dataArg.rejectionReason).toBeUndefined();
+  });
+});
+
+describe('ApplicantService.updateExamResult', () => {
+  const buildService = (applicant: { status: ApplicationStatus }, update: UpdateMock) => {
+    const prisma = {
+      applicant: {
+        findUnique: jest.fn().mockResolvedValue(applicant),
+        update,
+      },
+    } as unknown as PrismaService;
+    return new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+  };
+
+  it('rejects setting an exam result before the applicant is APPROVED', async () => {
+    const update: UpdateMock = jest.fn();
+    const service = buildService({ status: ApplicationStatus.REVIEWING }, update);
+
+    await expect(service.updateExamResult('1', ExamResult.PASSED)).rejects.toThrow(
+      BadRequestException,
+    );
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('sets examResult once the applicant is APPROVED', async () => {
+    const update: UpdateMock = jest
+      .fn<Promise<unknown>, [UpdateArgs]>()
+      .mockResolvedValue({});
+    const service = buildService({ status: ApplicationStatus.APPROVED }, update);
+
+    await service.updateExamResult('1', ExamResult.PASSED);
+
+    expect(update.mock.calls[0][0].data.examResult).toBe(ExamResult.PASSED);
+  });
+});
+
+describe('ApplicantService.updateReportIn', () => {
+  const buildService = (applicant: { examResult: ExamResult }, update: UpdateMock) => {
+    const prisma = {
+      applicant: {
+        findUnique: jest.fn().mockResolvedValue(applicant),
+        update,
+      },
+    } as unknown as PrismaService;
+    return new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+  };
+
+  it('rejects updating report-in status before the exam is passed', async () => {
+    const update: UpdateMock = jest.fn();
+    const service = buildService({ examResult: ExamResult.NOT_YET }, update);
+
+    await expect(
+      service.updateReportIn('1', ReportInStatus.CONFIRMED),
+    ).rejects.toThrow(BadRequestException);
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('stores reportInReason when rejecting the report-in', async () => {
+    const update: UpdateMock = jest
+      .fn<Promise<unknown>, [UpdateArgs]>()
+      .mockResolvedValue({});
+    const service = buildService({ examResult: ExamResult.PASSED }, update);
+
+    await service.updateReportIn('1', ReportInStatus.REJECTED, 'ไม่มารายงานตัวตามกำหนด');
+
+    const dataArg = update.mock.calls[0][0].data;
+    expect(dataArg.reportInStatus).toBe(ReportInStatus.REJECTED);
+    expect(dataArg.reportInReason).toBe('ไม่มารายงานตัวตามกำหนด');
+    expect(dataArg.reportInAt).toBeInstanceOf(Date);
+  });
+
+  it('does not store reportInReason when confirming the report-in', async () => {
+    const update: UpdateMock = jest
+      .fn<Promise<unknown>, [UpdateArgs]>()
+      .mockResolvedValue({});
+    const service = buildService({ examResult: ExamResult.PASSED }, update);
+
+    await service.updateReportIn('1', ReportInStatus.CONFIRMED);
+
+    expect(update.mock.calls[0][0].data.reportInReason).toBeUndefined();
   });
 });

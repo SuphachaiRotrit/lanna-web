@@ -6,7 +6,13 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
-import { Prisma, DocumentType, ApplicationStatus } from '@prisma/client';
+import {
+  Prisma,
+  DocumentType,
+  ApplicationStatus,
+  ExamResult,
+  ReportInStatus,
+} from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
@@ -331,6 +337,70 @@ export class ApplicantService {
         reviewedAt: new Date(),
         ...(status === ApplicationStatus.REJECTED
           ? { rejectionReason: reason }
+          : {}),
+      },
+      include: {
+        program: {
+          select: { name: true, faculty: { select: { name: true } } },
+        },
+      },
+    });
+  }
+
+  /**
+   * Set exam result (admin) — only allowed once the applicant is APPROVED
+   */
+  async updateExamResult(id: string, examResult: ExamResult) {
+    const applicant = await this.prisma.applicant.findUnique({
+      where: { id },
+    });
+
+    if (!applicant) {
+      throw new NotFoundException('Applicant not found');
+    }
+
+    if (applicant.status !== ApplicationStatus.APPROVED) {
+      throw new BadRequestException(
+        'Applicant must be APPROVED before setting an exam result',
+      );
+    }
+
+    return this.prisma.applicant.update({
+      where: { id },
+      data: { examResult },
+      include: {
+        program: {
+          select: { name: true, faculty: { select: { name: true } } },
+        },
+      },
+    });
+  }
+
+  /**
+   * Approve or reject report-in (admin) — only allowed once the exam is PASSED
+   */
+  async updateReportIn(id: string, reportInStatus: ReportInStatus, reason?: string) {
+    const applicant = await this.prisma.applicant.findUnique({
+      where: { id },
+    });
+
+    if (!applicant) {
+      throw new NotFoundException('Applicant not found');
+    }
+
+    if (applicant.examResult !== ExamResult.PASSED) {
+      throw new BadRequestException(
+        'Applicant must pass the exam before report-in can be updated',
+      );
+    }
+
+    return this.prisma.applicant.update({
+      where: { id },
+      data: {
+        reportInStatus,
+        reportInAt: new Date(),
+        ...(reportInStatus === ReportInStatus.REJECTED
+          ? { reportInReason: reason }
           : {}),
       },
       include: {
