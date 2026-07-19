@@ -28,6 +28,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ผลสอบ</th>
               <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
             </tr>
           </thead>
@@ -45,6 +46,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 </td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-32" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-8 py-6 text-right"><Skeleton className="h-4 w-16 ml-auto" /></td>
               </tr>
@@ -83,6 +85,15 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                      app.status === 'APPROVED' ? 'อนุมัติแล้ว' :
                      app.status === 'REJECTED' ? 'ไม่ผ่าน' :
                      app.status === 'CANCELLED' ? 'ยกเลิก' : app.status}
+                  </div>
+                </td>
+                <td className="px-6 py-6">
+                  <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${
+                    app.examResult === 'PASSED' ? 'bg-emerald-100 text-emerald-600' :
+                    app.examResult === 'FAILED' ? 'bg-red-100 text-red-600' :
+                    'bg-gray-100 text-gray-500'
+                  }`}>
+                    {app.examResult === 'PASSED' ? 'สอบผ่าน' : app.examResult === 'FAILED' ? 'สอบไม่ผ่าน' : 'รอสอบ'}
                   </div>
                 </td>
                 <td className="px-8 py-6 text-right">
