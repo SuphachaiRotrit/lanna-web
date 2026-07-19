@@ -93,6 +93,12 @@ model Applicant {
   applicationNumber String            @unique @map("application_number")
   applicationYear   Int               @map("application_year")
 
+  // ผลสอบ / รายงานตัว
+  examResult     ExamResult     @default(NOT_YET) @map("exam_result")
+  reportInStatus ReportInStatus @default(NOT_YET) @map("report_in_status")
+  reportInReason String?        @db.Text @map("report_in_reason")
+  reportInAt     DateTime?      @map("report_in_at")
+
   // ข้อมูลผู้ปกครอง
   parentName     String? @map("parent_name")
   parentPhone    String? @map("parent_phone")
@@ -134,6 +140,18 @@ enum ApplicationStatus {
   APPROVED
   REJECTED
   CANCELLED
+}
+
+enum ExamResult {
+  NOT_YET
+  PASSED
+  FAILED
+}
+
+enum ReportInStatus {
+  NOT_YET
+  CONFIRMED
+  REJECTED
 }
 
 // =============================================
