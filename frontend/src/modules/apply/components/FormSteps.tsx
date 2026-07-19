@@ -237,12 +237,12 @@ export const Step2Education = () => {
       <section className="bg-brand/5 px-10 py-10 rounded-[3rem] border border-brand/10 shadow-inner shadow-brand/5">
         <label className="block text-xs font-black text-navy/60 uppercase tracking-widest ml-1 mb-4 flex items-center gap-2">
           <Info size={14} className="text-brand" />
-          เหตุผลที่สนใจสมัครเรียนที่ มหาปวชิราลงกรณราชวิทยาลัย <span className="text-brand">*</span>
+          เหตุผลที่สนใจสมัครเรียนที่ มหาปวชิราลงกรณราชวิทยาลัย
         </label>
         <textarea
           name="applicationReason"
           rows={5}
-          className="w-full bg-white border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-bold text-navy transition-all duration-300 outline-none focus:border-brand/30 focus:shadow-2xl focus:shadow-brand/10 hover:bg-white shadow-sm placeholder:text-navy/20"
+          className="w-full bg-gray-100 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-bold text-navy transition-all duration-300 outline-none focus:border-brand/30 focus:bg-white focus:shadow-2xl focus:shadow-brand/10 hover:bg-gray-200 shadow-sm placeholder:text-navy/20"
           placeholder="อธิบายเหตุผลหรือแรงผลักดันที่ทำให้คุณสนใจศึกษาต่อในระดับอุดมศึกษากับเรา..."
         />
       </section>
