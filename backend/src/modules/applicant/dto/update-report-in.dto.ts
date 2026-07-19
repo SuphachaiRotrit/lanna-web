@@ -5,7 +5,9 @@ export class UpdateReportInDto {
   @IsEnum(ReportInStatus)
   reportInStatus: ReportInStatus;
 
-  @ValidateIf((o: UpdateReportInDto) => o.reportInStatus === ReportInStatus.REJECTED)
+  @ValidateIf(
+    (o: UpdateReportInDto) => o.reportInStatus === ReportInStatus.REJECTED,
+  )
   @IsString()
   @IsNotEmpty()
   reason?: string;

@@ -54,23 +54,33 @@ describe('ApplicantService.updateStatus', () => {
 });
 
 describe('ApplicantService.updateExamResult', () => {
-  const buildService = (applicant: { status: ApplicationStatus }, update: UpdateMock) => {
+  const buildService = (
+    applicant: { status: ApplicationStatus },
+    update: UpdateMock,
+  ) => {
     const prisma = {
       applicant: {
         findUnique: jest.fn().mockResolvedValue(applicant),
         update,
       },
     } as unknown as PrismaService;
-    return new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+    return new ApplicantService(
+      prisma,
+      {} as UploadService,
+      {} as TurnstileService,
+    );
   };
 
   it('rejects setting an exam result before the applicant is APPROVED', async () => {
-    const update: UpdateMock = jest.fn();
-    const service = buildService({ status: ApplicationStatus.REVIEWING }, update);
-
-    await expect(service.updateExamResult('1', ExamResult.PASSED)).rejects.toThrow(
-      BadRequestException,
+    const update: UpdateMock = jest.fn<Promise<unknown>, [UpdateArgs]>();
+    const service = buildService(
+      { status: ApplicationStatus.REVIEWING },
+      update,
     );
+
+    await expect(
+      service.updateExamResult('1', ExamResult.PASSED),
+    ).rejects.toThrow(BadRequestException);
     expect(update).not.toHaveBeenCalled();
   });
 
@@ -78,7 +88,10 @@ describe('ApplicantService.updateExamResult', () => {
     const update: UpdateMock = jest
       .fn<Promise<unknown>, [UpdateArgs]>()
       .mockResolvedValue({});
-    const service = buildService({ status: ApplicationStatus.APPROVED }, update);
+    const service = buildService(
+      { status: ApplicationStatus.APPROVED },
+      update,
+    );
 
     await service.updateExamResult('1', ExamResult.PASSED);
 
@@ -87,18 +100,25 @@ describe('ApplicantService.updateExamResult', () => {
 });
 
 describe('ApplicantService.updateReportIn', () => {
-  const buildService = (applicant: { examResult: ExamResult }, update: UpdateMock) => {
+  const buildService = (
+    applicant: { examResult: ExamResult },
+    update: UpdateMock,
+  ) => {
     const prisma = {
       applicant: {
         findUnique: jest.fn().mockResolvedValue(applicant),
         update,
       },
     } as unknown as PrismaService;
-    return new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+    return new ApplicantService(
+      prisma,
+      {} as UploadService,
+      {} as TurnstileService,
+    );
   };
 
   it('rejects updating report-in status before the exam is passed', async () => {
-    const update: UpdateMock = jest.fn();
+    const update: UpdateMock = jest.fn<Promise<unknown>, [UpdateArgs]>();
     const service = buildService({ examResult: ExamResult.NOT_YET }, update);
 
     await expect(
@@ -113,7 +133,11 @@ describe('ApplicantService.updateReportIn', () => {
       .mockResolvedValue({});
     const service = buildService({ examResult: ExamResult.PASSED }, update);
 
-    await service.updateReportIn('1', ReportInStatus.REJECTED, 'ไม่มารายงานตัวตามกำหนด');
+    await service.updateReportIn(
+      '1',
+      ReportInStatus.REJECTED,
+      'ไม่มารายงานตัวตามกำหนด',
+    );
 
     const dataArg = update.mock.calls[0][0].data;
     expect(dataArg.reportInStatus).toBe(ReportInStatus.REJECTED);
@@ -137,7 +161,11 @@ describe('ApplicantService.deletePurgeYear', () => {
   it('rejects purging a year within the 3-year retention window', async () => {
     const currentYear = new Date().getFullYear() + 543;
     const prisma = {} as PrismaService;
-    const service = new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+    const service = new ApplicantService(
+      prisma,
+      {} as UploadService,
+      {} as TurnstileService,
+    );
 
     await expect(service.deletePurgeYear(currentYear - 2)).rejects.toThrow(
       BadRequestException,
@@ -147,21 +175,29 @@ describe('ApplicantService.deletePurgeYear', () => {
   it('deletes storage files and applicant rows for an eligible year', async () => {
     const currentYear = new Date().getFullYear() + 543;
     const purgeYear = currentYear - 3;
-    const findMany = jest.fn().mockResolvedValue([
-      { id: 'a1', documents: [{ storageKey: 'applicants/a1/photo.jpg' }] },
-    ]);
+    const findMany = jest
+      .fn()
+      .mockResolvedValue([
+        { id: 'a1', documents: [{ storageKey: 'applicants/a1/photo.jpg' }] },
+      ]);
     const deleteMany = jest.fn().mockResolvedValue({ count: 1 });
     const deleteFile = jest.fn().mockResolvedValue(undefined);
     const prisma = {
       applicant: { findMany, deleteMany },
     } as unknown as PrismaService;
     const uploadService = { deleteFile } as unknown as UploadService;
-    const service = new ApplicantService(prisma, uploadService, {} as TurnstileService);
+    const service = new ApplicantService(
+      prisma,
+      uploadService,
+      {} as TurnstileService,
+    );
 
     const count = await service.deletePurgeYear(purgeYear);
 
     expect(deleteFile).toHaveBeenCalledWith('applicants/a1/photo.jpg');
-    expect(deleteMany).toHaveBeenCalledWith({ where: { applicationYear: purgeYear } });
+    expect(deleteMany).toHaveBeenCalledWith({
+      where: { applicationYear: purgeYear },
+    });
     expect(count).toBe(1);
   });
 });

@@ -104,7 +104,14 @@ export class ApplicantController {
    */
   @Patch('admin/applicants/:id/report-in')
   @UseGuards(JwtAuthGuard)
-  async updateReportIn(@Param('id') id: string, @Body() dto: UpdateReportInDto) {
-    return this.applicantService.updateReportIn(id, dto.reportInStatus, dto.reason);
+  async updateReportIn(
+    @Param('id') id: string,
+    @Body() dto: UpdateReportInDto,
+  ) {
+    return this.applicantService.updateReportIn(
+      id,
+      dto.reportInStatus,
+      dto.reason,
+    );
   }
 }

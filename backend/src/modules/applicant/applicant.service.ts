@@ -379,7 +379,11 @@ export class ApplicantService {
   /**
    * Approve or reject report-in (admin) — only allowed once the exam is PASSED
    */
-  async updateReportIn(id: string, reportInStatus: ReportInStatus, reason?: string) {
+  async updateReportIn(
+    id: string,
+    reportInStatus: ReportInStatus,
+    reason?: string,
+  ) {
     const applicant = await this.prisma.applicant.findUnique({
       where: { id },
     });

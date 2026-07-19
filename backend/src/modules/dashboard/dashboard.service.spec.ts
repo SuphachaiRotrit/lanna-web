@@ -22,7 +22,8 @@ describe('DashboardService.getStats', () => {
       .fn()
       .mockImplementation((args?: { where?: Record<string, unknown> }) => {
         if (!args) return Promise.resolve(999); // all-time total (no where clause)
-        if (args.where?.reportInStatus === 'CONFIRMED') return Promise.resolve(7);
+        if (args.where?.reportInStatus === 'CONFIRMED')
+          return Promise.resolve(7);
         return Promise.resolve(42);
       });
     const service = buildService(count);
