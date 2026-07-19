@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi, getApplicantApi } from "@/services/applicant.service";
+import { listApplicantsApi, updateApplicantStatusApi, exportApplicantsApi, getApplicantApi, updateApplicantExamApi, updateApplicantReportInApi } from "@/services/applicant.service";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/call-api";
 
@@ -51,6 +51,36 @@ export const useApplicantMutation = () => {
     }
   });
 
+  const updateExam = useMutation({
+    mutationFn: async ({ id, examResult }: { id: string, examResult: string }) => {
+      const [promise] = await updateApplicantExamApi(id, examResult);
+      return promise;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applicants"] });
+      queryClient.invalidateQueries({ queryKey: ["applicant"] });
+      toast.success("บันทึกผลสอบสำเร็จ");
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถบันทึกผลสอบได้"));
+    }
+  });
+
+  const updateReportIn = useMutation({
+    mutationFn: async ({ id, reportInStatus, reason }: { id: string, reportInStatus: string, reason?: string }) => {
+      const [promise] = await updateApplicantReportInApi(id, reportInStatus, reason);
+      return promise;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["applicants"] });
+      queryClient.invalidateQueries({ queryKey: ["applicant"] });
+      toast.success("บันทึกการรายงานตัวสำเร็จ");
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "ไม่สามารถบันทึกการรายงานตัวได้"));
+    }
+  });
+
   const exportData = useMutation({
     mutationFn: async ({ type, filters }: { type: 'excel' | 'pdf', filters: { status: string; year: number } }) => {
       const [promise] = await exportApplicantsApi(type, { status: filters.status, year: filters.year });
@@ -75,6 +105,8 @@ export const useApplicantMutation = () => {
 
   return {
     updateStatus,
+    updateExam,
+    updateReportIn,
     exportData
   };
 };
