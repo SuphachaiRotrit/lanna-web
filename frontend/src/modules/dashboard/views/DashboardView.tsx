@@ -1,14 +1,16 @@
 'use client';
 
-import React from 'react';
-import { CalendarDays, Award, BookOpen, Users, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, BookOpen, Users, Clock } from 'lucide-react';
 import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
 import { TrendChart } from '../components/TrendChart';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PremiumSelect } from '@/components/ui/FormControls';
 
 export const DashboardView = () => {
-  const { data: res, isLoading } = useDashboardStats();
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() + 543);
+  const { data: res, isLoading } = useDashboardStats(selectedYear);
   const stats = res?.data;
 
   if (isLoading) return (
@@ -46,12 +48,21 @@ export const DashboardView = () => {
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">ภาพรวมการรับสมัคร</h2>
           <p className="text-gray-400 text-sm font-medium mt-0.5">สรุปข้อมูลการรับสมัครนักศึกษาและสถิติที่สำคัญ</p>
         </div>
-        <div className="flex items-center gap-2 px-3.5 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[13px] font-bold text-gray-400">
-          <CalendarDays size={14} className="text-brand" />
-          ปีการศึกษา {stats?.overview?.currentYear}
-          <span className="text-gray-200 mx-1">|</span>
-          <Clock size={12} className="text-gray-300" />
-          อัปเดต {new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
+        <div className="flex items-center gap-3">
+          <div className="w-44">
+            <PremiumSelect
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              options={[0, 1, 2].map(i => {
+                const year = new Date().getFullYear() + 543 - i;
+                return { label: `ปีการศึกษา ${year}`, value: year };
+              })}
+            />
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[13px] font-bold text-gray-400">
+            <Clock size={12} className="text-gray-300" />
+            อัปเดต {new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
+          </div>
         </div>
       </div>
 

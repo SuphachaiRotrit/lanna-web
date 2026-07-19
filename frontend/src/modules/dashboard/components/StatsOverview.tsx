@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, UserPlus, FileClock, UserCheck, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, UserPlus, FileClock, UserCheck, GraduationCap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { DashboardStats } from '@/services/dashboard.service';
 
 interface StatsCardProps {
@@ -44,10 +44,19 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
       trend: 'up',
       subtitle: 'ผ่านเกณฑ์'
     },
+    {
+      title: 'รายงานตัวแล้ว',
+      value: stats?.overview?.reportedInCount || 0,
+      icon: GraduationCap,
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-500',
+      trend: null,
+      subtitle: 'ยืนยันเข้าเรียนแล้ว'
+    },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
       {overviewCards.map((card, idx) => {
         const Icon = card.icon;
         return (
