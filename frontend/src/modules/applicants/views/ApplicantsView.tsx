@@ -125,7 +125,7 @@ export const ApplicantsView = () => {
             onChange={(e) => setFilters(prev => ({ ...prev, year: Number(e.target.value), page: 1 }))}
             className="!py-3"
             options={[0, 1, 2].map(i => {
-              const year = new Date().getFullYear() + 543 - i;
+              const year = new Date().getFullYear() + 543 + i;
               return { label: `ปี ${year}`, value: year };
             })}
           />

@@ -60,7 +60,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
   return (
     <div className="w-full space-y-2" ref={containerRef}>
       {label && (
-        <label className="block text-[12px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
+        <label className="block text-[12px] font-black text-navy/40 uppercase ml-1">
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
@@ -71,7 +71,7 @@ export const PremiumSelect: React.FC<PremiumSelectProps> = ({ label, options, re
           onClick={() => { setIsOpen(!isOpen); setSearch(''); }}
           className={`
             w-full flex items-center justify-between bg-gray-100 border-2 rounded-2xl px-5 py-3.5 text-sm font-bold text-navy transition-all duration-300 outline-none
-            ${isOpen ? 'border-brand/30 bg-white shadow-xl shadow-brand/5 ring-4 ring-brand/5' : 'border-transparent hover:bg-gray-200'}
+            ${isOpen ? 'border-brand/30 bg-white shadow-xl shadow-brand/5 ring-4 ring-brand/5' : 'border-gray-200 hover:bg-gray-200'}
             ${isError ? 'border-red-100 bg-red-50/10' : ''}
             ${props.className}
           `}
@@ -151,7 +151,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
   return (
     <div className="w-full space-y-2">
       {label && (
-        <label className="block text-[12px] font-black text-navy/40 uppercase tracking-[0.2em] ml-1">
+        <label className="block text-[12px] font-black text-navy/40 uppercase ml-1">
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
@@ -169,7 +169,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
             ${prefixIcon ? 'pl-14' : ''}
             ${isError
               ? 'border-red-100 text-red-900 focus:border-red-200 focus:bg-red-50/30'
-              : 'border-transparent focus:border-brand/30 focus:bg-white focus:shadow-xl focus:shadow-brand/5 group-hover:bg-gray-200'
+              : 'border-gray-200 focus:border-brand/30 focus:bg-white focus:shadow-xl focus:shadow-brand/5 group-hover:bg-gray-200'
             }
             ${props.className}
           `}

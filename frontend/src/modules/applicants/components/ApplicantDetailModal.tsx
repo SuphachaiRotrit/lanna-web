@@ -527,9 +527,9 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   type="button"
                   disabled={!reason.trim() || updateStatus.isPending}
                   onClick={handleConfirmReject}
-                  className="py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
+                  className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  ยืนยันไม่ผ่าน
+                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'ยืนยันไม่ผ่าน'}
                 </button>
               </div>
             ) : (
@@ -546,9 +546,9 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   type="button"
                   disabled={updateStatus.isPending}
                   onClick={handleApprove}
-                  className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
+                  className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  อนุมัติผ่าน
+                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'อนุมัติผ่าน'}
                 </button>
               </div>
             )
@@ -560,17 +560,17 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                 type="button"
                 disabled={updateExam.isPending}
                 onClick={() => handleSetExamResult('FAILED')}
-                className="py-3 px-5 rounded-2xl border-2 border-red-100 text-red-500 font-black hover:bg-red-50 transition-all text-sm uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl border-2 border-red-100 text-red-500 font-black hover:bg-red-50 transition-all text-sm uppercase tracking-widest"
               >
-                สอบไม่ผ่าน
+                {updateExam.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'สอบไม่ผ่าน'}
               </button>
               <button
                 type="button"
                 disabled={updateExam.isPending}
                 onClick={() => handleSetExamResult('PASSED')}
-                className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
+                className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
               >
-                สอบผ่าน
+                {updateExam.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'สอบผ่าน'}
               </button>
             </div>
           )}
@@ -589,9 +589,9 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   type="button"
                   disabled={!reportInReason.trim() || updateReportIn.isPending}
                   onClick={handleConfirmReportInReject}
-                  className="py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
+                  className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  ยืนยันปฏิเสธรายงานตัว
+                  {updateReportIn.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'ยืนยันปฏิเสธรายงานตัว'}
                 </button>
               </div>
             ) : (
@@ -608,9 +608,9 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   type="button"
                   disabled={updateReportIn.isPending}
                   onClick={handleConfirmReportIn}
-                  className="py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
+                  className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  อนุมัติรายงานตัว
+                  {updateReportIn.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'อนุมัติรายงานตัว'}
                 </button>
               </div>
             )
