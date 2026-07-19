@@ -15,8 +15,8 @@ export const DashboardView = () => {
 
   if (isLoading) return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+        {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
             <Skeleton className="w-10 h-10 rounded-xl" />
             <Skeleton className="h-7 w-20" />
