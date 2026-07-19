@@ -17,6 +17,8 @@ import { ApplicantService } from './applicant.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { QueryApplicantDto } from './dto/query-applicant.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { UpdateExamDto } from './dto/update-exam.dto';
+import { UpdateReportInDto } from './dto/update-report-in.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
 
@@ -86,5 +88,23 @@ export class ApplicantController {
   @UseGuards(JwtAuthGuard)
   async updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
     return this.applicantService.updateStatus(id, dto.status, dto.reason);
+  }
+
+  /**
+   * Set exam result
+   */
+  @Patch('admin/applicants/:id/exam')
+  @UseGuards(JwtAuthGuard)
+  async updateExam(@Param('id') id: string, @Body() dto: UpdateExamDto) {
+    return this.applicantService.updateExamResult(id, dto.examResult);
+  }
+
+  /**
+   * Approve or reject report-in
+   */
+  @Patch('admin/applicants/:id/report-in')
+  @UseGuards(JwtAuthGuard)
+  async updateReportIn(@Param('id') id: string, @Body() dto: UpdateReportInDto) {
+    return this.applicantService.updateReportIn(id, dto.reportInStatus, dto.reason);
   }
 }
