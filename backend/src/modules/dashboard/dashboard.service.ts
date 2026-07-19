@@ -5,12 +5,14 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getStats() {
+  async getStats(year?: number) {
     const currentYear = new Date().getFullYear() + 543;
+    const targetYear = year ?? currentYear;
 
     const [
       totalApplicants,
       thisYearApplicants,
+      reportedInCount,
       statusCounts,
       programCounts,
       genderCounts,
@@ -20,46 +22,51 @@ export class DashboardService {
       // Total all-time
       this.prisma.applicant.count(),
 
-      // This year
+      // Selected year
       this.prisma.applicant.count({
-        where: { applicationYear: currentYear },
+        where: { applicationYear: targetYear },
       }),
 
-      // By status (this year)
+      // Confirmed report-ins (selected year)
+      this.prisma.applicant.count({
+        where: { applicationYear: targetYear, reportInStatus: 'CONFIRMED' },
+      }),
+
+      // By status (selected year)
       this.prisma.applicant.groupBy({
         by: ['status'],
-        where: { applicationYear: currentYear },
+        where: { applicationYear: targetYear },
         _count: { id: true },
       }),
 
-      // By program (this year)
+      // By program (selected year)
       this.prisma.applicant.groupBy({
         by: ['programId'],
-        where: { applicationYear: currentYear },
+        where: { applicationYear: targetYear },
         _count: { id: true },
       }),
 
-      // By gender (this year)
+      // By gender (selected year)
       this.prisma.applicant.groupBy({
         by: ['gender'],
-        where: { applicationYear: currentYear },
+        where: { applicationYear: targetYear },
         _count: { id: true },
       }),
 
-      // Monthly trend (this year)
+      // Monthly trend (selected year)
       this.prisma.$queryRaw`
-        SELECT 
+        SELECT
           EXTRACT(MONTH FROM submitted_at) as month,
           COUNT(*)::int as count
         FROM applicants
-        WHERE application_year = ${currentYear}
+        WHERE application_year = ${targetYear}
         GROUP BY EXTRACT(MONTH FROM submitted_at)
         ORDER BY month
       `,
 
-      // Recent 5 applicants
+      // Recent 5 applicants (selected year)
       this.prisma.applicant.findMany({
-        where: { applicationYear: currentYear },
+        where: { applicationYear: targetYear },
         orderBy: { submittedAt: 'desc' },
         take: 5,
         select: {
@@ -88,7 +95,8 @@ export class DashboardService {
       overview: {
         totalApplicants,
         thisYearApplicants,
-        currentYear,
+        currentYear: targetYear,
+        reportedInCount,
       },
       statusBreakdown: statusCounts.map((s) => ({
         status: s.status,
