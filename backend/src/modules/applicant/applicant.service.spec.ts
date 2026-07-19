@@ -132,3 +132,36 @@ describe('ApplicantService.updateReportIn', () => {
     expect(update.mock.calls[0][0].data.reportInReason).toBeUndefined();
   });
 });
+
+describe('ApplicantService.deletePurgeYear', () => {
+  it('rejects purging a year within the 3-year retention window', async () => {
+    const currentYear = new Date().getFullYear() + 543;
+    const prisma = {} as PrismaService;
+    const service = new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+
+    await expect(service.deletePurgeYear(currentYear - 2)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('deletes storage files and applicant rows for an eligible year', async () => {
+    const currentYear = new Date().getFullYear() + 543;
+    const purgeYear = currentYear - 3;
+    const findMany = jest.fn().mockResolvedValue([
+      { id: 'a1', documents: [{ storageKey: 'applicants/a1/photo.jpg' }] },
+    ]);
+    const deleteMany = jest.fn().mockResolvedValue({ count: 1 });
+    const deleteFile = jest.fn().mockResolvedValue(undefined);
+    const prisma = {
+      applicant: { findMany, deleteMany },
+    } as unknown as PrismaService;
+    const uploadService = { deleteFile } as unknown as UploadService;
+    const service = new ApplicantService(prisma, uploadService, {} as TurnstileService);
+
+    const count = await service.deletePurgeYear(purgeYear);
+
+    expect(deleteFile).toHaveBeenCalledWith('applicants/a1/photo.jpg');
+    expect(deleteMany).toHaveBeenCalledWith({ where: { applicationYear: purgeYear } });
+    expect(count).toBe(1);
+  });
+});

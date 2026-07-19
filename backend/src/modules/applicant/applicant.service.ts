@@ -412,6 +412,38 @@ export class ApplicantService {
   }
 
   /**
+   * Export-then-delete data retention purge (admin, SUPER_ADMIN only).
+   * Keeps the current year and the 2 preceding years; only years older
+   * than that (year <= currentYear - 3) are eligible.
+   */
+  async deletePurgeYear(year: number): Promise<number> {
+    const currentYear = new Date().getFullYear() + 543;
+    if (year > currentYear - 3) {
+      throw new BadRequestException(
+        'This year is not old enough to purge — the last 3 years must be kept',
+      );
+    }
+
+    const applicants = await this.prisma.applicant.findMany({
+      where: { applicationYear: year },
+      include: { documents: true },
+    });
+
+    for (const applicant of applicants) {
+      for (const doc of applicant.documents) {
+        await this.uploadService.deleteFile(doc.storageKey);
+      }
+    }
+
+    const result = await this.prisma.applicant.deleteMany({
+      where: { applicationYear: year },
+    });
+
+    this.logger.log(`Purged ${result.count} applicants for year ${year}`);
+    return result.count;
+  }
+
+  /**
    * Get all applicants for export (no pagination)
    */
   async findAllForExport(query: Partial<QueryApplicantDto>) {
