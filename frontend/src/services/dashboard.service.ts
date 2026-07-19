@@ -7,6 +7,7 @@ export interface DashboardStats {
     totalApplicants: number;
     thisYearApplicants: number;
     currentYear: number;
+    reportedInCount: number;
   };
   statusBreakdown: Array<{ status: string; count: number }>;
   programBreakdown: Array<{ programName: string; count: number }>;
@@ -15,8 +16,8 @@ export interface DashboardStats {
 }
 
 /**
- * ADMIN: GET /admin/dashboard - สถิติภาพรวมทั้งหมด
+ * ADMIN: GET /admin/dashboard - สถิติภาพรวม (แยกตามปี)
  */
-export const fetchDashboardStatsApi = async (): Promise<[Promise<ApiResponse<DashboardStats>>, AbortFunction]> => {
-  return callAPI<ApiResponse<DashboardStats>>("GET", "/admin/dashboard");
+export const fetchDashboardStatsApi = async (year?: number): Promise<[Promise<ApiResponse<DashboardStats>>, AbortFunction]> => {
+  return callAPI<ApiResponse<DashboardStats>>("GET", "/admin/dashboard", null, { params: year ? { year } : undefined });
 };
