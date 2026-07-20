@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  BookOpen, ChevronRight, MapPin, Phone, Loader2, ExternalLink
+  FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone, Loader2, ExternalLink
 } from 'lucide-react';
 import { useState } from 'react';
 import { useHomePrograms, useHomeBanners } from '../hooks/use-home';
@@ -46,54 +46,113 @@ export const LandingView = () => {
       </nav>
 
       {/* HERO SECTION */}
-      <section className="relative pt-20 overflow-hidden" style={banners.length === 0 ? { background: 'linear-gradient(135deg, #f97316 0%, #ea580c 60%, #dc4e0a 100%)' } : undefined}>
-        {banners.length > 0 ? (
-          <HeroSlideshow banners={banners} />
-        ) : (
-          <div className="max-w-4xl mx-auto px-6 lg:px-8 pt-16 pb-28 flex flex-col items-center text-center">
-            <p className="text-white/90 text-base font-semibold mb-8 tracking-wide">
-              มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
+      <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8">
+          <div className="flex flex-col items-center text-center">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">
+              <Award size={16} />
+              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา 2569</span>
+            </div>
+            <h2 className="text-4xl sm:text-7xl lg:text-[4rem] font-black text-navy leading-[1.05] tracking-tight mb-8">
+              <span>สมัครเรียน </span>
+              <span className="text-brand">ออนไลน์</span><br />
+              <span className="text-navy/30 text-2xl sm:text-3xl font-bold">ปีการศึกษา 2570</span>
+            </h2>
+            <p className="text-navy/50 text-lg sm:text-xl leading-relaxed mb-12 max-w-2xl">
+              มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา เปิดรับสมัครนักศึกษาระดับปริญญาตรี ผ่านระบบรับสมัครออนไลน์
             </p>
-            <blockquote className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-relaxed max-w-3xl" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
-              &ldquo;มุ่งเน้นให้มีการเรียนรู้ตลอดชีวิต ผลิตบัณฑิตให้มีความเป็นเลิศทางวิชาการตามแนว
-              พุทธศาสนา พัฒนากระบวนการดำรงชีวิตในสังคมด้วยศีลธรรมชี้นำและแก้ปัญหาสังคม
-              ด้วยหลักพุทธธรรมทั้งในระดับชาติและนานาชาติ&rdquo;
-            </blockquote>
+            <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+              <Link href="/apply" className="group w-full sm:w-auto px-12 py-5 bg-brand text-white rounded-2xl font-bold text-xl shadow-brand hover:shadow-brand transition-all duration-300 flex items-center justify-center gap-3">
+                <FileText size={24} /> สมัครเรียนออนไลน์ <ArrowRight className="group-hover:translate-x-2 transition-transform" size={22} />
+              </Link>
+            </div>
           </div>
-        )}
-        {/* Diagonal bottom clip */}
-        <div
-          className="absolute bottom-0 left-0 w-full overflow-hidden leading-none"
-          style={{ height: '60px' }}
-        >
-          <svg
-            viewBox="0 0 1440 60"
-            preserveAspectRatio="none"
-            className="w-full h-full"
-            xmlns="http://www.w3.org/2000/svg"
+        </div>
+      </section>
+
+      {/* HERO SLIDESHOW */}
+      {banners.length > 0 && (
+        <section>
+          <HeroSlideshow banners={banners} />
+        </section>
+      )}
+
+      {/* MISSION / ปณิธาน */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background: '#0c1445',
+        }}
+      >
+        {/* Mesh gradient blobs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div style={{
+            position: 'absolute', top: '-20%', left: '-10%',
+            width: '600px', height: '600px', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)',
+            filter: 'blur(40px)',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: '-20%', right: '-10%',
+            width: '500px', height: '500px', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)',
+            filter: 'blur(40px)',
+          }} />
+          <div style={{
+            position: 'absolute', top: '30%', right: '20%',
+            width: '300px', height: '300px', borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%)',
+            filter: 'blur(30px)',
+          }} />
+        </div>
+
+        {/* Dot grid pattern */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }} />
+
+        {/* Decorative rings */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full border border-white/5 pointer-events-none" />
+        <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full border border-white/5 pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full border border-white/5 pointer-events-none" />
+
+        {/* Content */}
+        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 py-24 flex flex-col items-center text-center">
+          {/* Label */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 border border-orange-400/30 bg-orange-400/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <p className="text-orange-300 text-xs font-bold tracking-[0.2em] uppercase">
+              ปณิธานมหาวิทยาลัย
+            </p>
+          </div>
+
+          {/* Big decorative quote mark */}
+          <div className="text-[120px] leading-none font-black text-white/5 select-none absolute top-8 left-1/2 -translate-x-1/2" aria-hidden="true">&ldquo;</div>
+
+          <blockquote
+            className="relative text-white/95 text-xl sm:text-2xl lg:text-[1.75rem] font-semibold leading-[1.8] max-w-3xl"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}
           >
+            &ldquo;มุ่งเน้นให้มีการเรียนรู้ตลอดชีวิต ผลิตบัณฑิตให้มีความเป็นเลิศทางวิชาการตามแนว
+            พุทธศาสนา พัฒนากระบวนการดำรงชีวิตในสังคมด้วยศีลธรรมชี้นำและแก้ปัญหาสังคม
+            ด้วยหลักพุทธธรรมทั้งในระดับชาติและนานาชาติ&rdquo;
+          </blockquote>
+
+          {/* Divider line */}
+          <div className="mt-10 w-16 h-0.5 rounded-full bg-gradient-to-r from-orange-400 to-violet-400 opacity-70" />
+          <p className="mt-4 text-white/40 text-sm font-medium tracking-widest uppercase">
+            มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
+          </p>
+        </div>
+
+        {/* Bottom diagonal */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none" style={{ height: '60px' }}>
+          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <polygon points="0,60 1440,0 1440,60" fill="#fdf8f3" />
           </svg>
         </div>
       </section>
-
-      {/* STATS BAR */}
-      {/* <section className="border-y border-navy/5 bg-white/50">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-wrap justify-center gap-x-16 gap-y-10 items-center text-center">
-            <div className="flex flex-col items-center">
-              <p className="text-4xl font-black text-navy">6+</p>
-              <p className="text-xs font-bold text-navy/40 uppercase tracking-widest mt-1">สาขาวิชา</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <p className="text-4xl font-black text-navy">1,000+</p>
-              <p className="text-xs font-bold text-navy/40 uppercase tracking-widest mt-1">บัณฑิตที่ผลิตแล้ว</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <p className="text-4xl font-black text-navy">A+</p>
-              <p className="text-xs font-bold text-navy/40 uppercase tracking-widest mt-1">มาตรฐานสากล</p>
-            </div>
-        </div>
-      </section> */}
 
       {/* PROGRAMS SECTION */}
       <section id="programs" className="py-24 lg:py-32">
