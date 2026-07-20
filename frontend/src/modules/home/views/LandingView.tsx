@@ -45,6 +45,13 @@ export const LandingView = () => {
         </div>
       </nav>
 
+      {/* HERO SLIDESHOW */}
+      {banners.length > 0 && (
+        <section className="my-16 lg:my-24">
+          <HeroSlideshow banners={banners} />
+        </section>
+      )}
+
       {/* HERO SECTION */}
       <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 overflow-hidden">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
@@ -69,13 +76,6 @@ export const LandingView = () => {
           </div>
         </div>
       </section>
-
-      {/* HERO SLIDESHOW */}
-      {banners.length > 0 && (
-        <section className="my-16 lg:my-24">
-          <HeroSlideshow banners={banners} />
-        </section>
-      )}
 
       {/* MISSION / ปณิธาน */}
       <section
