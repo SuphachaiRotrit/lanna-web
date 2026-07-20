@@ -47,13 +47,13 @@ export const LandingView = () => {
 
       {/* HERO SLIDESHOW */}
       {banners.length > 0 && (
-        <section className="my-16 lg:my-24">
+        <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 my-16 lg:my-24">
           <HeroSlideshow banners={banners} />
         </section>
       )}
 
       {/* HERO SECTION */}
-      <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 overflow-hidden">
+      <section className="relative pt-12 pb-20 lg:pt-12 lg:pb-32 overflow-hidden">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClipboardCheck, FileText, GraduationCap, ClipboardList, CloudUpload, Smartphone } from 'lucide-react';
+import ArrowRightStartOnRectangle16SolidIcon from '@iconify-react/heroicons/arrow-right-start-on-rectangle-16-solid';
 
 interface IntroProps {
   onStart: () => void;
@@ -73,7 +74,7 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
         </ul>
       </div>
 
-      <div className="flex items-center justify-center gap-4 pt-4">
+      <div className="items-center justify-center gap-4 pt-4 grid grid-cols-1 md:grid-cols-2">
         <button
           type="button"
           onClick={onCancel}
@@ -89,7 +90,8 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
           <span className="relative z-10 flex items-center gap-3">
             เริ่มสมัครเรียนตอนนี้
             <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center group-hover:translate-x-1 transition-transform">
-              <Smartphone size={14} className="text-navy" />
+              {/* <Smartphone size={14} className="text-navy" /> */}
+              <ArrowRightStartOnRectangle16SolidIcon size={14} className="text-navy" />
             </div>
           </span>
         </button>
