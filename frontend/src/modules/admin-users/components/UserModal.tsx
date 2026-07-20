@@ -47,7 +47,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">อีเมล</label>
+            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">อีเมล</label>
             <input
               type="email"
               pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
@@ -63,7 +63,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
           </div>
 
           <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อ-นามสกุล</label>
+            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อ-นามสกุล</label>
             <input
               type="text"
               className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -76,7 +76,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
           </div>
 
           <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">บทบาท</label>
+            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">บทบาท</label>
             <select
               className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
               value={role}
@@ -88,7 +88,7 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
           </div>
 
           <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">
+            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">
               {user ? 'ตั้งรหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)' : 'รหัสผ่าน'}
             </label>
             <input

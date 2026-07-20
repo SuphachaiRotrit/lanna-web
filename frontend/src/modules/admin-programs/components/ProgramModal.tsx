@@ -76,7 +76,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อสาขาวิชา</label>
+               <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อสาขาวิชา</label>
                <input
                  type="text"
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -89,7 +89,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
             <div className="grid grid-cols-2 gap-4">
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">คณะ</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">คณะ</label>
                   <select
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                     value={formData.facultyId}
@@ -103,7 +103,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   </select>
                </div>
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระยะเวลาหลักสูตร (ปี)</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ระยะเวลาหลักสูตร (ปี)</label>
                   <input
                     type="number"
                     min={1}
@@ -117,7 +117,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ระดับการศึกษา</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ระดับการศึกษา</label>
                   <select
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                     value={formData.degree}
@@ -127,7 +127,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   </select>
                 </div>
                 <div>
-                   <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">โควตารับ (คน)</label>
+                   <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">โควตารับ (คน)</label>
                    <div className="relative">
                       <input
                         type="number"
@@ -143,7 +143,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             </div>
 
             <div>
-               <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">หลักสูตร</label>
+               <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">หลักสูตร</label>
                <select
                  className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                  value={formData.track}
@@ -156,7 +156,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
 
             {formData.track === 'SPECIAL' && (
               <div>
-                 <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">หมายเหตุ (เช่น เรียนเสาร์-อาทิตย์)</label>
+                 <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">หมายเหตุ (เช่น เรียนเสาร์-อาทิตย์)</label>
                  <input
                    type="text"
                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
@@ -170,7 +170,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
             <div className="pt-2 border-t border-gray-100 space-y-4">
                <p className="text-[11px] font-black text-gray-300 uppercase tracking-widest pt-4">ข้อมูลแสดงหน้าเว็บสาธารณะ (กดดูรายละเอียดสาขา)</p>
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เรียนเกี่ยวกับอะไรบ้าง</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เรียนเกี่ยวกับอะไรบ้าง</label>
                   <textarea
                     rows={3}
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
@@ -180,7 +180,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   />
                </div>
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ทักษะ/ความรู้ที่จะได้รับ</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ทักษะ/ความรู้ที่จะได้รับ</label>
                   <textarea
                     rows={3}
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
@@ -190,7 +190,7 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
                   />
                </div>
                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">แนวทางอาชีพหลังจบการศึกษา</label>
+                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">แนวทางอาชีพหลังจบการศึกษา</label>
                   <textarea
                     rows={3}
                     className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"

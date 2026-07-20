@@ -35,7 +35,7 @@ export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onS
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">ชื่อคณะ</label>
+            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อคณะ</label>
             <input
               type="text"
               className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"

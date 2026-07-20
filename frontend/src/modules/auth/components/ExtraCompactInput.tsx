@@ -21,7 +21,7 @@ export const ExtraCompactInput = ({ label, icon: Icon, type = 'text', ...props }
 
   return (
     <div className="mb-2.5">
-      <label className="text-[12px] font-bold text-gray-500 mb-1 block ml-1 uppercase tracking-wider">
+      <label className="text-[12px] font-bold text-gray-500 mb-1 block ml-1 uppercase">
         {label}
       </label>
       

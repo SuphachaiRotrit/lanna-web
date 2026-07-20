@@ -350,7 +350,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
             {rejecting && (
               <div>
-                <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
+                <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                   rows={3}
@@ -363,7 +363,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
             {reportInRejecting && (
               <div>
-                <label className="block text-[12px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">เหตุผลที่ปฏิเสธการรายงานตัว</label>
+                <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เหตุผลที่ปฏิเสธการรายงานตัว</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                   rows={3}
