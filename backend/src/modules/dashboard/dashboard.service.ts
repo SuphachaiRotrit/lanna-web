@@ -14,6 +14,8 @@ export class DashboardService {
       thisYearApplicants,
       reportedInCount,
       statusCounts,
+      examResultCounts,
+      examByProgramCounts,
       programCounts,
       genderCounts,
       monthlyTrend,
@@ -35,6 +37,20 @@ export class DashboardService {
       // By status (selected year)
       this.prisma.applicant.groupBy({
         by: ['status'],
+        where: { applicationYear: targetYear },
+        _count: { id: true },
+      }),
+
+      // By exam result (selected year)
+      this.prisma.applicant.groupBy({
+        by: ['examResult'],
+        where: { applicationYear: targetYear },
+        _count: { id: true },
+      }),
+
+      // By program + exam result (selected year)
+      this.prisma.applicant.groupBy({
+        by: ['programId', 'examResult'],
         where: { applicationYear: targetYear },
         _count: { id: true },
       }),
@@ -91,6 +107,16 @@ export class DashboardService {
 
     const programMap = new Map(programs.map((p) => [p.id, p.name]));
 
+    // Fold programId+examResult rows into one {passed, failed} pair per program
+    const examByProgramMap = new Map<string, { passed: number; failed: number }>();
+    for (const row of examByProgramCounts) {
+      if (row.examResult !== 'PASSED' && row.examResult !== 'FAILED') continue;
+      const entry = examByProgramMap.get(row.programId) || { passed: 0, failed: 0 };
+      if (row.examResult === 'PASSED') entry.passed = row._count.id;
+      else entry.failed = row._count.id;
+      examByProgramMap.set(row.programId, entry);
+    }
+
     return {
       overview: {
         totalApplicants,
@@ -102,6 +128,17 @@ export class DashboardService {
         status: s.status,
         count: s._count.id,
       })),
+      examResultBreakdown: examResultCounts.map((e) => ({
+        examResult: e.examResult,
+        count: e._count.id,
+      })),
+      examByProgramBreakdown: Array.from(examByProgramMap.entries()).map(
+        ([programId, counts]) => ({
+          programId,
+          programName: programMap.get(programId) || 'Unknown',
+          ...counts,
+        }),
+      ),
       programBreakdown: programCounts.map((p) => ({
         programId: p.programId,
         programName: programMap.get(p.programId) || 'Unknown',

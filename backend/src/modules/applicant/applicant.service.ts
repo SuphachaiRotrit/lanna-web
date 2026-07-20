@@ -292,8 +292,17 @@ export class ApplicantService {
     // Search by name, application number, phone, or exact national ID
     if (search) {
       const sanitizedSearch = SanitizeUtil.clean(search);
+      // Strip a leading title (นาย/นาง/นางสาว/พระ/สามเณร) so searching the
+      // full displayed name (e.g. "นายพงศ...") still matches firstName,
+      // which is stored without the title. Longest prefix checked first
+      // since "นางสาว" also starts with "นาง".
+      const NAME_PREFIXES = ['นางสาว', 'สามเณร', 'นาง', 'นาย', 'พระ'];
+      const matchedPrefix = NAME_PREFIXES.find((p) => sanitizedSearch.startsWith(p));
+      const firstNameSearch = matchedPrefix
+        ? sanitizedSearch.slice(matchedPrefix.length).trim()
+        : sanitizedSearch;
       where.OR = [
-        { firstName: { contains: sanitizedSearch, mode: 'insensitive' } },
+        { firstName: { contains: firstNameSearch, mode: 'insensitive' } },
         { lastName: { contains: sanitizedSearch, mode: 'insensitive' } },
         {
           applicationNumber: { contains: sanitizedSearch, mode: 'insensitive' },

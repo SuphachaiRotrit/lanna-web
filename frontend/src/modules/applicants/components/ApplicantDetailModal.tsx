@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { XCircle, FileText, ExternalLink, Printer, Download, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
@@ -176,7 +177,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 print:static print:block print:p-0">
       <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm print:hidden" onClick={handleClose} />
       <div className="relative bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300 print:static print:max-w-none print:max-h-none print:overflow-visible print:rounded-none print:shadow-none print:p-0 print:animate-none">
@@ -585,6 +586,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

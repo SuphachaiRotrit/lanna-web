@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, UserPlus, FileClock, UserCheck, GraduationCap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, UserPlus, FileClock, UserCheck, GraduationCap, ClipboardCheck, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { DashboardStats } from '@/services/dashboard.service';
 
 interface StatsCardProps {
@@ -55,13 +55,19 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
     },
   ];
 
+  const passed = stats?.examResultBreakdown?.find((e) => e.examResult === 'PASSED')?.count || 0;
+  const failed = stats?.examResultBreakdown?.find((e) => e.examResult === 'FAILED')?.count || 0;
+  const examTotal = passed + failed;
+  const passedPct = examTotal ? (passed / examTotal) * 100 : 0;
+  const failedPct = examTotal ? (failed / examTotal) * 100 : 0;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
       {overviewCards.map((card, idx) => {
         const Icon = card.icon;
         return (
-          <div 
-            key={idx} 
+          <div
+            key={idx}
             className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-150 transition-all duration-300 group cursor-default"
           >
             <div className="flex items-start justify-between mb-4">
@@ -85,6 +91,34 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
           </div>
         );
       })}
+
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-150 transition-all duration-300 group cursor-default">
+        <div className="flex items-start justify-between mb-4">
+          <div className="p-2.5 rounded-xl bg-violet-50 group-hover:scale-105 transition-transform duration-300">
+            <ClipboardCheck size={18} className="text-violet-500" strokeWidth={2} />
+          </div>
+        </div>
+        <div className="flex items-end justify-between gap-2 mb-3">
+          <div>
+            <h3 className="text-2xl font-extrabold text-emerald-600 tabular-nums tracking-tight">{passed.toLocaleString()}</h3>
+            <p className="text-[12px] font-bold text-gray-400 mt-0.5">สอบผ่าน</p>
+          </div>
+          <div className="text-right">
+            <h3 className="text-2xl font-extrabold text-red-500 tabular-nums tracking-tight">{failed.toLocaleString()}</h3>
+            <p className="text-[12px] font-bold text-gray-400 mt-0.5">สอบไม่ผ่าน</p>
+          </div>
+        </div>
+        <div className="h-1.5 w-full bg-gray-50 rounded-full overflow-hidden flex">
+          {examTotal ? (
+            <>
+              <div className="h-full bg-emerald-400" style={{ width: `${passedPct}%` }} />
+              <div className="h-full bg-red-400" style={{ width: `${failedPct}%` }} />
+            </>
+          ) : (
+            <div className="h-full w-full bg-gray-100" />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CheckCircle2, Copy, Check } from 'lucide-react';
 
 interface ApplySuccessDialogProps {
@@ -17,7 +18,7 @@ export const ApplySuccessDialog: React.FC<ApplySuccessDialogProps> = ({ applicat
     setTimeout(() => setCopied(false), 2000);
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" />
       <div className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 text-center animate-in fade-in zoom-in duration-300">
@@ -48,6 +49,7 @@ export const ApplySuccessDialog: React.FC<ApplySuccessDialogProps> = ({ applicat
           เสร็จสิ้น
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

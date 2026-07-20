@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { XCircle } from 'lucide-react';
 import { Faculty } from '@/types';
 
@@ -20,7 +21,7 @@ export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onS
     onSubmit({ name });
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300">
@@ -55,6 +56,7 @@ export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onS
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

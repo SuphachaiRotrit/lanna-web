@@ -61,10 +61,14 @@ export const GlobalApplicantSearch = () => {
 
       {isOpen && debouncedQuery.length > 0 && (
         <div className="absolute z-50 right-0 w-80 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-navy/10 py-2 animate-in fade-in zoom-in-95 duration-200 max-h-96 overflow-y-auto">
-          {results.length === 0 && !isFetching && (
+          {isFetching ? (
+            <div className="px-5 py-6 flex items-center justify-center gap-2 text-navy/30">
+              <Loader2 size={16} className="animate-spin" />
+              <span className="text-sm font-bold">กำลังค้นหา...</span>
+            </div>
+          ) : results.length === 0 ? (
             <p className="px-5 py-4 text-sm font-bold text-navy/30">ไม่พบผู้สมัคร</p>
-          )}
-          {results.map((app) => (
+          ) : results.map((app) => (
             <button
               key={app.id}
               type="button"

@@ -35,6 +35,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
               <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ข้อมูลผู้สมัคร</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">วันที่สมัคร</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ผลสอบ</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">การรายงานตัว</th>
@@ -44,17 +45,13 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
           <tbody className="divide-y divide-gray-50">
             {loading ? Array.from({ length: 6 }).map((_, i) => (
               <tr key={i}>
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <Skeleton className="w-12 h-12 rounded-full" />
-                    <div className="space-y-1.5">
-                      <Skeleton className="h-4 w-36" />
-                      <Skeleton className="h-3 w-20" />
-                    </div>
-                  </div>
+                <td className="px-8 py-6 space-y-1.5">
+                  <Skeleton className="h-4 w-36" />
+                  <Skeleton className="h-3 w-20" />
                 </td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-32" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                <td className="px-6 py-6"><Skeleton className="h-4 w-20" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
@@ -63,21 +60,17 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
             )) : applicants.map((app) => (
               <tr key={app.id} className="hover:bg-gray-50/50 transition-colors group">
                 <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-navy/5 flex items-center justify-center font-bold text-navy text-sm">
-                      {app.firstName.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-sm font-black text-navy leading-tight">{app.prefixName}{app.firstName} {app.lastName}</p>
-                      <p className="text-[13px] text-gray-400 font-bold mt-0.5">{app.applicationNumber}</p>
-                    </div>
-                  </div>
+                  <p className="text-sm font-black text-navy leading-tight">{app.prefixName}{app.firstName} {app.lastName}</p>
+                  <p className="text-[13px] text-gray-400 font-bold mt-0.5">{app.applicationNumber}</p>
                 </td>
                 <td className="px-6 py-6">
                   <p className="text-sm font-bold text-gray-700 truncate w-48">{app.program?.name}</p>
                   <p className="text-[12px] text-gray-400 font-medium uppercase tracking-tighter">{app.program?.faculty?.name}</p>
                 </td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
+                <td className="px-6 py-6 font-bold text-sm text-gray-600">
+                  {new Date(app.submittedAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </td>
                 <td className="px-6 py-6">
                   <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${STATUS_STYLES[app.status]}`}>
                     {app.status === 'PENDING' && <Clock size={12} />}

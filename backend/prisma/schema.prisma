@@ -203,6 +203,23 @@ enum ProgramTrack {
 }
 
 // =============================================
+// Banners (สไลด์โชว์หน้าแรก)
+// =============================================
+model Banner {
+  id       String  @id @default(cuid())
+  imageKey String  @map("image_key")
+  title    String?
+  linkUrl  String? @map("link_url")
+  order    Int     @default(0)
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("banners")
+}
+
+// =============================================
 // Documents (เอกสารแนบ)
 // =============================================
 model Document {

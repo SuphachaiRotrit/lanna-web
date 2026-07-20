@@ -4,11 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone, Loader2
+  BookOpen, ChevronRight, MapPin, Phone, Loader2, ExternalLink
 } from 'lucide-react';
 import { useState } from 'react';
-import { useHomePrograms } from '../hooks/use-home';
+import { useHomePrograms, useHomeBanners } from '../hooks/use-home';
 import { ProgramDetailModal } from '../components/ProgramDetailModal';
+import { HeroSlideshow } from '../components/HeroSlideshow';
 import { Program } from '@/types';
 
 const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=5141882952009849250&output=embed';
@@ -16,6 +17,8 @@ const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=5141882952009849250&outpu
 export const LandingView = () => {
   const { data: res, isLoading } = useHomePrograms();
   const programs = res?.data || [];
+  const { data: bannersRes } = useHomeBanners();
+  const banners = bannersRes?.data || [];
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
 
   return (
@@ -33,6 +36,9 @@ export const LandingView = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="#programs" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">หลักสูตร</Link>
             <Link href="/status" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">ตรวจสอบสถานะ</Link>
+            <a href="https://lanna.mbu.ac.th/" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">
+              เว็บมหาวิทยาลัย <ExternalLink size={13} />
+            </a>
             <Link href="/admin/login" className="px-5 py-2.5 text-sm font-semibold text-navy/60 bg-navy/5 hover:bg-navy/10 rounded-xl transition-all">เจ้าหน้าที่</Link>
             <Link href="/apply" className="px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl shadow-brand-sm hover:shadow-brand transition-all hover:-translate-y-0.5">สมัครเรียน</Link>
           </div>
@@ -40,32 +46,39 @@ export const LandingView = () => {
       </nav>
 
       {/* HERO SECTION */}
-      <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">
-              <Award size={16} />
-              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา 2570</span>
-            </div>
-            <h2 className="text-4xl sm:text-7xl lg:text-[4rem] font-black text-navy leading-[1.05] tracking-tight mb-8">
-              <span>สมัครเรียน </span>
-              <span className="text-brand">ออนไลน์</span><br />
-              <span className="text-navy/30 text-2xl sm:text-3xl font-bold">ปีการศึกษา 2570</span>
-            </h2>
-            <p className="text-navy/50 text-lg sm:text-xl leading-relaxed mb-12 max-w-2xl">
-              มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา เปิดรับสมัครนักศึกษาระดับปริญญาตรี ผ่านระบบรับสมัครออนไลน์
+      <section className="relative pt-20 overflow-hidden" style={banners.length === 0 ? { background: 'linear-gradient(135deg, #f97316 0%, #ea580c 60%, #dc4e0a 100%)' } : undefined}>
+        {banners.length > 0 ? (
+          <HeroSlideshow banners={banners} />
+        ) : (
+          <div className="max-w-4xl mx-auto px-6 lg:px-8 pt-16 pb-28 flex flex-col items-center text-center">
+            <p className="text-white/90 text-base font-semibold mb-8 tracking-wide">
+              มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
-              <Link href="/apply" className="group w-full sm:w-auto px-12 py-5 bg-brand text-white rounded-2xl font-bold text-xl shadow-brand hover:shadow-brand transition-all duration-300 flex items-center justify-center gap-3">
-                <FileText size={24} /> สมัครเรียนออนไลน์ <ArrowRight className="group-hover:translate-x-2 transition-transform" size={22} />
-              </Link>
-            </div>
+            <blockquote className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-relaxed max-w-3xl" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
+              &ldquo;มุ่งเน้นให้มีการเรียนรู้ตลอดชีวิต ผลิตบัณฑิตให้มีความเป็นเลิศทางวิชาการตามแนว
+              พุทธศาสนา พัฒนากระบวนการดำรงชีวิตในสังคมด้วยศีลธรรมชี้นำและแก้ปัญหาสังคม
+              ด้วยหลักพุทธธรรมทั้งในระดับชาติและนานาชาติ&rdquo;
+            </blockquote>
           </div>
+        )}
+        {/* Diagonal bottom clip */}
+        <div
+          className="absolute bottom-0 left-0 w-full overflow-hidden leading-none"
+          style={{ height: '60px' }}
+        >
+          <svg
+            viewBox="0 0 1440 60"
+            preserveAspectRatio="none"
+            className="w-full h-full"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <polygon points="0,60 1440,0 1440,60" fill="#fdf8f3" />
+          </svg>
         </div>
       </section>
 
       {/* STATS BAR */}
-      <section className="border-y border-navy/5 bg-white/50">
+      {/* <section className="border-y border-navy/5 bg-white/50">
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-wrap justify-center gap-x-16 gap-y-10 items-center text-center">
             <div className="flex flex-col items-center">
               <p className="text-4xl font-black text-navy">6+</p>
@@ -80,7 +93,7 @@ export const LandingView = () => {
               <p className="text-xs font-bold text-navy/40 uppercase tracking-widest mt-1">มาตรฐานสากล</p>
             </div>
         </div>
-      </section>
+      </section> */}
 
       {/* PROGRAMS SECTION */}
       <section id="programs" className="py-24 lg:py-32">
@@ -169,6 +182,11 @@ export const LandingView = () => {
               <ul className="space-y-4">
                 <li><Link href="/apply" className="text-sm font-bold flex items-center gap-3 hover:translate-x-2 transition-transform">สมัครเรียนออนไลน์</Link></li>
                 <li><Link href="#programs" className="text-sm font-bold flex items-center gap-3 hover:translate-x-2 transition-transform">หลักสูตรที่เปิดรับ</Link></li>
+                <li>
+                  <a href="https://lanna.mbu.ac.th/" target="_blank" rel="noopener noreferrer" className="text-sm font-bold flex items-center gap-3 hover:translate-x-2 transition-transform">
+                    เว็บไซต์หลักมหาวิทยาลัย <ExternalLink size={13} className="opacity-70" />
+                  </a>
+                </li>
                 <li><Link href="/admin/login" className="text-sm font-bold flex items-center gap-3 hover:translate-x-2 transition-transform">ทางเข้าเจ้าหน้าที่</Link></li>
               </ul>
             </div>

@@ -20,7 +20,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   CircleUser,
-  UserCog
+  UserCog,
+  Images
 } from 'lucide-react';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
 import { GlobalApplicantSearch } from '@/modules/applicants/components/GlobalApplicantSearch';
@@ -30,6 +31,7 @@ const menuItems = [
   { title: 'จัดการผู้สมัคร', icon: Users, href: '/admin/applicants', badge: 'hot', superAdminOnly: false },
   { title: 'จัดการสาขาวิชา', icon: BookOpen, href: '/admin/programs', badge: null, superAdminOnly: false },
   { title: 'จัดการคณะ', icon: Building2, href: '/admin/faculties', badge: null, superAdminOnly: false },
+  { title: 'จัดการสไลด์โชว์', icon: Images, href: '/admin/banners', badge: null, superAdminOnly: false },
   { title: 'จัดการผู้ใช้', icon: UserCog, href: '/admin/users', badge: null, superAdminOnly: true },
   { title: 'ตั้งค่า', icon: Settings, href: '/admin/settings', badge: null, superAdminOnly: false },
 ];

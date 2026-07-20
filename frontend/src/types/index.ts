@@ -48,6 +48,18 @@ export interface Program {
   isActive: boolean;
 }
 
+export interface Banner {
+  id: string;
+  imageKey: string;
+  imageUrl: string;
+  title?: string;
+  linkUrl?: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApplicantDocument {
   id: string;
   type: 'PHOTO' | 'ID_CARD' | 'HOUSE_REGISTRATION' | 'TRANSCRIPT' | 'CERTIFICATE' | 'NAME_CHANGE' | 'OTHER';

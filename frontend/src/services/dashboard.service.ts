@@ -10,6 +10,8 @@ export interface DashboardStats {
     reportedInCount: number;
   };
   statusBreakdown: Array<{ status: string; count: number }>;
+  examResultBreakdown: Array<{ examResult: string; count: number }>;
+  examByProgramBreakdown: Array<{ programId: string; programName: string; passed: number; failed: number }>;
   programBreakdown: Array<{ programName: string; count: number }>;
   monthlyTrend: Array<{ month: number; count: number }>;
   recentApplicants: Applicant[];
