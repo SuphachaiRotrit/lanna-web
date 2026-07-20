@@ -7,6 +7,14 @@ import jsPDF from 'jspdf';
 import { useApplicant, useApplicantMutation } from '../hooks/use-applicants';
 import { Applicant, ApplicantDocument } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
+import {
+  STATUS_LABELS,
+  STATUS_STYLES,
+  EXAM_RESULT_LABELS,
+  EXAM_RESULT_STYLES,
+  REPORT_IN_LABELS,
+  REPORT_IN_STYLES,
+} from '@/constants/applicant-status';
 
 interface ApplicantDetailModalProps {
   applicantId: string | null;
@@ -27,46 +35,6 @@ const GENDER_LABELS: Record<Applicant['gender'], string> = {
   MALE: 'ชาย',
   FEMALE: 'หญิง',
   OTHER: 'อื่นๆ',
-};
-
-const STATUS_LABELS: Record<Applicant['status'], string> = {
-  PENDING: 'รอตรวจสอบ',
-  REVIEWING: 'กำลังตรวจสอบ',
-  APPROVED: 'อนุมัติแล้ว',
-  REJECTED: 'ไม่ผ่าน',
-  CANCELLED: 'ยกเลิก',
-};
-
-const STATUS_STYLES: Record<Applicant['status'], string> = {
-  PENDING: 'bg-orange-100 text-orange-600',
-  REVIEWING: 'bg-blue-100 text-blue-600',
-  APPROVED: 'bg-emerald-100 text-emerald-600',
-  REJECTED: 'bg-red-100 text-red-600',
-  CANCELLED: 'bg-gray-100 text-gray-500',
-};
-
-const EXAM_RESULT_LABELS: Record<Applicant['examResult'], string> = {
-  NOT_YET: 'รอสอบ',
-  PASSED: 'สอบผ่าน',
-  FAILED: 'สอบไม่ผ่าน',
-};
-
-const EXAM_RESULT_STYLES: Record<Applicant['examResult'], string> = {
-  NOT_YET: 'bg-gray-100 text-gray-500',
-  PASSED: 'bg-emerald-100 text-emerald-600',
-  FAILED: 'bg-red-100 text-red-600',
-};
-
-const REPORT_IN_LABELS: Record<Applicant['reportInStatus'], string> = {
-  NOT_YET: 'ยังไม่รายงานตัว',
-  CONFIRMED: 'รายงานตัวแล้ว',
-  REJECTED: 'ปฏิเสธรายงานตัว',
-};
-
-const REPORT_IN_STYLES: Record<Applicant['reportInStatus'], string> = {
-  NOT_YET: 'bg-gray-100 text-gray-500',
-  CONFIRMED: 'bg-emerald-100 text-emerald-600',
-  REJECTED: 'bg-red-100 text-red-600',
 };
 
 const formatDateTime = (value?: string) =>
@@ -301,7 +269,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
               <InfoRow label="ยินยอม PDPA" value={applicant.pdpaConsent ? 'ยินยอม' : 'ไม่ยินยอม'} />
               <InfoRow label="วันที่ให้ความยินยอม" value={formatDateTime(applicant.consentedAt)} />
               {applicant.status === 'REJECTED' && applicant.rejectionReason && (
-                <InfoRow label="เหตุผลที่ไม่ผ่าน" value={applicant.rejectionReason} />
+                <InfoRow label="เหตุผลที่ไม่ผ่านการสมัคร" value={applicant.rejectionReason} />
               )}
             </Section>
 
@@ -350,7 +318,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
 
             {rejecting && (
               <div>
-                <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เหตุผลที่ไม่ผ่าน</label>
+                <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เหตุผลที่ไม่ผ่านการสมัคร</label>
                 <textarea
                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
                   rows={3}
@@ -388,7 +356,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/img/logo.png" alt="" className="h-16 w-16 object-contain" />
               </div>
-              <div className="w-24 h-24 border border-black flex flex-col items-center justify-center text-[10px] text-center shrink-0 overflow-hidden">
+              <div className="w-[95px] h-[132px] border border-black flex flex-col items-center justify-center text-[10px] text-center shrink-0 overflow-hidden">
                 {applicant.documents?.find((d) => d.type === 'PHOTO')?.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={applicant.documents.find((d) => d.type === 'PHOTO')!.url} alt="" crossOrigin="anonymous" className="w-full h-full object-cover" />
@@ -529,7 +497,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   onClick={handleConfirmReject}
                   className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed shadow-xl shadow-red-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'ยืนยันไม่ผ่าน'}
+                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'ยืนยันไม่ผ่านการสมัคร'}
                 </button>
               </div>
             ) : (
@@ -540,7 +508,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   onClick={() => setRejecting(true)}
                   className="py-3 px-5 rounded-2xl border-2 border-red-100 text-red-500 font-black hover:bg-red-50 transition-all text-sm uppercase tracking-widest"
                 >
-                  ไม่ผ่าน
+                  ไม่ผ่านการสมัคร
                 </button>
                 <button
                   type="button"
@@ -548,7 +516,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   onClick={handleApprove}
                   className="flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-emerald-500 text-white font-black hover:bg-emerald-600 disabled:opacity-40 shadow-xl shadow-emerald-500/20 transition-all text-sm uppercase tracking-widest"
                 >
-                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'อนุมัติผ่าน'}
+                  {updateStatus.isPending ? <><Loader2 size={16} className="animate-spin" /> กำลังยืนยัน...</> : 'ผ่านการสมัคร'}
                 </button>
               </div>
             )

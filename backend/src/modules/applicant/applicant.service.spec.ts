@@ -1,9 +1,10 @@
 import { ApplicationStatus, ExamResult, ReportInStatus } from '@prisma/client';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ApplicantService } from './applicant.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { TurnstileService } from '../../common/utils/turnstile.util';
+import { EncryptionUtil } from '../../common/utils/encryption.util';
 
 type UpdateArgs = { data: Record<string, unknown> };
 type UpdateMock = jest.Mock<Promise<unknown>, [UpdateArgs]>;
@@ -154,6 +155,68 @@ describe('ApplicantService.updateReportIn', () => {
     await service.updateReportIn('1', ReportInStatus.CONFIRMED);
 
     expect(update.mock.calls[0][0].data.reportInReason).toBeUndefined();
+  });
+});
+
+describe('ApplicantService.checkStatus', () => {
+  beforeAll(() => {
+    process.env.ENCRYPTION_KEY = 'a-secret-of-arbitrary-length-not-32-chars';
+  });
+
+  it('throws the same generic error for a wrong applicationNumber as for a wrong nationalId', async () => {
+    const notFound = {
+      applicant: { findUnique: jest.fn().mockResolvedValue(null) },
+    } as unknown as PrismaService;
+    const wrongId = {
+      applicant: {
+        findUnique: jest
+          .fn()
+          .mockResolvedValue({ nationalIdHash: EncryptionUtil.hash('1111111111111') }),
+      },
+    } as unknown as PrismaService;
+
+    const serviceA = new ApplicantService(notFound, {} as UploadService, {} as TurnstileService);
+    const serviceB = new ApplicantService(wrongId, {} as UploadService, {} as TurnstileService);
+
+    const errA = await serviceA.checkStatus('2569-000001', '1234567890123').catch((e) => e);
+    const errB = await serviceB.checkStatus('2569-000001', '1234567890123').catch((e) => e);
+
+    expect(errA).toBeInstanceOf(NotFoundException);
+    expect(errB).toBeInstanceOf(NotFoundException);
+    expect(errA.message).toBe(errB.message);
+  });
+
+  it('returns public-safe fields on a matching applicationNumber + nationalId', async () => {
+    const nationalIdHash = EncryptionUtil.hash('1234567890123');
+    const prisma = {
+      applicant: {
+        findUnique: jest.fn().mockResolvedValue({
+          nationalIdHash,
+          prefixName: 'นาย',
+          firstName: 'ทดสอบ',
+          lastName: 'ระบบ',
+          applicationNumber: '2569-000001',
+          program: { name: 'พุทธศาสตรบัณฑิต', faculty: { name: 'คณะศาสนาและปรัชญา' } },
+          status: ApplicationStatus.PENDING,
+          examResult: ExamResult.NOT_YET,
+          reportInStatus: ReportInStatus.NOT_YET,
+          reportInAt: null,
+        }),
+      },
+    } as unknown as PrismaService;
+    const service = new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+
+    const result = await service.checkStatus('2569-000001', '1234567890123');
+
+    expect(result).toEqual({
+      fullName: 'นายทดสอบ ระบบ',
+      applicationNumber: '2569-000001',
+      program: { name: 'พุทธศาสตรบัณฑิต', faculty: { name: 'คณะศาสนาและปรัชญา' } },
+      status: ApplicationStatus.PENDING,
+      examResult: ExamResult.NOT_YET,
+      reportInStatus: ReportInStatus.NOT_YET,
+      reportInAt: null,
+    });
   });
 });
 

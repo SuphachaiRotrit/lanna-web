@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { ChevronDown, Check, Search } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, Check, Search, CalendarDays } from 'lucide-react';
 
 interface Option {
   label: string;
@@ -180,6 +180,118 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({ label, required, pre
           {meta.error}
         </p>
       )}
+    </div>
+  );
+};
+
+const YEARS_PER_PAGE = 12;
+
+interface YearPickerProps extends CommonProps {
+  value?: number;
+  onChange?: (year: number) => void;
+  min?: number;
+  max?: number;
+  className?: string;
+}
+
+export const YearPicker: React.FC<YearPickerProps> = ({ label, required, value, onChange, min, max, className }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [rangeStart, setRangeStart] = useState(() => (value ?? new Date().getFullYear() + 543) - 5);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const years = Array.from({ length: YEARS_PER_PAGE }, (_, i) => rangeStart + i);
+
+  return (
+    <div className={`w-full space-y-2 ${className ?? ''}`} ref={containerRef}>
+      {label && (
+        <label className="block text-[12px] font-black text-navy/40 uppercase ml-1">
+          {label} {required && <span className="text-brand">*</span>}
+        </label>
+      )}
+
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => {
+            setIsOpen((o) => !o);
+            setRangeStart((value ?? new Date().getFullYear() + 543) - 5);
+          }}
+          className={`
+            w-full flex items-center justify-between gap-2 bg-gray-100 border-2 rounded-2xl px-5 py-3.5 text-sm font-bold text-navy transition-all duration-300 outline-none
+            ${isOpen ? 'border-brand/30 bg-white shadow-xl shadow-brand/5 ring-4 ring-brand/5' : 'border-gray-200 hover:bg-gray-200'}
+          `}
+        >
+          <span className="flex items-center gap-2">
+            <CalendarDays size={16} className="text-navy/30" />
+            {value ?? 'เลือกปี...'}
+          </span>
+          <ChevronDown
+            size={18}
+            className={`text-navy/20 transition-transform duration-300 ${isOpen ? 'rotate-180 text-brand' : ''}`}
+            strokeWidth={3}
+          />
+        </button>
+
+        {isOpen && (
+          <div className="absolute z-50 w-72 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-navy/10 p-3 animate-in fade-in zoom-in-95 duration-200 transform-gpu">
+            <div className="flex items-center justify-between px-1 pb-2 mb-2 border-b border-gray-50">
+              <button
+                type="button"
+                onClick={() => setRangeStart((s) => s - YEARS_PER_PAGE)}
+                className="p-1.5 rounded-lg hover:bg-gray-50 text-navy/40 hover:text-brand transition-colors"
+              >
+                <ChevronLeft size={16} strokeWidth={3} />
+              </button>
+              <span className="text-xs font-black text-navy/50 uppercase tracking-wider">
+                {years[0]} - {years[years.length - 1]}
+              </span>
+              <button
+                type="button"
+                onClick={() => setRangeStart((s) => s + YEARS_PER_PAGE)}
+                className="p-1.5 rounded-lg hover:bg-gray-50 text-navy/40 hover:text-brand transition-colors"
+              >
+                <ChevronRight size={16} strokeWidth={3} />
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {years.map((year) => {
+                const disabled = (min !== undefined && year < min) || (max !== undefined && year > max);
+                return (
+                  <button
+                    key={year}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => {
+                      onChange?.(year);
+                      setIsOpen(false);
+                    }}
+                    className={`
+                      py-2.5 rounded-xl text-sm font-bold transition-all
+                      ${year === value
+                        ? 'bg-brand text-white shadow-lg shadow-brand/20'
+                        : disabled
+                        ? 'text-navy/15 cursor-not-allowed'
+                        : 'text-navy/70 hover:bg-brand/10 hover:text-brand'}
+                    `}
+                  >
+                    {year}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -80,8 +80,8 @@ export class ExportService {
     const statusMap: Record<string, string> = {
       PENDING: 'รอตรวจสอบ',
       REVIEWING: 'กำลังตรวจสอบ',
-      APPROVED: 'อนุมัติ',
-      REJECTED: 'ไม่อนุมัติ',
+      APPROVED: 'ผ่านการสมัคร',
+      REJECTED: 'ไม่ผ่านการสมัคร',
       CANCELLED: 'ยกเลิก',
     };
 

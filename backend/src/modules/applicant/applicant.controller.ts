@@ -19,6 +19,7 @@ import { QueryApplicantDto } from './dto/query-applicant.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { UpdateReportInDto } from './dto/update-report-in.dto';
+import { CheckStatusDto } from './dto/check-status.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
 
@@ -57,6 +58,15 @@ export class ApplicantController {
   ) {
     const isAdmin = !!req.user;
     return this.applicantService.addDocument(id, file, type, isAdmin);
+  }
+
+  /**
+   * Check application status by application number + national ID (rate limited)
+   */
+  @Post('applicants/check-status')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  async checkStatus(@Body() dto: CheckStatusDto) {
+    return this.applicantService.checkStatus(dto.applicationNumber, dto.nationalId);
   }
 
   // ========================================

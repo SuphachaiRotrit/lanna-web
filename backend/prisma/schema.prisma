@@ -50,6 +50,7 @@ model Applicant {
   firstNameEn String? @map("first_name_en")
   lastNameEn  String? @map("last_name_en")
   nationalId  String  @unique @map("national_id") // เลขบัตรประชาชน (encrypted)
+  nationalIdHash String? @unique @map("national_id_hash") // HMAC ของเลขบัตรประชาชน (deterministic, ใช้ค้นหา/ตรวจสอบซ้ำ)
   gender      Gender
   birthDate   DateTime @map("birth_date")
   ethnicity   String // เชื้อชาติ

@@ -35,8 +35,8 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
       trend: null,
       subtitle: 'ต้องดำเนินการ'
     },
-    { 
-      title: 'อนุมัติแล้ว', 
+    {
+      title: 'ผ่านการสมัคร',
       value: stats?.statusBreakdown?.find((s) => s.status === 'APPROVED')?.count || 0,
       icon: UserCheck, 
       iconBg: 'bg-emerald-50',

@@ -54,7 +54,7 @@ export const useApply = () => {
 
         await Promise.all(uploadPromises);
         toast.success('ส่งใบสมัครเรียนสำเร็จแล้ว!', { id: loadingToast });
-        router.push('/');
+        router.push(`/status?app=${encodeURIComponent(res.data.applicationNumber)}&submitted=1`);
         return res.data;
       } catch (error) {
         toast.error(getErrorMessage(error, 'เกิดข้อผิดพลาดในการส่งใบสมัคร'), { id: loadingToast });

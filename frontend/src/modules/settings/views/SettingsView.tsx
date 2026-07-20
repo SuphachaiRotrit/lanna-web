@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { KeyRound, Lock, ShieldCheck, Trash2 } from 'lucide-react';
 import { ExtraCompactInput } from '@/modules/auth/components/ExtraCompactInput';
-import { PremiumSelect } from '@/components/ui/FormControls';
+import { YearPicker } from '@/components/ui/FormControls';
 import { changePasswordApi, ChangePasswordPayload } from '@/services/auth.service';
 import { purgeApplicantsApi } from '@/services/applicant.service';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
@@ -25,7 +25,8 @@ const changePasswordSchema = Yup.object().shape({
 
 export const SettingsView = () => {
   const { user } = useAuth();
-  const [purgeYear, setPurgeYear] = useState(new Date().getFullYear() + 543 - 3);
+  const currentYear = new Date().getFullYear() + 543;
+  const [purgeYear, setPurgeYear] = useState(currentYear);
 
   const purgeMutation = useMutation({
     mutationFn: async (year: number) => {
@@ -125,14 +126,12 @@ export const SettingsView = () => {
           <p className="text-xs text-gray-400 font-bold mb-4">
             ระบบเก็บข้อมูลผู้สมัคร 3 ปีล่าสุด ปีที่เก่ากว่านั้นสามารถ export เป็น Excel แล้วลบออกจากระบบได้
           </p>
-          <PremiumSelect
-            label="ปีที่ต้องการลบ"
+          <YearPicker
+            label="ปีการศึกษาที่ต้องการลบ"
+            min={currentYear - 30}
+            max={currentYear}
             value={purgeYear}
-            onChange={(e) => setPurgeYear(Number(e.target.value))}
-            options={Array.from({ length: 5 }).map((_, i) => {
-              const year = new Date().getFullYear() + 543 - 3 - i;
-              return { label: `ปีการศึกษา ${year}`, value: year };
-            })}
+            onChange={setPurgeYear}
           />
           <button
             type="button"

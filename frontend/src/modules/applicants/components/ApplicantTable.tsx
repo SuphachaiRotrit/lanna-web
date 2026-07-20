@@ -3,6 +3,14 @@ import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, R
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
+import {
+  STATUS_LABELS,
+  STATUS_STYLES,
+  EXAM_RESULT_LABELS,
+  EXAM_RESULT_STYLES,
+  REPORT_IN_LABELS,
+  REPORT_IN_STYLES,
+} from '@/constants/applicant-status';
 
 interface ApplicantTableProps {
   applicants: Applicant[];
@@ -29,6 +37,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
               <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ผลสอบ</th>
+              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">การรายงานตัว</th>
               <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
             </tr>
           </thead>
@@ -46,6 +55,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 </td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-32" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-4 w-24" /></td>
+                <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-6 py-6"><Skeleton className="h-6 w-20 rounded-full" /></td>
                 <td className="px-8 py-6 text-right"><Skeleton className="h-4 w-16 ml-auto" /></td>
@@ -69,31 +79,22 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 </td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
                 <td className="px-6 py-6">
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${
-                    app.status === 'PENDING' ? 'bg-orange-100 text-orange-600' :
-                    app.status === 'REVIEWING' ? 'bg-blue-100 text-blue-600' :
-                    app.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-600' :
-                    app.status === 'REJECTED' ? 'bg-red-100 text-red-600' :
-                    'bg-gray-100 text-gray-500'
-                  }`}>
+                  <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${STATUS_STYLES[app.status]}`}>
                     {app.status === 'PENDING' && <Clock size={12} />}
                     {app.status === 'REVIEWING' && <Eye size={12} />}
                     {app.status === 'APPROVED' && <CheckCircle2 size={12} />}
                     {app.status === 'REJECTED' && <XCircle size={12} />}
-                    {app.status === 'PENDING' ? 'รอตรวจสอบ' :
-                     app.status === 'REVIEWING' ? 'กำลังตรวจสอบ' :
-                     app.status === 'APPROVED' ? 'อนุมัติแล้ว' :
-                     app.status === 'REJECTED' ? 'ไม่ผ่าน' :
-                     app.status === 'CANCELLED' ? 'ยกเลิก' : app.status}
+                    {STATUS_LABELS[app.status]}
                   </div>
                 </td>
                 <td className="px-6 py-6">
-                  <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${
-                    app.examResult === 'PASSED' ? 'bg-emerald-100 text-emerald-600' :
-                    app.examResult === 'FAILED' ? 'bg-red-100 text-red-600' :
-                    'bg-gray-100 text-gray-500'
-                  }`}>
-                    {app.examResult === 'PASSED' ? 'สอบผ่าน' : app.examResult === 'FAILED' ? 'สอบไม่ผ่าน' : 'รอสอบ'}
+                  <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${EXAM_RESULT_STYLES[app.examResult]}`}>
+                    {EXAM_RESULT_LABELS[app.examResult]}
+                  </div>
+                </td>
+                <td className="px-6 py-6">
+                  <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${REPORT_IN_STYLES[app.reportInStatus]}`}>
+                    {REPORT_IN_LABELS[app.reportInStatus]}
                   </div>
                 </td>
                 <td className="px-8 py-6 text-right">
@@ -142,7 +143,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                             disabled={pendingStatusId === app.id}
                             className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            ปรับเป็นไม่ผ่าน
+                            ส่งกลับไปพิจารณาใหม่
                           </button>
                         </div>
                       </details>

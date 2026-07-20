@@ -11,7 +11,6 @@ import {
   Menu,
   X,
   Bell,
-  Search,
   ChevronRight,
   Settings,
   BookOpen,
@@ -24,6 +23,7 @@ import {
   UserCog
 } from 'lucide-react';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
+import { GlobalApplicantSearch } from '@/modules/applicants/components/GlobalApplicantSearch';
 
 const menuItems = [
   { title: 'ภาพรวม', icon: LayoutDashboard, href: '/admin/dashboard', badge: null, superAdminOnly: false },
@@ -218,15 +218,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <div className="flex items-center gap-2">
             {/* Search */}
-            <div className="hidden lg:flex items-center bg-gray-50/80 rounded-lg px-3 py-2 w-64 border border-gray-100 hover:border-gray-200 transition-all group focus-within:border-brand/30 focus-within:bg-white focus-within:shadow-sm">
-              <Search className="text-gray-300 group-focus-within:text-brand" size={15} />
-              <input 
-                type="text" 
-                placeholder="ค้นหา..." 
-                className="bg-transparent border-none outline-none px-2 text-sm w-full placeholder:text-gray-300 font-medium"
-              />
-              <kbd className="hidden xl:inline-flex text-[12px] font-bold text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
-            </div>
+            <GlobalApplicantSearch />
 
             {/* Notification */}
             <button className="relative p-2 text-gray-400 bg-gray-50/80 rounded-lg border border-gray-100 hover:bg-gray-100 transition-all">

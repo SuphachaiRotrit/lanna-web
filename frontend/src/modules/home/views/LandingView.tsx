@@ -32,6 +32,7 @@ export const LandingView = () => {
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="#programs" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">หลักสูตร</Link>
+            <Link href="/status" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">ตรวจสอบสถานะ</Link>
             <Link href="/admin/login" className="px-5 py-2.5 text-sm font-semibold text-navy/60 bg-navy/5 hover:bg-navy/10 rounded-xl transition-all">เจ้าหน้าที่</Link>
             <Link href="/apply" className="px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl shadow-brand-sm hover:shadow-brand transition-all hover:-translate-y-0.5">สมัครเรียน</Link>
           </div>

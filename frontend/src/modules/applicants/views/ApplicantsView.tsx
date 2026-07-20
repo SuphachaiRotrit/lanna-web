@@ -8,7 +8,8 @@ import { ApplicantTable } from '../components/ApplicantTable';
 import { ApplicantDetailModal } from '../components/ApplicantDetailModal';
 import { ProgramCardGrid } from '../components/ProgramCardGrid';
 import { PremiumButton, PremiumCard } from '../../../components/ui/PremiumBase';
-import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
+import { PremiumInput, PremiumSelect, YearPicker } from '../../../components/ui/FormControls';
+import { STATUS_LABELS } from '@/constants/applicant-status';
 
 export const ApplicantsView = () => {
   const [filters, setFilters] = useState({
@@ -53,7 +54,7 @@ export const ApplicantsView = () => {
             <span className="text-[12px] font-bold text-brand uppercase tracking-[0.2em] bg-brand/5 px-2.5 py-1 rounded-md">Applicants</span>
           </div>
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">จัดการผู้สมัคร</h2>
-          <p className="text-gray-400 text-sm font-medium mt-0.5">ตรวจสอบเอกสารและอนุมัติใบสมัครเรียน</p>
+          <p className="text-gray-400 text-sm font-medium mt-0.5">ตรวจสอบเอกสารและพิจารณาใบสมัครเรียน</p>
         </div>
         <div className="flex items-center gap-3">
           <PremiumButton
@@ -111,23 +112,18 @@ export const ApplicantsView = () => {
             className="!py-3"
             options={[
               { label: 'ทุกสถานะ', value: '' },
-              { label: 'รอตรวจสอบ', value: 'PENDING' },
-              { label: 'กำลังตรวจสอบ', value: 'REVIEWING' },
-              { label: 'อนุมัติแล้ว', value: 'APPROVED' },
-              { label: 'ไม่ผ่าน', value: 'REJECTED' },
+              { label: STATUS_LABELS.PENDING, value: 'PENDING' },
+              { label: STATUS_LABELS.REVIEWING, value: 'REVIEWING' },
+              { label: STATUS_LABELS.APPROVED, value: 'APPROVED' },
+              { label: STATUS_LABELS.REJECTED, value: 'REJECTED' },
             ]}
           />
         </div>
 
-        <div className="w-32">
-          <PremiumSelect
+        <div className="w-36">
+          <YearPicker
             value={filters.year}
-            onChange={(e) => setFilters(prev => ({ ...prev, year: Number(e.target.value), page: 1 }))}
-            className="!py-3"
-            options={[0, 1, 2].map(i => {
-              const year = new Date().getFullYear() + 543 + i;
-              return { label: `ปี ${year}`, value: year };
-            })}
+            onChange={(year) => setFilters(prev => ({ ...prev, year, page: 1 }))}
           />
         </div>
       </PremiumCard>

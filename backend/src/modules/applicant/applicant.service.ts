@@ -59,16 +59,17 @@ export class ApplicantService {
       throw new BadRequestException('PDPA consent is required');
     }
 
-    // Check duplicate national ID (need to check encrypted values)
+    // Check duplicate national ID. EncryptionUtil.encrypt uses a random IV per call, so
+    // encrypting the same plaintext twice never produces the same ciphertext - equality on
+    // `nationalId` can't detect duplicates. `nationalIdHash` is deterministic (HMAC) instead.
     const encryptedNationalId = EncryptionUtil.encrypt(dto.nationalId);
+    const nationalIdHash = EncryptionUtil.hash(dto.nationalId);
 
     // Check if already applied this year
     const currentYear = new Date().getFullYear() + 543; // Buddhist era
 
-    // Need to check by decrypting - but for performance, we store a hash too
-    // For now, use unique constraint on nationalId
     const existingById = await this.prisma.applicant.findUnique({
-      where: { nationalId: encryptedNationalId },
+      where: { nationalIdHash },
     });
 
     if (existingById) {
@@ -102,6 +103,7 @@ export class ApplicantService {
         firstNameEn: sanitized.firstNameEn,
         lastNameEn: sanitized.lastNameEn,
         nationalId: encryptedNationalId,
+        nationalIdHash,
         gender: sanitized.gender,
         birthDate: new Date(sanitized.birthDate),
         ethnicity: sanitized.ethnicity,
@@ -203,6 +205,37 @@ export class ApplicantService {
   }
 
   /**
+   * Check application status by application number + national ID (public, self-service).
+   * Returns a generic error on either a wrong applicationNumber or a wrong nationalId,
+   * so a caller can't use this to probe which application numbers exist.
+   */
+  async checkStatus(applicationNumber: string, nationalId: string) {
+    const applicant = await this.prisma.applicant.findUnique({
+      where: { applicationNumber },
+      include: {
+        program: { select: { name: true, faculty: { select: { name: true } } } },
+      },
+    });
+
+    const nationalIdHash = EncryptionUtil.hash(nationalId);
+    if (!applicant || applicant.nationalIdHash !== nationalIdHash) {
+      throw new NotFoundException(
+        'ไม่พบข้อมูลใบสมัคร กรุณาตรวจสอบเลขที่ใบสมัครและเลขบัตรประชาชนอีกครั้ง',
+      );
+    }
+
+    return {
+      fullName: `${applicant.prefixName}${applicant.firstName} ${applicant.lastName}`,
+      applicationNumber: applicant.applicationNumber,
+      program: applicant.program,
+      status: applicant.status,
+      examResult: applicant.examResult,
+      reportInStatus: applicant.reportInStatus,
+      reportInAt: applicant.reportInAt,
+    };
+  }
+
+  /**
    * List applicants with search, filter, pagination (admin)
    */
   async findAll(query: QueryApplicantDto) {
@@ -234,7 +267,7 @@ export class ApplicantService {
       where.programId = programId;
     }
 
-    // Search by name or application number
+    // Search by name, application number, phone, or exact national ID
     if (search) {
       const sanitizedSearch = SanitizeUtil.clean(search);
       where.OR = [
@@ -245,6 +278,8 @@ export class ApplicantService {
         },
         // Search by phone
         { phone: { contains: sanitizedSearch } },
+        // Exact national ID match only - nationalId is encrypted, so this is the only way
+        { nationalIdHash: EncryptionUtil.hash(sanitizedSearch) },
       ];
     }
 

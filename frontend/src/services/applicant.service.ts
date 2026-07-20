@@ -67,3 +67,20 @@ export const uploadDocumentApi = async (id: string, type: string, file: File): P
   formData.append('file', file);
   return callAPI<ApiResponse<unknown>>("POST", `/applicants/${id}/documents?type=${type}`, formData);
 };
+
+export interface ApplicationStatusResult {
+  fullName: string;
+  applicationNumber: string;
+  program: { name: string; faculty: { name: string } } | null;
+  status: Applicant['status'];
+  examResult: Applicant['examResult'];
+  reportInStatus: Applicant['reportInStatus'];
+  reportInAt: string | null;
+}
+
+/**
+ * PUBLIC: POST /applicants/check-status - ตรวจสอบสถานะใบสมัครด้วยเลขที่ใบสมัคร + เลขบัตรประชาชน
+ */
+export const checkApplicantStatusApi = async (applicationNumber: string, nationalId: string): Promise<[Promise<ApiResponse<ApplicationStatusResult>>, AbortFunction]> => {
+  return callAPI<ApiResponse<ApplicationStatusResult>>("POST", "/applicants/check-status", { applicationNumber, nationalId });
+};

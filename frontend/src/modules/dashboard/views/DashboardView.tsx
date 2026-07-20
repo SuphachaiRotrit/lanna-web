@@ -6,7 +6,7 @@ import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
 import { TrendChart } from '../components/TrendChart';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { PremiumSelect } from '@/components/ui/FormControls';
+import { YearPicker } from '@/components/ui/FormControls';
 
 export const DashboardView = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() + 543);
@@ -50,14 +50,7 @@ export const DashboardView = () => {
         </div>
         <div className="flex items-center gap-3">
           <div className="w-44">
-            <PremiumSelect
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-              options={[0, 1, 2].map(i => {
-                const year = new Date().getFullYear() + 543 + i;
-                return { label: `ปีการศึกษา ${year}`, value: year };
-              })}
-            />
+            <YearPicker value={selectedYear} onChange={setSelectedYear} />
           </div>
           <button
             type="button"

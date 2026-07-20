@@ -10,6 +10,7 @@
     "create-root.ts",
     "reset-pwd.ts",
     "prisma.config.ts",
-    "prisma/seed.ts"
+    "prisma/seed.ts",
+    "prisma/backfill-national-id-hash.ts"
   ]
 }
