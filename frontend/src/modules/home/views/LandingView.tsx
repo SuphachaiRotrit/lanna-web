@@ -81,75 +81,47 @@ export const LandingView = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          background: '#0c1445',
+          background: 'radial-gradient(ellipse at 40% 40%, #ff8c5a 0%, #f4511e 45%, #d93e0a 100%)',
         }}
       >
-        {/* Mesh gradient blobs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div style={{
-            position: 'absolute', top: '-20%', left: '-10%',
-            width: '600px', height: '600px', borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)',
-            filter: 'blur(40px)',
-          }} />
-          <div style={{
-            position: 'absolute', bottom: '-20%', right: '-10%',
-            width: '500px', height: '500px', borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)',
-            filter: 'blur(40px)',
-          }} />
-          <div style={{
-            position: 'absolute', top: '30%', right: '20%',
-            width: '300px', height: '300px', borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%)',
-            filter: 'blur(30px)',
-          }} />
-        </div>
-
-        {/* Dot grid pattern */}
+        {/* Subtle lighter radial highlight top-left */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
+          background: 'radial-gradient(ellipse at 15% 30%, rgba(255,180,120,0.35) 0%, transparent 55%)',
         }} />
 
-        {/* Decorative rings */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full border border-white/5 pointer-events-none" />
-        <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full border border-white/5 pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full border border-white/5 pointer-events-none" />
-
         {/* Content */}
-        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 py-24 flex flex-col items-center text-center">
-          {/* Label */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 border border-orange-400/30 bg-orange-400/10">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
-            <p className="text-orange-300 text-xs font-bold tracking-[0.2em] uppercase">
-              ปณิธานมหาวิทยาลัย
-            </p>
-          </div>
-
-          {/* Big decorative quote mark */}
-          <div className="text-[120px] leading-none font-black text-white/5 select-none absolute top-8 left-1/2 -translate-x-1/2" aria-hidden="true">&ldquo;</div>
-
+        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 pt-16 pb-36 flex flex-col items-center text-center">
+          <p className="text-white/80 text-sm font-semibold mb-6 tracking-[0.15em] uppercase">
+            มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
+          </p>
           <blockquote
-            className="relative text-white/95 text-xl sm:text-2xl lg:text-[1.75rem] font-semibold leading-[1.8] max-w-3xl"
-            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}
+            className="text-white text-xl sm:text-2xl lg:text-[1.65rem] font-bold leading-[1.9] max-w-3xl"
+            style={{ textShadow: '0 1px 6px rgba(0,0,0,0.2)' }}
           >
             &ldquo;มุ่งเน้นให้มีการเรียนรู้ตลอดชีวิต ผลิตบัณฑิตให้มีความเป็นเลิศทางวิชาการตามแนว
             พุทธศาสนา พัฒนากระบวนการดำรงชีวิตในสังคมด้วยศีลธรรมชี้นำและแก้ปัญหาสังคม
             ด้วยหลักพุทธธรรมทั้งในระดับชาติและนานาชาติ&rdquo;
           </blockquote>
-
-          {/* Divider line */}
-          <div className="mt-10 w-16 h-0.5 rounded-full bg-gradient-to-r from-orange-400 to-violet-400 opacity-70" />
-          <p className="mt-4 text-white/40 text-sm font-medium tracking-widest uppercase">
-            มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
-          </p>
         </div>
 
-        {/* Bottom diagonal */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none" style={{ height: '60px' }}>
-          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,60 1440,0 1440,60" fill="#fdf8f3" />
+        {/* Organic blob shapes at bottom — like reference image */}
+        <div className="absolute bottom-0 left-0 w-full pointer-events-none" style={{ height: '110px' }}>
+          <svg viewBox="0 0 1440 110" preserveAspectRatio="none" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            {/* Back blob — darkest orange */}
+            <path
+              d="M0,110 L0,75 Q200,20 420,65 Q600,100 780,45 Q960,0 1150,55 Q1300,90 1440,50 L1440,110 Z"
+              fill="rgba(180,50,0,0.35)"
+            />
+            {/* Mid blob — medium orange */}
+            <path
+              d="M0,110 L0,88 Q180,50 380,80 Q560,105 740,60 Q920,20 1100,70 Q1280,105 1440,72 L1440,110 Z"
+              fill="rgba(255,120,60,0.4)"
+            />
+            {/* Front — cream page bg */}
+            <path
+              d="M0,110 L0,98 Q240,68 460,92 Q660,110 860,80 Q1060,52 1260,88 Q1360,100 1440,90 L1440,110 Z"
+              fill="#fdf8f3"
+            />
           </svg>
         </div>
       </section>
