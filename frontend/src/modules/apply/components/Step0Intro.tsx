@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClipboardCheck, FileText, GraduationCap, ClipboardList, CloudUpload, Smartphone } from 'lucide-react';
+import { ClipboardCheck, FileText, GraduationCap, ClipboardList, CloudUpload } from 'lucide-react';
 import ArrowRightStartOnRectangle16SolidIcon from '@iconify-react/heroicons/arrow-right-start-on-rectangle-16-solid';
 
 interface IntroProps {
@@ -46,7 +46,7 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {steps.map((s, i) => (
-          <div key={i} className="group p-6 bg-white border-2 border-gray-100 rounded-[2rem] hover:border-brand/30 hover:shadow-xl hover:shadow-brand/5 transition-all duration-300">
+          <div key={i} className="group p-6 bg-white border-2 border-gray-100 rounded-4xl hover:border-brand/30 hover:shadow-xl hover:shadow-brand/5 transition-all duration-300">
             <div className="flex gap-5 items-start">
               <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center shrink-0 group-hover:bg-brand/10 transition-colors">
                 {s.icon}
@@ -60,7 +60,7 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
         ))}
       </div>
 
-      <div className="bg-amber-50 rounded-[2rem] p-6 border-2 border-amber-100/50">
+      <div className="bg-amber-50 rounded-4xl p-6 border-2 border-amber-100/50">
         <h4 className="text-xs font-black text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-2">
           📌 เอกสารที่ต้องอัปโหลด (เตรียมไฟล์ให้พร้อม)
         </h4>
@@ -91,7 +91,7 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
             เริ่มสมัครเรียนตอนนี้
             <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center group-hover:translate-x-1 transition-transform">
               {/* <Smartphone size={14} className="text-navy" /> */}
-              <ArrowRightStartOnRectangle16SolidIcon size={14} className="text-navy" />
+              <ArrowRightStartOnRectangle16SolidIcon width="14" height="14" className="text-navy" />
             </div>
           </span>
         </button>
