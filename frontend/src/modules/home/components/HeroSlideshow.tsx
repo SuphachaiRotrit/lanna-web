@@ -52,7 +52,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
           <img
             src={banner.imageUrl}
             alt={banner.title || 'banner'}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         );
         return (

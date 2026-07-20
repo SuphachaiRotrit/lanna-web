@@ -81,14 +81,9 @@ export const LandingView = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          background: 'radial-gradient(ellipse at 40% 40%, #ff8c5a 0%, #f4511e 45%, #d93e0a 100%)',
+          background: 'linear-gradient(135deg, var(--color-brand-light) 0%, var(--color-brand) 60%, var(--color-brand-dark) 100%)',
         }}
       >
-        {/* Subtle lighter radial highlight top-left */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at 15% 30%, rgba(255,180,120,0.35) 0%, transparent 55%)',
-        }} />
-
         {/* Content */}
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 pt-16 pb-36 flex flex-col items-center text-center">
           <p className="text-white/80 text-sm font-semibold mb-6 tracking-[0.15em] uppercase">
