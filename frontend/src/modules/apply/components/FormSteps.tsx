@@ -237,7 +237,7 @@ export const Step2Education = () => {
       <section className="bg-brand/5 px-10 py-10 rounded-[3rem] border border-brand/10 shadow-inner shadow-brand/5">
         <label className="block text-xs font-black text-navy/60 uppercase ml-1 mb-4 flex items-center gap-2">
           <Info size={14} className="text-brand" />
-          เหตุผลที่สนใจสมัครเรียนที่ มหาปวชิราลงกรณราชวิทยาลัย
+          เหตุผลที่สนใจสมัครเรียนที่ มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา
         </label>
         <textarea
           name="applicationReason"

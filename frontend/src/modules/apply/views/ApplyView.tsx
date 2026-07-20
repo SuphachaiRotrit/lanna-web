@@ -25,7 +25,10 @@ const applicationSchema = Yup.object().shape({
     .matches(/^0[0-9]{9}$/, 'เบอร์โทรศัพท์ต้องเริ่มด้วย 0 และมี 10 หลัก')
     .required('กรุณาระบุเบอร์โทรศัพท์'),
   email: Yup.string().email('อีเมลไม่ถูกต้อง').required('กรุณาระบุอีเมล'),
+  gender: Yup.string().required('กรุณาระบุเพศ'),
   birthDate: Yup.string().required('กรุณาระบุวันเกิด'),
+  religion: Yup.string().required('กรุณาระบุศาสนา'),
+  nationality: Yup.string().required('กรุณาระบุสัญชาติ'),
   address: Yup.string().required('กรุณาระบุที่อยู่'),
   subDistrict: Yup.string().required('กรุณาระบุตำบล'),
   district: Yup.string().required('กรุณาระบุอำเภอ'),
@@ -35,6 +38,7 @@ const applicationSchema = Yup.object().shape({
     .required('กรุณาระบุรหัสไปรษณีย์'),
   previousSchool: Yup.string().required('กรุณาระบุสถานศึกษาเดิม'),
   previousEducation: Yup.string().required('กรุณาระบุวุฒิการศึกษา'),
+  schoolProvince: Yup.string().required('กรุณาระบุจังหวัดของสถานศึกษา'),
   graduationYear: Yup.string()
     .matches(/^[0-9]{4}$/, 'ปีที่จบต้องเป็นตัวเลข 4 หลัก (พ.ศ.)')
     .required('กรุณาระบุปีที่จบ'),
@@ -43,6 +47,12 @@ const applicationSchema = Yup.object().shape({
   pdpaConsent: Yup.boolean().oneOf([true], 'กรุณายอมรับเงื่อนไขการรับรองข้อมูล'),
   turnstileToken: Yup.string().required('Security validation failed'),
 });
+
+const STEP_FIELDS: Record<number, string[]> = {
+  1: ['prefixName', 'firstName', 'lastName', 'nationalId', 'phone', 'email', 'gender', 'birthDate', 'religion', 'nationality', 'address', 'province', 'district', 'subDistrict', 'postalCode'],
+  2: ['previousSchool', 'previousEducation', 'schoolProvince', 'graduationYear', 'gpa'],
+  3: ['programId'],
+};
 
 const initialValues = {
   prefixName: '',
@@ -195,7 +205,7 @@ export const ApplyView = () => {
             validationSchema={applicationSchema}
             onSubmit={handleSubmit}
           >
-            {({ values, setFieldValue, isSubmitting }) => (
+            {({ values, setFieldValue, isSubmitting, validateForm, setTouched }) => (
               <Form className="space-y-8">
                 {currentStep === 0 && <Step0Intro onStart={nextStep} />}
                 {currentStep === 1 && <Step1Personal />}
@@ -216,7 +226,16 @@ export const ApplyView = () => {
                     {currentStep < 4 ? (
                       <button
                         type="button"
-                        onClick={nextStep}
+                        onClick={async () => {
+                          const stepFields = STEP_FIELDS[currentStep] || [];
+                          const errors = await validateForm();
+                          if (stepFields.some((field) => errors[field as keyof typeof errors])) {
+                            setTouched(Object.fromEntries(stepFields.map((field) => [field, true])), false);
+                            toast.error('กรุณากรอกข้อมูลให้ครบถ้วนก่อนไปขั้นตอนถัดไป');
+                            return;
+                          }
+                          nextStep();
+                        }}
                         className="px-10 py-4 text-sm font-bold text-white bg-navy rounded-2xl hover:bg-navy/90 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-navy/20 transition-all duration-300"
                       >
                         ถัดไป

@@ -82,7 +82,7 @@ export const StatusView = () => {
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
           />
-          <Turnstile onVerify={setTurnstileToken} />
+          <Turnstile onVerify={setTurnstileToken} siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
           <button
             type="submit"
             disabled={isPending || nationalId.length !== 13 || !birthDate || !turnstileToken}
