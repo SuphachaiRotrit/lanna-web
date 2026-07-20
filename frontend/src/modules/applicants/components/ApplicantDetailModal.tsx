@@ -389,7 +389,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                   label="ชื่อ-ฉายา-นามสกุล"
                   value={`${applicant.prefixName}${applicant.firstName}${applicant.aliasName ? ` (${applicant.aliasName})` : ''} ${applicant.lastName}`}
                 />
-                <FormField label="หมายเลขบัตรประชาชน" value={toThaiNum(applicant.nationalId)} />
+                <FormField label="หมายเลขบัตรประชาชน" value={applicant.nationalId} />
                 <div className="flex gap-4">
                   <FormField label="เกิด วันที่/เดือน/พ.ศ." value={formatThaiDate(applicant.birthDate)} className="flex-[2]" />
                   <FormField label="สัญชาติ" value={applicant.nationality} className="flex-1" />
@@ -399,8 +399,8 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
               <div>
                 <p>๓. ที่อยู่ตามทะเบียนบ้าน เลขที่</p>
                 <FormField value={applicant.address} />
-                <FormField value={`ตำบล/แขวง ${applicant.subDistrict} อำเภอ/เขต ${applicant.district} จังหวัด ${applicant.province} รหัสไปรษณีย์ ${toThaiNum(applicant.postalCode)}`} />
-                <FormField label="โทรศัพท์" value={toThaiNum(applicant.phone)} />
+                <FormField value={`ตำบล/แขวง ${applicant.subDistrict} อำเภอ/เขต ${applicant.district} จังหวัด ${applicant.province} รหัสไปรษณีย์ ${applicant.postalCode}`} />
+                <FormField label="โทรศัพท์" value={applicant.phone} />
                 <FormField label="E-mail" value={applicant.email} />
                 <FormField label="Line ID" value={applicant.lineId} />
               </div>
@@ -410,7 +410,7 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
                 <div className="flex gap-4">
                   <FormField label="ระดับการศึกษาที่จบ" value={applicant.previousEducation} className="flex-[2]" />
                   <FormField label="จบปี พ.ศ." value={toThaiNum(applicant.graduationYear)} className="flex-1" />
-                  <FormField label="เกรดเฉลี่ย" value={toThaiNum(applicant.gpa)} className="flex-1" />
+                  <FormField label="เกรดเฉลี่ย" value={applicant.gpa} className="flex-1" />
                 </div>
                 <FormField label="จบจากโรงเรียน" value={applicant.previousSchool} />
                 <FormField label="จังหวัด" value={applicant.schoolProvince} />

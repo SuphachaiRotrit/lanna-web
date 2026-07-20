@@ -19,6 +19,8 @@ export const ApplicantsView = () => {
     status: '',
     year: new Date().getFullYear() + 543,
     programId: '',
+    sortBy: 'submittedAt',
+    sortOrder: 'desc' as 'asc' | 'desc',
   });
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [viewingApplicantId, setViewingApplicantId] = useState<string | null>(null);
@@ -38,6 +40,15 @@ export const ApplicantsView = () => {
 
   const handleSearchChange = (search: string) => {
     setFilters(prev => ({ ...prev, search, page: 1 }));
+  };
+
+  const handleSort = (sortBy: string) => {
+    setFilters(prev => ({
+      ...prev,
+      sortBy,
+      sortOrder: prev.sortBy === sortBy && prev.sortOrder === 'asc' ? 'desc' : 'asc',
+      page: 1,
+    }));
   };
 
   const handleSelectProgram = (programId: string | null) => {
@@ -116,6 +127,7 @@ export const ApplicantsView = () => {
               { label: STATUS_LABELS.REVIEWING, value: 'REVIEWING' },
               { label: STATUS_LABELS.APPROVED, value: 'APPROVED' },
               { label: STATUS_LABELS.REJECTED, value: 'REJECTED' },
+              { label: STATUS_LABELS.CANCELLED, value: 'CANCELLED' },
             ]}
           />
         </div>
@@ -138,6 +150,9 @@ export const ApplicantsView = () => {
         onUpdateStatus={(id, status) => updateStatus.mutate({ id, status })}
         onView={setViewingApplicantId}
         pendingStatusId={updateStatus.isPending ? updateStatus.variables?.id : undefined}
+        sortBy={filters.sortBy}
+        sortOrder={filters.sortOrder}
+        onSort={handleSort}
       />
       </>
       )}

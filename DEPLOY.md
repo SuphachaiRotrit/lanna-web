@@ -80,7 +80,7 @@
 ## Phase 3 — Deploy backend ขึ้น Vercel
 
 1. สร้าง Vercel project ใหม่ ตั้ง **Root Directory เป็น `backend`** framework preset เลือก "Other" (Vercel จะ auto-detect function ใน `api/` เอง)
-2. ตั้งค่า Environment Variables (ทั้ง Production และ Preview ถ้าต้องการ): `DATABASE_URL`, `DIRECT_URL` (จาก Phase 1), `JWT_SECRET`, `JWT_REFRESH_SECRET`, `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION`, `ENCRYPTION_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET` (ที่เก็บไฟล์ผู้สมัคร), `TURNSTILE_SECRET_KEY`, `FRONTEND_URL` (ตั้งได้หลังจากรู้ URL ของ frontend ใน Phase 4 แล้ว — ใช้กับ CORS และ CSP `connectSrc`), `NODE_ENV=production`
+2. ตั้งค่า Environment Variables (ทั้ง Production และ Preview ถ้าต้องการ): `DATABASE_URL`, `DIRECT_URL` (จาก Phase 1), `JWT_SECRET`, `JWT_REFRESH_SECRET`, `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION`, `ENCRYPTION_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET` (ที่เก็บไฟล์ผู้สมัคร), `TURNSTILE_SECRET_KEY`, `FRONTEND_URL` (ตั้งได้หลังจากรู้ URL ของ frontend ใน Phase 4 แล้ว — ใช้กับ CORS และ CSP `connectSrc`), `NODE_ENV=production`, `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` (cache หน้า dashboard — สร้างฟรีที่ [upstash.com](https://upstash.com) เลือก REST API ไม่ใช่ TCP; ถ้าไม่ตั้งค่า ระบบจะข้าม cache ไปเฉยๆ ไม่ error)
 3. กด deploy แล้วจด domain ของ backend ที่ได้ (เช่น `lanna-backend.vercel.app`) ไว้ใช้ตั้งค่า `BACKEND_INTERNAL_URL` ใน Phase 4
 
 ## Phase 4 — Deploy frontend ขึ้น Vercel

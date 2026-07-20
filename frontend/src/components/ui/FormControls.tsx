@@ -243,7 +243,7 @@ export const YearPicker: React.FC<YearPickerProps> = ({ label, required, value, 
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-72 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-navy/10 p-3 animate-in fade-in zoom-in-95 duration-200 transform-gpu">
+          <div className="absolute right-0 z-50 w-72 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl shadow-navy/10 p-3 animate-in fade-in zoom-in-95 duration-200 transform-gpu">
             <div className="flex items-center justify-between px-1 pb-2 mb-2 border-b border-gray-50">
               <button
                 type="button"

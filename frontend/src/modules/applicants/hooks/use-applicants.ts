@@ -10,6 +10,8 @@ interface ApplicantFilters {
   search: string;
   status: string;
   year: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export const useApplicants = (filters: ApplicantFilters) => {

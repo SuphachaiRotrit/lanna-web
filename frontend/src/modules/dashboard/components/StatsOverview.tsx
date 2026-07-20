@@ -62,7 +62,7 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
   const failedPct = examTotal ? (failed / examTotal) * 100 : 0;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {overviewCards.map((card, idx) => {
         const Icon = card.icon;
         return (

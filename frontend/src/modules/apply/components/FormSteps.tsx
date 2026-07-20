@@ -155,7 +155,7 @@ export const Step1Personal = () => {
         <SectionHeader icon={MapPin} title="ข้อมูลที่อยู่ปัจจุบัน" desc="ใช้สำหรับจัดส่งเอกสารและข้อมูลการศึกษา" />
         <div className="space-y-7">
           <PremiumInput label="ที่อยู่ปัจจุบัน" name="address" required placeholder="บ้านเลขที่, หมู่ที่, ซอย, ถนน..." />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-7">
             <PremiumSelect label="จังหวัด" name="province" required placeholder="เลือกจังหวัด" options={getProvinceOptions()} />
             <PremiumSelect
               label="อำเภอ / เขต"

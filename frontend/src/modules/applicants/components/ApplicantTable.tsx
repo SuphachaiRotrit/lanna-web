@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, RotateCcw, Loader2 } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, RotateCcw, Loader2, ArrowUp, ArrowDown, ChevronsUpDown } from 'lucide-react';
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -21,24 +21,45 @@ interface ApplicantTableProps {
   onPageChange: (page: number) => void;
   currentPage: number;
   pendingStatusId?: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  onSort: (column: string) => void;
 }
 
 export const ApplicantTable: React.FC<ApplicantTableProps> = ({
-  applicants, pagination, loading, onUpdateStatus, onView, onPageChange, currentPage, pendingStatusId
+  applicants, pagination, loading, onUpdateStatus, onView, onPageChange, currentPage, pendingStatusId,
+  sortBy, sortOrder, onSort,
 }) => {
+  const renderSortableHeader = (key: string, label: string, className = 'px-6') => {
+    const isActive = sortBy === key;
+    const Icon = isActive ? (sortOrder === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
+    return (
+      <th className={`${className} py-5 text-[12px] font-black uppercase tracking-[0.2em]`}>
+        <button
+          type="button"
+          onClick={() => onSort(key)}
+          className={`flex items-center gap-1 transition-colors ${isActive ? 'text-brand' : 'text-gray-400 hover:text-navy'}`}
+        >
+          {label}
+          <Icon size={13} strokeWidth={3} />
+        </button>
+      </th>
+    );
+  };
+
   return (
     <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-50/50">
-              <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ข้อมูลผู้สมัคร</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สาขาที่สมัคร</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">เบอร์โทรศัพท์</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">วันที่สมัคร</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">สถานะ</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">ผลสอบ</th>
-              <th className="px-6 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em]">การรายงานตัว</th>
+              {renderSortableHeader('firstName', 'ข้อมูลผู้สมัคร', 'px-8')}
+              {renderSortableHeader('program.name', 'สาขาที่สมัคร')}
+              {renderSortableHeader('phone', 'เบอร์โทรศัพท์')}
+              {renderSortableHeader('submittedAt', 'วันที่สมัคร')}
+              {renderSortableHeader('status', 'สถานะ')}
+              {renderSortableHeader('examResult', 'ผลสอบ')}
+              {renderSortableHeader('reportInStatus', 'การรายงานตัว')}
               <th className="px-8 py-5 text-[12px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">จัดการ</th>
             </tr>
           </thead>

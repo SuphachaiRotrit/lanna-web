@@ -15,6 +15,5 @@ export const uploadFileApi = async (file: File, folder: string): Promise<[Promis
   formData.append("file", file);
   return callAPI<UploadResult>("POST", "/upload", formData, {
     params: { folder },
-    headers: { "Content-Type": "multipart/form-data" },
   });
 };

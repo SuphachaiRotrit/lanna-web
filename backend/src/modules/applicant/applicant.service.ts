@@ -22,6 +22,28 @@ import { SanitizeUtil } from '../../common/utils/sanitize.util';
 
 import { TurnstileService } from '../../common/utils/turnstile.util';
 
+type ApplicantSortKey =
+  | 'firstName'
+  | 'phone'
+  | 'submittedAt'
+  | 'status'
+  | 'examResult'
+  | 'reportInStatus'
+  | 'program.name';
+
+const APPLICANT_SORT_MAP: Record<
+  ApplicantSortKey,
+  (order: 'asc' | 'desc') => Prisma.ApplicantOrderByWithRelationInput
+> = {
+  firstName: (order) => ({ firstName: order }),
+  phone: (order) => ({ phone: order }),
+  submittedAt: (order) => ({ submittedAt: order }),
+  status: (order) => ({ status: order }),
+  examResult: (order) => ({ examResult: order }),
+  reportInStatus: (order) => ({ reportInStatus: order }),
+  'program.name': (order) => ({ program: { name: order } }),
+};
+
 @Injectable()
 export class ApplicantService {
   private readonly logger = new Logger(ApplicantService.name);
@@ -321,7 +343,9 @@ export class ApplicantService {
         where,
         skip,
         take: limit,
-        orderBy: { [sortBy]: sortOrder },
+        orderBy: (
+          APPLICANT_SORT_MAP[sortBy as ApplicantSortKey] ?? APPLICANT_SORT_MAP.submittedAt
+        )(sortOrder as 'asc' | 'desc'),
         include: {
           program: {
             select: {

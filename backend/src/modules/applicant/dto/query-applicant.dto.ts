@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsEnum, IsInt, Min } from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsIn, IsInt, Min } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 const emptyToUndefined = ({ value }: { value: unknown }) =>
@@ -50,6 +50,6 @@ export class QueryApplicantDto {
   sortBy?: string = 'submittedAt';
 
   @IsOptional()
-  @IsString()
+  @IsIn(['asc', 'desc'])
   sortOrder?: 'asc' | 'desc' = 'desc';
 }
