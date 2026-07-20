@@ -72,7 +72,7 @@ export const LandingView = () => {
 
       {/* HERO SLIDESHOW */}
       {banners.length > 0 && (
-        <section>
+        <section className="my-16 lg:my-24">
           <HeroSlideshow banners={banners} />
         </section>
       )}
