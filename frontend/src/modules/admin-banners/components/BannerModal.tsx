@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { XCircle, UploadCloud, Loader2 } from 'lucide-react';
 import { Banner } from '@/types';
@@ -23,18 +23,24 @@ const defaultFormData: Partial<Banner> = {
 };
 
 export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSubmit, banner, isSubmitting }) => {
-  const [formData, setFormData] = useState<Partial<Banner>>(() =>
-    banner
-      ? {
-          imageKey: banner.imageKey,
-          title: banner.title || '',
-          linkUrl: banner.linkUrl || '',
-          isActive: banner.isActive,
-        }
-      : defaultFormData
-  );
-  const [previewUrl, setPreviewUrl] = useState<string>(banner?.imageUrl || '');
+  const [formData, setFormData] = useState<Partial<Banner>>(defaultFormData);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setFormData(
+      banner
+        ? {
+            imageKey: banner.imageKey,
+            title: banner.title || '',
+            linkUrl: banner.linkUrl || '',
+            isActive: banner.isActive,
+          }
+        : defaultFormData
+    );
+    setPreviewUrl(banner?.imageUrl || '');
+  }, [isOpen, banner]);
 
   if (!isOpen) return null;
 

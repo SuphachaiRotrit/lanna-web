@@ -72,8 +72,10 @@ export const LandingView = () => {
 
       {/* HERO SLIDESHOW */}
       {banners.length > 0 && (
-        <section>
-          <HeroSlideshow banners={banners} />
+        <section className="pb-20 lg:pb-28">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <HeroSlideshow banners={banners} />
+          </div>
         </section>
       )}
 
@@ -117,11 +119,11 @@ export const LandingView = () => {
               d="M0,110 L0,88 Q180,50 380,80 Q560,105 740,60 Q920,20 1100,70 Q1280,105 1440,72 L1440,110 Z"
               fill="rgba(255,120,60,0.4)"
             />
-            {/* Front — cream page bg */}
+            {/* Front — cream page bg
             <path
               d="M0,110 L0,98 Q240,68 460,92 Q660,110 860,80 Q1060,52 1260,88 Q1360,100 1440,90 L1440,110 Z"
               fill="#fdf8f3"
-            />
+            /> */}
           </svg>
         </div>
       </section>

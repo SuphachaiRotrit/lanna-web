@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Banner } from '@/types';
 
 const AUTO_ROTATE_MS = 5000;
+const SWIPE_THRESHOLD_PX = 40;
 
 interface HeroSlideshowProps {
   banners: Banner[];
@@ -13,6 +14,7 @@ interface HeroSlideshowProps {
 export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     if (banners.length <= 1 || isPaused) return;
@@ -24,11 +26,25 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
 
   const goTo = (i: number) => setIndex((i + banners.length) % banners.length);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+    goTo(delta > 0 ? index - 1 : index + 1);
+  };
+
   return (
     <div
-      className="relative w-full aspect-[16/9] max-h-[600px] overflow-hidden bg-navy/5"
+      className="group relative w-full aspect-[21/9] min-h-[200px] max-h-[440px] overflow-hidden rounded-[2rem] border border-navy/5 shadow-brand-sm bg-navy/5"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {banners.map((banner, i) => {
         const slide = (
@@ -42,7 +58,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
         return (
           <div
             key={banner.id}
-            className="absolute inset-0 transition-opacity duration-700"
+            className={`absolute inset-0 transition-all duration-[900ms] ease-out ${i === index ? 'scale-100' : 'scale-[1.04]'}`}
             style={{ opacity: i === index ? 1 : 0, pointerEvents: i === index ? 'auto' : 'none' }}
           >
             {banner.linkUrl ? (
@@ -50,6 +66,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
                 {slide}
               </a>
             ) : slide}
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
           </div>
         );
       })}
@@ -59,25 +76,39 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
           <button
             onClick={() => goTo(index - 1)}
             aria-label="ก่อนหน้า"
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-md transition-all"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur hover:bg-white flex items-center justify-center shadow-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
           >
-            <ChevronLeft size={20} className="text-navy" />
+            <ChevronLeft size={18} className="text-navy" />
           </button>
           <button
             onClick={() => goTo(index + 1)}
             aria-label="ถัดไป"
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-md transition-all"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 backdrop-blur hover:bg-white flex items-center justify-center shadow-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
           >
-            <ChevronRight size={20} className="text-navy" />
+            <ChevronRight size={18} className="text-navy" />
           </button>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`สไลด์ที่ ${i + 1}`}
-                className={`h-2 rounded-full transition-all ${i === index ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`}
-              />
+                className="relative h-1 w-8 rounded-full bg-white/35 overflow-hidden"
+              >
+                {i === index && (
+                  <span
+                    key={index}
+                    className="absolute inset-y-0 left-0 bg-white rounded-full"
+                    style={{
+                      animationName: 'progress-fill',
+                      animationDuration: `${AUTO_ROTATE_MS}ms`,
+                      animationTimingFunction: 'linear',
+                      animationFillMode: 'forwards',
+                      animationPlayState: isPaused ? 'paused' : 'running',
+                    }}
+                  />
+                )}
+              </button>
             ))}
           </div>
         </>
