@@ -163,40 +163,83 @@ describe('ApplicantService.checkStatus', () => {
     process.env.ENCRYPTION_KEY = 'a-secret-of-arbitrary-length-not-32-chars';
   });
 
-  it('throws the same generic error for a wrong applicationNumber as for a wrong nationalId', async () => {
+  const validTurnstile = {
+    verifyToken: jest.fn().mockResolvedValue(true),
+  } as unknown as TurnstileService;
+
+  it('throws the same generic error for an unregistered nationalId as for a wrong birthDate', async () => {
     const notFound = {
       applicant: { findUnique: jest.fn().mockResolvedValue(null) },
     } as unknown as PrismaService;
-    const wrongId = {
+    const wrongBirthDate = {
       applicant: {
-        findUnique: jest
-          .fn()
-          .mockResolvedValue({ nationalIdHash: EncryptionUtil.hash('1111111111111') }),
+        findUnique: jest.fn().mockResolvedValue({
+          nationalIdHash: EncryptionUtil.hash('1234567890123'),
+          birthDate: new Date('2001-05-01'),
+        }),
       },
     } as unknown as PrismaService;
 
-    const serviceA = new ApplicantService(notFound, {} as UploadService, {} as TurnstileService);
-    const serviceB = new ApplicantService(wrongId, {} as UploadService, {} as TurnstileService);
+    const serviceA = new ApplicantService(
+      notFound,
+      {} as UploadService,
+      validTurnstile,
+    );
+    const serviceB = new ApplicantService(
+      wrongBirthDate,
+      {} as UploadService,
+      validTurnstile,
+    );
 
-    const errA = await serviceA.checkStatus('2569-000001', '1234567890123').catch((e) => e);
-    const errB = await serviceB.checkStatus('2569-000001', '1234567890123').catch((e) => e);
+    const errA: unknown = await serviceA
+      .checkStatus('1234567890123', '2001-05-01', 'token')
+      .catch((e: unknown) => e);
+    const errB: unknown = await serviceB
+      .checkStatus('1234567890123', '1999-01-01', 'token')
+      .catch((e: unknown) => e);
 
     expect(errA).toBeInstanceOf(NotFoundException);
     expect(errB).toBeInstanceOf(NotFoundException);
-    expect(errA.message).toBe(errB.message);
+    expect((errA as NotFoundException).message).toBe(
+      (errB as NotFoundException).message,
+    );
   });
 
-  it('returns public-safe fields on a matching applicationNumber + nationalId', async () => {
+  it('rejects when the Turnstile token is invalid, before doing any lookup', async () => {
+    const findUnique = jest.fn();
+    const prisma = { applicant: { findUnique } } as unknown as PrismaService;
+    const invalidTurnstile = {
+      verifyToken: jest
+        .fn()
+        .mockRejectedValue(new Error('CAPTCHA verification failed')),
+    } as unknown as TurnstileService;
+    const service = new ApplicantService(
+      prisma,
+      {} as UploadService,
+      invalidTurnstile,
+    );
+
+    await expect(
+      service.checkStatus('1234567890123', '2001-05-01', 'bad-token'),
+    ).rejects.toThrow('CAPTCHA verification failed');
+    expect(findUnique).not.toHaveBeenCalled();
+  });
+
+  it('returns public-safe, name-masked fields on a matching nationalId + birthDate', async () => {
     const nationalIdHash = EncryptionUtil.hash('1234567890123');
     const prisma = {
       applicant: {
         findUnique: jest.fn().mockResolvedValue({
           nationalIdHash,
+          birthDate: new Date('2001-05-01'),
           prefixName: 'นาย',
           firstName: 'ทดสอบ',
           lastName: 'ระบบ',
           applicationNumber: '2569-000001',
-          program: { name: 'พุทธศาสตรบัณฑิต', faculty: { name: 'คณะศาสนาและปรัชญา' } },
+          program: {
+            name: 'พุทธศาสตรบัณฑิต',
+            faculty: { name: 'คณะศาสนาและปรัชญา' },
+          },
           status: ApplicationStatus.PENDING,
           examResult: ExamResult.NOT_YET,
           reportInStatus: ReportInStatus.NOT_YET,
@@ -204,14 +247,25 @@ describe('ApplicantService.checkStatus', () => {
         }),
       },
     } as unknown as PrismaService;
-    const service = new ApplicantService(prisma, {} as UploadService, {} as TurnstileService);
+    const service = new ApplicantService(
+      prisma,
+      {} as UploadService,
+      validTurnstile,
+    );
 
-    const result = await service.checkStatus('2569-000001', '1234567890123');
+    const result = await service.checkStatus(
+      '1234567890123',
+      '2001-05-01',
+      'token',
+    );
 
     expect(result).toEqual({
-      fullName: 'นายทดสอบ ระบบ',
+      fullName: 'นายท**** ร***',
       applicationNumber: '2569-000001',
-      program: { name: 'พุทธศาสตรบัณฑิต', faculty: { name: 'คณะศาสนาและปรัชญา' } },
+      program: {
+        name: 'พุทธศาสตรบัณฑิต',
+        faculty: { name: 'คณะศาสนาและปรัชญา' },
+      },
       status: ApplicationStatus.PENDING,
       examResult: ExamResult.NOT_YET,
       reportInStatus: ReportInStatus.NOT_YET,

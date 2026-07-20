@@ -79,8 +79,8 @@ export interface ApplicationStatusResult {
 }
 
 /**
- * PUBLIC: POST /applicants/check-status - ตรวจสอบสถานะใบสมัครด้วยเลขที่ใบสมัคร + เลขบัตรประชาชน
+ * PUBLIC: POST /applicants/check-status - ตรวจสอบสถานะใบสมัครด้วยเลขบัตรประชาชน + วันเกิด
  */
-export const checkApplicantStatusApi = async (applicationNumber: string, nationalId: string): Promise<[Promise<ApiResponse<ApplicationStatusResult>>, AbortFunction]> => {
-  return callAPI<ApiResponse<ApplicationStatusResult>>("POST", "/applicants/check-status", { applicationNumber, nationalId });
+export const checkApplicantStatusApi = async (nationalId: string, birthDate: string, turnstileToken: string): Promise<[Promise<ApiResponse<ApplicationStatusResult>>, AbortFunction]> => {
+  return callAPI<ApiResponse<ApplicationStatusResult>>("POST", "/applicants/check-status", { nationalId, birthDate, turnstileToken });
 };

@@ -11,6 +11,7 @@ import { Step1Personal, Step2Education } from '../components/FormSteps';
 import { Step0Intro } from '../components/Step0Intro';
 import { Step3Program } from '../components/Step3Program';
 import { Step4Documents } from '../components/Step4Documents';
+import { ApplySuccessDialog } from '../components/ApplySuccessDialog';
 import { CheckCircle } from 'lucide-react';
 
 const applicationSchema = Yup.object().shape({
@@ -236,6 +237,13 @@ export const ApplyView = () => {
           </Formik>
         </div>
       </div>
+
+      {applyMutation.isSuccess && applyMutation.data && (
+        <ApplySuccessDialog
+          applicationNumber={applyMutation.data.applicationNumber}
+          onClose={() => router.push(`/status?app=${encodeURIComponent(applyMutation.data!.applicationNumber)}&submitted=1`)}
+        />
+      )}
     </div>
   );
 };

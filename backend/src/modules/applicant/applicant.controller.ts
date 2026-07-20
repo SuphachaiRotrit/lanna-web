@@ -61,12 +61,18 @@ export class ApplicantController {
   }
 
   /**
-   * Check application status by application number + national ID (rate limited)
+   * Check application status by national ID + birth date (rate limited, CAPTCHA-gated).
+   * Tighter than other public endpoints - a wrong birthDate guess against a known/leaked
+   * national ID is the realistic abuse case here, so this is capped harder than a normal form submit.
    */
   @Post('applicants/check-status')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Throttle({ default: { limit: 5, ttl: 300000 } }) // 5 attempts per 5 minutes
   async checkStatus(@Body() dto: CheckStatusDto) {
-    return this.applicantService.checkStatus(dto.applicationNumber, dto.nationalId);
+    return this.applicantService.checkStatus(
+      dto.nationalId,
+      dto.birthDate,
+      dto.turnstileToken,
+    );
   }
 
   // ========================================

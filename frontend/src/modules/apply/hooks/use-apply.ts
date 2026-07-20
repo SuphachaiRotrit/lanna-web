@@ -2,12 +2,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createApplicantApi, uploadDocumentApi } from "@/services/applicant.service";
 import { listProgramsApi } from "@/services/program.service";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getErrorMessage } from "@/lib/call-api";
 
 export const useApply = () => {
-  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
   // ดึงรายการหลักสูตรที่เปิดรับ
@@ -54,7 +52,6 @@ export const useApply = () => {
 
         await Promise.all(uploadPromises);
         toast.success('ส่งใบสมัครเรียนสำเร็จแล้ว!', { id: loadingToast });
-        router.push(`/status?app=${encodeURIComponent(res.data.applicationNumber)}&submitted=1`);
         return res.data;
       } catch (error) {
         toast.error(getErrorMessage(error, 'เกิดข้อผิดพลาดในการส่งใบสมัคร'), { id: loadingToast });

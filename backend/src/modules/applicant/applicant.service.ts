@@ -205,27 +205,44 @@ export class ApplicantService {
   }
 
   /**
-   * Check application status by application number + national ID (public, self-service).
-   * Returns a generic error on either a wrong applicationNumber or a wrong nationalId,
-   * so a caller can't use this to probe which application numbers exist.
+   * Check application status by national ID + birth date (public, self-service).
+   * An applicationNumber-based lookup would require the applicant to have saved a
+   * number the system never emails them - national ID + DOB is the standard Thai
+   * self-service pairing (used by exam results, tax refunds, etc.) and needs no
+   * lookup value beyond what the applicant already knows.
+   * Returns a generic error on any mismatch, so a caller can't use this to probe
+   * which national IDs are registered.
    */
-  async checkStatus(applicationNumber: string, nationalId: string) {
+  async checkStatus(
+    nationalId: string,
+    birthDate: string,
+    turnstileToken: string,
+  ) {
+    await this.turnstileService.verifyToken(turnstileToken);
+
+    const nationalIdHash = EncryptionUtil.hash(nationalId);
     const applicant = await this.prisma.applicant.findUnique({
-      where: { applicationNumber },
+      where: { nationalIdHash },
       include: {
-        program: { select: { name: true, faculty: { select: { name: true } } } },
+        program: {
+          select: { name: true, faculty: { select: { name: true } } },
+        },
       },
     });
 
-    const nationalIdHash = EncryptionUtil.hash(nationalId);
-    if (!applicant || applicant.nationalIdHash !== nationalIdHash) {
+    const birthDateMatches =
+      applicant?.birthDate.toISOString().slice(0, 10) === birthDate;
+
+    if (!applicant || !birthDateMatches) {
       throw new NotFoundException(
-        'ไม่พบข้อมูลใบสมัคร กรุณาตรวจสอบเลขที่ใบสมัครและเลขบัตรประชาชนอีกครั้ง',
+        'ไม่พบข้อมูลใบสมัคร กรุณาตรวจสอบเลขบัตรประชาชนและวันเกิดอีกครั้ง',
       );
     }
 
     return {
-      fullName: `${applicant.prefixName}${applicant.firstName} ${applicant.lastName}`,
+      // Masked - a caller who already has the correct nationalId + birthDate can confirm
+      // status, but this page must not double as a "whose ID is this" name-lookup tool.
+      fullName: `${applicant.prefixName}${this.maskName(applicant.firstName)} ${this.maskName(applicant.lastName)}`,
       applicationNumber: applicant.applicationNumber,
       program: applicant.program,
       status: applicant.status,
@@ -233,6 +250,11 @@ export class ApplicantService {
       reportInStatus: applicant.reportInStatus,
       reportInAt: applicant.reportInAt,
     };
+  }
+
+  private maskName(name: string): string {
+    if (name.length <= 1) return name;
+    return name[0] + '*'.repeat(name.length - 1);
   }
 
   /**

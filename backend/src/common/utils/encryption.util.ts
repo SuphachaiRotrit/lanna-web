@@ -48,6 +48,9 @@ export class EncryptionUtil {
 
   // Deterministic (no IV) - lets us look up an encrypted field by exact plaintext match.
   static hash(text: string): string {
-    return crypto.createHmac('sha256', this.getKey()).update(text).digest('hex');
+    return crypto
+      .createHmac('sha256', this.getKey())
+      .update(text)
+      .digest('hex');
   }
 }

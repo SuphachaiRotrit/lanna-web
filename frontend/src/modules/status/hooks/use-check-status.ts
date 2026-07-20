@@ -3,8 +3,8 @@ import { checkApplicantStatusApi } from '@/services/applicant.service';
 
 export const useCheckStatus = () => {
   return useMutation({
-    mutationFn: async ({ applicationNumber, nationalId }: { applicationNumber: string; nationalId: string }) => {
-      const [promise] = await checkApplicantStatusApi(applicationNumber, nationalId);
+    mutationFn: async ({ nationalId, birthDate, turnstileToken }: { nationalId: string; birthDate: string; turnstileToken: string }) => {
+      const [promise] = await checkApplicantStatusApi(nationalId, birthDate, turnstileToken);
       const res = await promise;
       return res.data;
     },
