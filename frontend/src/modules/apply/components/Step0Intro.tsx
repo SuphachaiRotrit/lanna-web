@@ -1,31 +1,33 @@
 import React from 'react';
-import { ClipboardCheck, FileText, Smartphone, CloudUpload, ShieldCheck } from 'lucide-react';
+import { ClipboardCheck, FileText, GraduationCap, ClipboardList, CloudUpload, Smartphone } from 'lucide-react';
 
 interface IntroProps {
   onStart: () => void;
+  onCancel: () => void;
 }
 
-export const Step0Intro: React.FC<IntroProps> = ({ onStart }) => {
+export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
+  // ponytail: titles mirror ApplyView's stepTitles — keep in sync if steps change there.
   const steps = [
     {
       icon: <FileText className="text-brand" size={24} />,
-      title: '1. เตรียมข้อมูลสำคัญ',
-      desc: 'เตรียมเลขบัตรประชาชน, ข้อมูลที่อยู่ และประวัติการศึกษาให้พร้อม'
+      title: '1. ข้อมูลส่วนตัว',
+      desc: 'เตรียมเลขบัตรประชาชน, ที่อยู่, เบอร์โทรศัพท์ และอีเมลที่ติดต่อได้จริง'
     },
     {
-      icon: <Smartphone className="text-brand" size={24} />,
-      title: '2. ข้อมูลการติดต่อ',
-      desc: 'ระบุเบอร์โทรศัพท์และอีเมลที่ติดต่อได้จริงเพื่อรับข่าวสาร'
+      icon: <GraduationCap className="text-brand" size={24} />,
+      title: '2. ประวัติการศึกษา',
+      desc: 'ระบุสถานศึกษาเดิม วุฒิที่จบ และเกรดเฉลี่ย'
+    },
+    {
+      icon: <ClipboardList className="text-brand" size={24} />,
+      title: '3. เลือกหลักสูตร',
+      desc: 'เลือกสาขาวิชาที่ต้องการสมัครเข้าศึกษาต่อ'
     },
     {
       icon: <CloudUpload className="text-brand" size={24} />,
-      title: '3. อัปโหลดเอกสารประกอบ',
-      desc: 'ถ่ายรูปหรือสแกนไฟล์ภาพ/PDF (รูปถ่าย, บัตรประชาชน, ทะเบียนบ้าน, วุฒิการศึกษา)'
-    },
-    {
-      icon: <ShieldCheck className="text-brand" size={24} />,
-      title: '4. ตรวจสอบและยืนยัน',
-      desc: 'ตรวจสอบความถูกต้องก่อนกดส่งใบสมัคร ข้อมูลจะไม่สามารถแก้ไขได้หลังการส่ง'
+      title: '4. อัปโหลดเอกสาร',
+      desc: 'อัปโหลดรูปถ่ายและเอกสารประกอบให้ครบ ตรวจสอบให้ถูกต้องก่อนกดส่ง (แก้ไขไม่ได้หลังส่ง)'
     }
   ];
 
@@ -71,8 +73,16 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart }) => {
         </ul>
       </div>
 
-      <div className="flex justify-center pt-4">
+      <div className="flex items-center justify-center gap-4 pt-4">
         <button
+          type="button"
+          onClick={onCancel}
+          className="px-8 py-4 text-sm font-bold text-navy bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all duration-300"
+        >
+          ยกเลิก
+        </button>
+        <button
+          type="button"
           onClick={onStart}
           className="group relative px-16 py-5 bg-navy text-white rounded-3xl font-black text-sm tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-navy/20"
         >

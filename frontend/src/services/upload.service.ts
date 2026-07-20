@@ -1,4 +1,5 @@
 import { callAPI, AbortFunction } from "@/lib/call-api";
+import { ApiResponse } from "@/types";
 
 export interface UploadResult {
   key: string;
@@ -10,10 +11,10 @@ export interface UploadResult {
 /**
  * POST /upload?folder=... - อัปโหลดไฟล์
  */
-export const uploadFileApi = async (file: File, folder: string): Promise<[Promise<UploadResult>, AbortFunction]> => {
+export const uploadFileApi = async (file: File, folder: string): Promise<[Promise<ApiResponse<UploadResult>>, AbortFunction]> => {
   const formData = new FormData();
   formData.append("file", file);
-  return callAPI<UploadResult>("POST", "/upload", formData, {
+  return callAPI<ApiResponse<UploadResult>>("POST", "/upload", formData, {
     params: { folder },
   });
 };

@@ -207,7 +207,7 @@ export const ApplyView = () => {
           >
             {({ values, setFieldValue, isSubmitting, validateForm, setTouched }) => (
               <Form className="space-y-8">
-                {currentStep === 0 && <Step0Intro onStart={nextStep} />}
+                {currentStep === 0 && <Step0Intro onStart={nextStep} onCancel={() => router.push('/')} />}
                 {currentStep === 1 && <Step1Personal />}
                 {currentStep === 2 && <Step2Education />}
                 {currentStep === 3 && <Step3Program programs={programsQuery.data?.data || []} selectedProgramId={values.programId} isLoading={programsQuery.isLoading} />}
@@ -217,11 +217,11 @@ export const ApplyView = () => {
                   <div className="mt-10 pt-8 border-t border-gray-100 flex justify-between">
                     <button
                       type="button"
-                      onClick={() => currentStep === 1 ? router.push('/') : prevStep()}
+                      onClick={prevStep}
                       disabled={isSubmitting}
                       className="px-8 py-4 text-sm font-bold text-navy bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all duration-300 flex items-center gap-2"
                     >
-                      {currentStep === 1 ? 'ยกเลิก' : 'ย้อนกลับ'}
+                      ย้อนกลับ
                     </button>
                     {currentStep < 4 ? (
                       <button

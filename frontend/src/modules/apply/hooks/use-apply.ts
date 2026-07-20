@@ -6,7 +6,7 @@ import { useState } from "react";
 import { getErrorMessage } from "@/lib/call-api";
 
 export const useApply = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
 
   // ดึงรายการหลักสูตรที่เปิดรับ
   const programsQuery = useQuery({

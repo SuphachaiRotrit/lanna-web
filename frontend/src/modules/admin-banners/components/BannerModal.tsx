@@ -46,7 +46,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSub
     try {
       const [promise] = await uploadFileApi(file, 'banners');
       const result = await promise;
-      setFormData((prev) => ({ ...prev, imageKey: result.key }));
+      setFormData((prev) => ({ ...prev, imageKey: result.data.key }));
     } catch (err) {
       toast.error(getErrorMessage(err, 'ไม่สามารถอัปโหลดรูปภาพได้'));
     } finally {
