@@ -11,6 +11,7 @@
     "reset-pwd.ts",
     "prisma.config.ts",
     "prisma/seed.ts",
-    "prisma/backfill-national-id-hash.ts"
+    "prisma/backfill-national-id-hash.ts",
+    "prisma/backfill-application-year-2570.ts"
   ]
 }

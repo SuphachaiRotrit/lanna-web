@@ -40,7 +40,7 @@ export const ApplicantsView = () => {
   const { data: programsRes, isLoading: programsLoading } = usePrograms();
   const programs = programsRes?.data || [];
 
-  const { data: res, isLoading } = useApplicants(filters);
+  const { data: res, isLoading, isFetching } = useApplicants(filters);
   const applicants = res?.data?.rows || [];
   const pagination = res?.data?.pagination || {};
 
@@ -184,7 +184,7 @@ export const ApplicantsView = () => {
       <ApplicantTable 
         applicants={applicants}
         pagination={pagination}
-        loading={isLoading}
+        loading={isLoading || isFetching}
         currentPage={filters.page}
         onPageChange={handlePageChange}
         onUpdateStatus={(id, status) => updateStatus.mutate({ id, status })}
