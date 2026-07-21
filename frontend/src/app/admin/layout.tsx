@@ -194,7 +194,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             {isCollapsed ? (
               <div>
-                  <PanelLeftOpen size={16}/>
+                <span className="text-xs font-bold text-warm-gray">ขยาย</span>
+                <PanelLeftOpen size={16}/>
               </div>
             )  : <PanelLeftClose size={16} />}
           </button>
