@@ -5,13 +5,15 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { KeyRound, Lock, ShieldCheck, Trash2 } from 'lucide-react';
+import { KeyRound, Lock, ShieldCheck, Trash2, CalendarDays } from 'lucide-react';
 import { ExtraCompactInput } from '@/modules/auth/components/ExtraCompactInput';
 import { YearPicker } from '@/components/ui/FormControls';
 import { changePasswordApi, ChangePasswordPayload } from '@/services/auth.service';
 import { purgeApplicantsApi } from '@/services/applicant.service';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
 import { getErrorMessage } from '@/lib/call-api';
+import { toBuddhistYear } from '@/lib/date';
+import { useSetting, useUpdateSetting } from '../hooks/use-settings';
 
 const changePasswordSchema = Yup.object().shape({
   currentPassword: Yup.string().required('กรุณาระบุรหัสผ่านปัจจุบัน'),
@@ -25,8 +27,18 @@ const changePasswordSchema = Yup.object().shape({
 
 export const SettingsView = () => {
   const { user } = useAuth();
-  const currentYear = new Date().getFullYear() + 543;
+  const currentYear = toBuddhistYear(new Date().getFullYear());
   const [purgeYear, setPurgeYear] = useState(currentYear);
+
+  const { data: settingRes } = useSetting();
+  const updateSettingMutation = useUpdateSetting();
+  const [applicationYear, setApplicationYear] = useState<number | undefined>(undefined);
+  const [appliedSettingYear, setAppliedSettingYear] = useState<number | undefined>(undefined);
+
+  if (settingRes?.data && settingRes.data.currentApplicationYear !== appliedSettingYear) {
+    setAppliedSettingYear(settingRes.data.currentApplicationYear);
+    setApplicationYear(settingRes.data.currentApplicationYear);
+  }
 
   const purgeMutation = useMutation({
     mutationFn: async (year: number) => {
@@ -114,6 +126,34 @@ export const SettingsView = () => {
           </Form>
         </Formik>
       </div>
+
+      {user?.role === 'SUPER_ADMIN' && (
+        <div className="max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="p-2 rounded-lg bg-brand/5 text-brand">
+              <CalendarDays size={16} />
+            </div>
+            <h2 className="text-sm font-black text-navy uppercase tracking-wider">ปีการศึกษาที่เปิดรับสมัคร</h2>
+          </div>
+          <p className="text-xs text-gray-400 font-bold mb-4">
+            ปีนี้จะถูกบันทึกลงในใบสมัครใหม่ทุกใบ และแสดงบนหน้าแรกของเว็บไซต์
+          </p>
+          <YearPicker
+            value={applicationYear}
+            onChange={setApplicationYear}
+            min={currentYear - 1}
+            max={currentYear + 5}
+          />
+          <button
+            type="button"
+            disabled={updateSettingMutation.isPending || applicationYear === undefined}
+            onClick={() => applicationYear !== undefined && updateSettingMutation.mutate(applicationYear)}
+            className="w-full mt-4 py-3.5 bg-brand text-white rounded-xl font-black text-[13px] uppercase tracking-[0.2em] hover:bg-brand-dark transition-all active:scale-[0.98] disabled:opacity-60"
+          >
+            {updateSettingMutation.isPending ? 'กำลังบันทึก...' : 'บันทึกปีการศึกษา'}
+          </button>
+        </div>
+      )}
 
       {user?.role === 'SUPER_ADMIN' && (
         <div className="max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm p-6">

@@ -265,3 +265,14 @@ model AuditLog {
   @@index([adminId])
   @@map("audit_logs")
 }
+
+// =============================================
+// App-wide settings (single row)
+// =============================================
+model Setting {
+  id                     String   @id @default(cuid())
+  currentApplicationYear Int      @map("current_application_year")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}

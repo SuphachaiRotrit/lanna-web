@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, ErrorMessage } from 'formik';
-import { Upload, AlertCircle, CheckCircle, FileCheck, X } from 'lucide-react';
+import { Upload, AlertCircle, CheckCircle, FileCheck, X, Check } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
 
 interface Step4Props {
@@ -13,7 +13,7 @@ interface Step4Props {
 export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, removeFile, setFieldValue }) => {
   const documents = [
     { key: 'PHOTO', label: 'รูปถ่ายหน้าตรง 1 นิ้ว (1 รูป)', accept: 'image/*', required: true, multiple: false },
-    { key: 'TRANSCRIPT', label: 'สำเนาวุฒิการศึกษา/Transcript (3 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: true },
+    { key: 'TRANSCRIPT', label: 'สำเนาวุฒิการศึกษา/Transcript', accept: 'image/*,application/pdf', required: true, multiple: true },
     { key: 'ID_CARD', label: 'สำเนาบัตรประชาชน / ใบสุทธิ (1 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: false },
     { key: 'HOUSE_REGISTRATION', label: 'สำเนาทะเบียนบ้าน (1 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: false },
     { key: 'NAME_CHANGE', label: 'สำเนาการเปลี่ยนชื่อ-นามสกุล (ถ้ามี)', accept: 'image/*,application/pdf', required: false, multiple: false },
@@ -104,7 +104,11 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
           การรับรองข้อมูลและความถูกต้อง
         </h3>
         <label className="flex items-start gap-4 cursor-pointer group">
-          <Field type="checkbox" name="pdpaConsent" className="mt-1 w-5 h-5 accent-brand shrink-0 rounded-lg" />
+          <span className="relative shrink-0 mt-0.5 w-5 h-5">
+            <Field type="checkbox" name="pdpaConsent" className="peer sr-only" />
+            <span className="absolute inset-0 rounded-lg border-2 border-gray-300 bg-white peer-checked:bg-brand peer-checked:border-brand peer-focus-visible:ring-2 peer-focus-visible:ring-brand/30 peer-focus-visible:ring-offset-2 transition-all duration-200" />
+            <Check size={14} strokeWidth={3.5} className="absolute inset-0 m-auto text-white opacity-0 scale-50 peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-200 pointer-events-none" />
+          </span>
           <span className="text-sm text-navy/60 leading-relaxed group-hover:text-navy transition-colors italic font-medium">
             &ldquo;ข้าพเจ้าขอรับรองว่า ข้อความที่แสดงไว้และเอกสารที่อัปโหลดเป็นความจริงทุกประการ หากข้าพเจ้าได้เป็นนักศึกษาของมหาวิทยาลัยฯ ข้าพเจ้ายินดีปฏิบัติตามกฎระเบียบข้อบังคับของมหาวิทยาลัยทุกประการ&rdquo;
           </span>

@@ -6,13 +6,13 @@ import {
   Res,
   Req,
   UseGuards,
+  UnauthorizedException,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
@@ -34,7 +34,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 15 * 60 * 1000, // 15 นาที
+      maxAge: 24 * 60 * 60 * 1000, // 24 ชั่วโมง
     });
 
     // ตั้งค่า Cookie สำหรับ Refresh Token
@@ -52,19 +52,22 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
-    @Body() refreshTokenDto: RefreshTokenDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const result = await this.authService.refreshToken(
-      refreshTokenDto.refreshToken,
-    );
+    const refreshToken = req.cookies?.['refreshToken'] as string | undefined;
+    if (!refreshToken) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+
+    const result = await this.authService.refreshToken(refreshToken);
 
     response.cookie('accessToken', result.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 15 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return result;

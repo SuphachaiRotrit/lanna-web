@@ -24,20 +24,20 @@ export const Step3Program: React.FC<Step3Props> = ({ programs, selectedProgramId
         {programs.map((program) => (
           <label
             key={program.id}
-            className={`relative flex items-center gap-5 p-6 rounded-2xl border-2 transition-all group ${
-              program.isFull 
-                ? 'border-gray-50 bg-gray-50/50 cursor-not-allowed grayscale' 
+            className={`relative flex items-center gap-5 p-6 rounded-2xl border-2 transition-all group has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/30 has-[:focus-visible]:ring-offset-2 ${
+              program.isFull
+                ? 'border-gray-50 bg-gray-50/50 cursor-not-allowed grayscale'
                 : selectedProgramId === program.id
                   ? 'border-brand bg-brand/[0.03] shadow-brand-sm cursor-pointer'
                   : 'border-gray-100 hover:border-gray-200 bg-white cursor-pointer'
             }`}
           >
-            <Field 
-              type="radio" 
-              name="programId" 
-              value={program.id} 
+            <Field
+              type="radio"
+              name="programId"
+              value={program.id}
               disabled={program.isFull}
-              className="w-5 h-5 accent-brand" 
+              className="sr-only"
             />
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">

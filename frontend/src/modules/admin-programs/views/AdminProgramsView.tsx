@@ -4,6 +4,7 @@ import { usePrograms, useProgramMutation } from '../hooks/use-programs';
 import { useFaculties } from '@/modules/admin-faculties/hooks/use-faculties';
 import { ProgramTable } from '../components/ProgramTable';
 import { ProgramModal } from '../components/ProgramModal';
+import { PremiumInput, PremiumSelect } from '@/components/ui/FormControls';
 import { Program } from '@/types';
 
 export const AdminProgramsView = () => {
@@ -108,26 +109,22 @@ export const AdminProgramsView = () => {
 
       {/* Filter Bar */}
       <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-          <input 
-            type="text" 
-            placeholder="ค้นหาชื่อสาขาวิชาหรือคณะ..." 
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 rounded-lg border border-transparent focus:bg-white focus:border-brand/30 outline-none transition-all text-sm font-medium"
+        <div className="flex-1">
+          <PremiumInput
+            placeholder="ค้นหาชื่อสาขาวิชาหรือคณะ..."
+            prefixIcon={<Search size={16} />}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="!py-2.5"
           />
         </div>
-        <select
-          className="px-4 py-2.5 bg-gray-50/50 rounded-lg border border-transparent focus:bg-white focus:border-brand/30 outline-none transition-all text-sm font-medium md:w-56"
-          value={facultyFilter}
-          onChange={(e) => setFacultyFilter(e.target.value)}
-        >
-          <option value="">ทุกคณะ</option>
-          {faculties.map((f) => (
-            <option key={f.id} value={f.id}>{f.name}</option>
-          ))}
-        </select>
+        <div className="md:w-56">
+          <PremiumSelect
+            value={facultyFilter}
+            onChange={(e) => setFacultyFilter(String(e.target.value))}
+            options={[{ label: 'ทุกคณะ', value: '' }, ...faculties.map((f) => ({ label: f.name, value: f.id }))]}
+          />
+        </div>
       </div>
 
       {/* Content Table */}

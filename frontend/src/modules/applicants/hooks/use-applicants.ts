@@ -9,6 +9,8 @@ interface ApplicantFilters {
   limit: number;
   search: string;
   status: string;
+  examResult: string;
+  reportInStatus: string;
   year: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
@@ -84,8 +86,8 @@ export const useApplicantMutation = () => {
   });
 
   const exportData = useMutation({
-    mutationFn: async ({ type, filters }: { type: 'excel' | 'pdf', filters: { status: string; year: number } }) => {
-      const [promise] = await exportApplicantsApi(type, { status: filters.status, year: filters.year });
+    mutationFn: async ({ type, filters }: { type: 'excel' | 'pdf', filters: { status: string; examResult: string; reportInStatus: string; year: number } }) => {
+      const [promise] = await exportApplicantsApi(type, { status: filters.status, examResult: filters.examResult, reportInStatus: filters.reportInStatus, year: filters.year });
       const blob = await promise;
       
       const url = window.URL.createObjectURL(new Blob([blob]));

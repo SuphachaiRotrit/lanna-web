@@ -2,10 +2,16 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
 import PDFDocument from 'pdfkit';
 import { ApplicantService } from '../applicant/applicant.service';
-import { StatusFilterDto } from '../applicant/dto/query-applicant.dto';
+import {
+  StatusFilterDto,
+  ExamResultFilterDto,
+  ReportInStatusFilterDto,
+} from '../applicant/dto/query-applicant.dto';
 
 interface ExportQuery {
   status?: StatusFilterDto;
+  examResult?: ExamResultFilterDto;
+  reportInStatus?: ReportInStatusFilterDto;
   year?: number;
   programId?: string;
 }

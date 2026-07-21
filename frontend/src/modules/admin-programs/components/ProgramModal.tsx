@@ -4,6 +4,7 @@ import { XCircle, Users } from 'lucide-react';
 import { Program, ProgramTrack } from '@/types';
 import { useFaculties } from '@/modules/admin-faculties/hooks/use-faculties';
 import { Switch } from '@/components/ui/Switch';
+import { PremiumInput, PremiumSelect, PremiumTextarea } from '@/components/ui/FormControls';
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -76,130 +77,93 @@ export const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, onS
          </div>
 
          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-               <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อสาขาวิชา</label>
-               <input
-                 type="text"
-                 className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                 placeholder="เช่น การสอนภาษาอังกฤษ"
-                 value={formData.name}
-                 onChange={(e) => setFormData({...formData, name: e.target.value})}
+            <PremiumInput
+              label="ชื่อสาขาวิชา"
+              required
+              placeholder="เช่น การสอนภาษาอังกฤษ"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+               <PremiumSelect
+                 label="คณะ"
                  required
+                 placeholder="เลือกคณะ"
+                 value={formData.facultyId}
+                 onChange={(e) => setFormData({...formData, facultyId: String(e.target.value)})}
+                 options={faculties.map((f) => ({ label: f.name, value: f.id }))}
+               />
+               <PremiumInput
+                 label="ระยะเวลาหลักสูตร (ปี)"
+                 type="number"
+                 min={1}
+                 max={10}
+                 value={formData.duration ?? ''}
+                 onChange={(e) => setFormData({...formData, duration: e.target.value ? parseInt(e.target.value) : undefined})}
                />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-               <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">คณะ</label>
-                  <select
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                    value={formData.facultyId}
-                    onChange={(e) => setFormData({...formData, facultyId: e.target.value})}
-                    required
-                  >
-                     <option value="" disabled>เลือกคณะ</option>
-                     {faculties.map((f) => (
-                       <option key={f.id} value={f.id}>{f.name}</option>
-                     ))}
-                  </select>
-               </div>
-               <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ระยะเวลาหลักสูตร (ปี)</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={10}
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                    value={formData.duration ?? ''}
-                    onChange={(e) => setFormData({...formData, duration: e.target.value ? parseInt(e.target.value) : undefined})}
-                  />
-               </div>
+                <PremiumSelect
+                  label="ระดับการศึกษา"
+                  value={formData.degree}
+                  onChange={(e) => setFormData({...formData, degree: String(e.target.value)})}
+                  options={DEGREE_OPTIONS.map((d) => ({ label: d, value: d }))}
+                />
+                <PremiumInput
+                  label="โควตารับ (คน)"
+                  type="number"
+                  min="1"
+                  required
+                  prefixIcon={<Users size={16} />}
+                  value={formData.maxQuota}
+                  onChange={(e) => setFormData({...formData, maxQuota: parseInt(e.target.value)})}
+                />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ระดับการศึกษา</label>
-                  <select
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                    value={formData.degree}
-                    onChange={(e) => setFormData({...formData, degree: e.target.value})}
-                  >
-                     {DEGREE_OPTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                </div>
-                <div>
-                   <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">โควตารับ (คน)</label>
-                   <div className="relative">
-                      <input
-                        type="number"
-                        className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                        value={formData.maxQuota}
-                        onChange={(e) => setFormData({...formData, maxQuota: parseInt(e.target.value)})}
-                        min="1"
-                        required
-                      />
-                      <Users className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                   </div>
-                </div>
-            </div>
-
-            <div>
-               <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">หลักสูตร</label>
-               <select
-                 className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                 value={formData.track}
-                 onChange={(e) => handleTrackChange(e.target.value as ProgramTrack)}
-               >
-                  <option value="REGULAR">ภาคปกติ</option>
-                  <option value="SPECIAL">ภาคพิเศษ</option>
-               </select>
-            </div>
+            <PremiumSelect
+              label="หลักสูตร"
+              value={formData.track}
+              onChange={(e) => handleTrackChange(String(e.target.value) as ProgramTrack)}
+              options={[
+                { label: 'ภาคปกติ', value: 'REGULAR' },
+                { label: 'ภาคพิเศษ', value: 'SPECIAL' },
+              ]}
+            />
 
             {formData.track === 'SPECIAL' && (
-              <div>
-                 <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">หมายเหตุ (เช่น เรียนเสาร์-อาทิตย์)</label>
-                 <input
-                   type="text"
-                   className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-                   placeholder="เช่น เรียนเสาร์-อาทิตย์"
-                   value={formData.description}
-                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                 />
-              </div>
+              <PremiumInput
+                label="หมายเหตุ (เช่น เรียนเสาร์-อาทิตย์)"
+                placeholder="เช่น เรียนเสาร์-อาทิตย์"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+              />
             )}
 
             <div className="pt-2 border-t border-gray-100 space-y-4">
                <p className="text-[11px] font-black text-gray-300 uppercase tracking-widest pt-4">ข้อมูลแสดงหน้าเว็บสาธารณะ (กดดูรายละเอียดสาขา)</p>
-               <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">เรียนเกี่ยวกับอะไรบ้าง</label>
-                  <textarea
-                    rows={3}
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
-                    placeholder="เนื้อหาที่เรียนในหลักสูตรนี้..."
-                    value={formData.curriculum}
-                    onChange={(e) => setFormData({...formData, curriculum: e.target.value})}
-                  />
-               </div>
-               <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ทักษะ/ความรู้ที่จะได้รับ</label>
-                  <textarea
-                    rows={3}
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
-                    placeholder="ทักษะและความรู้ที่ผู้เรียนจะได้รับ..."
-                    value={formData.skills}
-                    onChange={(e) => setFormData({...formData, skills: e.target.value})}
-                  />
-               </div>
-               <div>
-                  <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">แนวทางอาชีพหลังจบการศึกษา</label>
-                  <textarea
-                    rows={3}
-                    className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-medium text-sm resize-none"
-                    placeholder="อาชีพที่สามารถทำได้หลังจบการศึกษา..."
-                    value={formData.careerPaths}
-                    onChange={(e) => setFormData({...formData, careerPaths: e.target.value})}
-                  />
-               </div>
+               <PremiumTextarea
+                 label="เรียนเกี่ยวกับอะไรบ้าง"
+                 rows={3}
+                 placeholder="เนื้อหาที่เรียนในหลักสูตรนี้..."
+                 value={formData.curriculum}
+                 onChange={(e) => setFormData({...formData, curriculum: e.target.value})}
+               />
+               <PremiumTextarea
+                 label="ทักษะ/ความรู้ที่จะได้รับ"
+                 rows={3}
+                 placeholder="ทักษะและความรู้ที่ผู้เรียนจะได้รับ..."
+                 value={formData.skills}
+                 onChange={(e) => setFormData({...formData, skills: e.target.value})}
+               />
+               <PremiumTextarea
+                 label="แนวทางอาชีพหลังจบการศึกษา"
+                 rows={3}
+                 placeholder="อาชีพที่สามารถทำได้หลังจบการศึกษา..."
+                 value={formData.careerPaths}
+                 onChange={(e) => setFormData({...formData, careerPaths: e.target.value})}
+               />
             </div>
 
             <div className="flex items-center pt-2">

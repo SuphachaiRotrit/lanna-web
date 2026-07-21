@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { PremiumInput, PremiumSelect } from '../../../components/ui/FormControls';
-import { Smartphone, Mail, Hash, Calendar, MapPin, GraduationCap, Info, User, LucideIcon } from 'lucide-react';
+import { PremiumInput, PremiumSelect, ThaiDatePicker } from '../../../components/ui/FormControls';
+import { Smartphone, Mail, Hash, MapPin, GraduationCap, Info, User, LucideIcon } from 'lucide-react';
 import { getProvinceOptions, getDistrictOptions, getSubDistrictOptions, getPostalCode } from '@/lib/thai-address';
 
 // ฟังก์ชันช่วยจัดการอินพุตพิเศษ
@@ -143,7 +143,7 @@ export const Step1Personal = () => {
             ]}
           />
           <div className="col-span-1 md:col-span-2">
-            <PremiumInput label="วันเดือนปีเกิด" name="birthDate" type="date" required prefixIcon={<Calendar size={18} />} />
+            <ThaiDatePicker label="วันเดือนปีเกิด" name="birthDate" required />
           </div>
           <PremiumInput label="ศาสนา" name="religion" required placeholder="เช่น พุทธ" />
           <PremiumInput label="สัญชาติ" name="nationality" required placeholder="เช่น ไทย" />

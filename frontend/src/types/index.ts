@@ -12,6 +12,10 @@ export interface Pagination {
   totalPages: number;
 }
 
+export interface AppSetting {
+  currentApplicationYear: number;
+}
+
 export interface User {
   id: string;
   email: string;

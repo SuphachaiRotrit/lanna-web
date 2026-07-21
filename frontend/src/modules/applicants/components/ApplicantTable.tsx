@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, XCircle, Search, Eye, ChevronLeft, ChevronRight, R
 import { Applicant } from '@/services/applicant.service';
 import { Pagination } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { formatThaiDateMedium } from '@/lib/date';
 import {
   STATUS_LABELS,
   STATUS_STYLES,
@@ -90,7 +91,7 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 </td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">{app.phone}</td>
                 <td className="px-6 py-6 font-bold text-sm text-gray-600">
-                  {new Date(app.submittedAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {formatThaiDateMedium(app.submittedAt)}
                 </td>
                 <td className="px-6 py-6">
                   <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-wider ${STATUS_STYLES[app.status]}`}>

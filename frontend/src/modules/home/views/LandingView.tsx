@@ -7,7 +7,7 @@ import {
   FileText, ArrowRight, Award, BookOpen, ChevronRight, MapPin, Phone, Loader2, ExternalLink
 } from 'lucide-react';
 import { useState } from 'react';
-import { useHomePrograms, useHomeBanners } from '../hooks/use-home';
+import { useHomePrograms, useHomeBanners, useHomeSetting } from '../hooks/use-home';
 import { ProgramDetailModal } from '../components/ProgramDetailModal';
 import { HeroSlideshow } from '../components/HeroSlideshow';
 import { SiteNavbar } from '@/components/SiteNavbar';
@@ -20,6 +20,8 @@ export const LandingView = () => {
   const programs = res?.data || [];
   const { data: bannersRes } = useHomeBanners();
   const banners = bannersRes?.data || [];
+  const { data: settingRes } = useHomeSetting();
+  const appYear = settingRes?.data?.currentApplicationYear;
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
 
   return (
@@ -44,12 +46,12 @@ export const LandingView = () => {
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">
               <Award size={16} />
-              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา 2570</span>
+              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา {appYear ?? '...'}</span>
             </div>
             <h2 className="text-4xl sm:text-7xl lg:text-[4rem] font-black text-navy leading-[1.05] tracking-tight mb-8">
               <span>สมัครเรียน </span>
               <span className="text-brand">ออนไลน์</span><br />
-              <span className="text-navy/30 text-2xl sm:text-3xl font-bold">ปีการศึกษา 2570</span>
+              <span className="text-navy/30 text-2xl sm:text-3xl font-bold">ปีการศึกษา {appYear ?? '...'}</span>
             </h2>
             <p className="text-navy/50 text-lg sm:text-xl leading-relaxed mb-12 max-w-2xl">
               มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา เปิดรับสมัครนักศึกษาระดับปริญญาตรี ผ่านระบบรับสมัครออนไลน์

@@ -2,6 +2,7 @@ import React from 'react';
 import { Edit2, Power, PowerOff, ShieldCheck, Loader2 } from 'lucide-react';
 import { User } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { formatThaiDateTime } from '@/lib/date';
 
 interface UserTableProps {
   users: User[];
@@ -16,7 +17,7 @@ interface UserTableProps {
 
 const formatLastLogin = (value: string | null) => {
   if (!value) return 'ยังไม่เคยเข้าสู่ระบบ';
-  return new Date(value).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+  return formatThaiDateTime(value);
 };
 
 export const UserTable: React.FC<UserTableProps> = ({

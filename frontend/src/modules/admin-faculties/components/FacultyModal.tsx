@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { XCircle } from 'lucide-react';
 import { Faculty } from '@/types';
+import { PremiumInput } from '@/components/ui/FormControls';
 
 interface FacultyModalProps {
   isOpen: boolean;
@@ -35,18 +36,14 @@ export const FacultyModal: React.FC<FacultyModalProps> = ({ isOpen, onClose, onS
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อคณะ</label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="เช่น คณะศึกษาศาสตร์"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              autoFocus
-            />
-          </div>
+          <PremiumInput
+            label="ชื่อคณะ"
+            placeholder="เช่น คณะศึกษาศาสตร์"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            autoFocus
+          />
 
           <div className="pt-6 flex gap-4">
             <button type="button" onClick={onClose} disabled={isSubmitting} className="flex-1 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-sm uppercase tracking-widest disabled:opacity-50">ยกเลิก</button>

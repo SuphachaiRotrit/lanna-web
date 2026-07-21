@@ -9,7 +9,9 @@ import { ApplicantDetailModal } from '../components/ApplicantDetailModal';
 import { ProgramCardGrid } from '../components/ProgramCardGrid';
 import { PremiumButton, PremiumCard } from '../../../components/ui/PremiumBase';
 import { PremiumInput, PremiumSelect, YearPicker } from '../../../components/ui/FormControls';
-import { STATUS_LABELS } from '@/constants/applicant-status';
+import { STATUS_LABELS, EXAM_RESULT_LABELS, REPORT_IN_LABELS } from '@/constants/applicant-status';
+import { toBuddhistYear } from '@/lib/date';
+import { useSetting } from '@/modules/settings/hooks/use-settings';
 
 export const ApplicantsView = () => {
   const [filters, setFilters] = useState({
@@ -17,11 +19,21 @@ export const ApplicantsView = () => {
     limit: 10,
     search: '',
     status: '',
-    year: new Date().getFullYear() + 543,
+    examResult: '',
+    reportInStatus: '',
+    year: toBuddhistYear(new Date().getFullYear()),
     programId: '',
     sortBy: 'submittedAt',
     sortOrder: 'desc' as 'asc' | 'desc',
   });
+  const { data: settingRes } = useSetting();
+  const [appliedSettingYear, setAppliedSettingYear] = useState<number | undefined>(undefined);
+
+  if (settingRes?.data && settingRes.data.currentApplicationYear !== appliedSettingYear) {
+    setAppliedSettingYear(settingRes.data.currentApplicationYear);
+    const defaultYear = toBuddhistYear(new Date().getFullYear());
+    setFilters((f) => (f.year === defaultYear ? { ...f, year: settingRes.data.currentApplicationYear } : f));
+  }
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [viewingApplicantId, setViewingApplicantId] = useState<string | null>(null);
 
@@ -128,6 +140,34 @@ export const ApplicantsView = () => {
               { label: STATUS_LABELS.APPROVED, value: 'APPROVED' },
               { label: STATUS_LABELS.REJECTED, value: 'REJECTED' },
               { label: STATUS_LABELS.CANCELLED, value: 'CANCELLED' },
+            ]}
+          />
+        </div>
+
+        <div className="w-44">
+          <PremiumSelect
+            value={filters.examResult}
+            onChange={(e) => setFilters(prev => ({ ...prev, examResult: String(e.target.value), page: 1 }))}
+            className="!py-3"
+            options={[
+              { label: 'ผลสอบทั้งหมด', value: '' },
+              { label: EXAM_RESULT_LABELS.NOT_YET, value: 'NOT_YET' },
+              { label: EXAM_RESULT_LABELS.PASSED, value: 'PASSED' },
+              { label: EXAM_RESULT_LABELS.FAILED, value: 'FAILED' },
+            ]}
+          />
+        </div>
+
+        <div className="w-48">
+          <PremiumSelect
+            value={filters.reportInStatus}
+            onChange={(e) => setFilters(prev => ({ ...prev, reportInStatus: String(e.target.value), page: 1 }))}
+            className="!py-3"
+            options={[
+              { label: 'การรายงานตัวทั้งหมด', value: '' },
+              { label: REPORT_IN_LABELS.NOT_YET, value: 'NOT_YET' },
+              { label: REPORT_IN_LABELS.CONFIRMED, value: 'CONFIRMED' },
+              { label: REPORT_IN_LABELS.REJECTED, value: 'REJECTED' },
             ]}
           />
         </div>

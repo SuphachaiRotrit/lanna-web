@@ -16,6 +16,7 @@ import { ProgramModule } from './modules/program/program.module';
 import { FacultyModule } from './modules/faculty/faculty.module';
 import { UserModule } from './modules/user/user.module';
 import { BannerModule } from './modules/banner/banner.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 // Common
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
@@ -56,6 +57,7 @@ import { CommonModule } from './common/common.module';
     FacultyModule,
     UserModule,
     BannerModule,
+    SettingsModule,
   ],
   providers: [
     // Global rate limit guard

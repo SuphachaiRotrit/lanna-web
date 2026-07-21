@@ -38,6 +38,13 @@ export const getMeApi = async (): Promise<[Promise<ApiResponse<{ user: LoginResp
   return callAPI<ApiResponse<{ user: LoginResponse['user'] }>>("GET", "/auth/me");
 };
 
+/**
+ * POST /auth/refresh - ขอ accessToken ใหม่ด้วย refreshToken cookie
+ */
+export const refreshApi = async (): Promise<[Promise<ApiResponse<{ accessToken: string }>>, AbortFunction]> => {
+  return callAPI<ApiResponse<{ accessToken: string }>>("POST", "/auth/refresh");
+};
+
 export interface ChangePasswordPayload {
   currentPassword: string;
   newPassword: string;

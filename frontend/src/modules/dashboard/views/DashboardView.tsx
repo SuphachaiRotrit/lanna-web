@@ -8,9 +8,19 @@ import { TrendChart } from '../components/TrendChart';
 import { ExamByProgramChart } from '../components/ExamByProgramChart';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { YearPicker } from '@/components/ui/FormControls';
+import { toBuddhistYear } from '@/lib/date';
+import { useSetting } from '@/modules/settings/hooks/use-settings';
 
 export const DashboardView = () => {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() + 543);
+  const [selectedYear, setSelectedYear] = useState(toBuddhistYear(new Date().getFullYear()));
+  const { data: settingRes } = useSetting();
+  const [appliedSettingYear, setAppliedSettingYear] = useState<number | undefined>(undefined);
+
+  if (settingRes?.data && settingRes.data.currentApplicationYear !== appliedSettingYear) {
+    setAppliedSettingYear(settingRes.data.currentApplicationYear);
+    setSelectedYear(settingRes.data.currentApplicationYear);
+  }
+
   const { data: res, isLoading, isFetching, refetch } = useDashboardStats(selectedYear);
   const stats = res?.data;
 

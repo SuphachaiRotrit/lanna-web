@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Redis } from '@upstash/redis';
 import { PrismaService } from '../../prisma/prisma.service';
+import { SettingsService } from '../settings/settings.service';
 
 const CACHE_TTL_SECONDS = 60;
 
@@ -17,11 +18,13 @@ type DashboardStats = Awaited<ReturnType<DashboardService['computeStats']>>;
 
 @Injectable()
 export class DashboardService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async getStats(year?: number) {
-    const currentYear = new Date().getFullYear() + 543;
-    const targetYear = year ?? currentYear;
+    const targetYear = year ?? (await this.settingsService.getCurrentApplicationYear());
     const cacheKey = `dashboard:stats:${targetYear}`;
 
     if (redis) {

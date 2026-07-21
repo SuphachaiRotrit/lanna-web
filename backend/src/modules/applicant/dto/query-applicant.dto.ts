@@ -12,6 +12,18 @@ export enum StatusFilterDto {
   CANCELLED = 'CANCELLED',
 }
 
+export enum ExamResultFilterDto {
+  NOT_YET = 'NOT_YET',
+  PASSED = 'PASSED',
+  FAILED = 'FAILED',
+}
+
+export enum ReportInStatusFilterDto {
+  NOT_YET = 'NOT_YET',
+  CONFIRMED = 'CONFIRMED',
+  REJECTED = 'REJECTED',
+}
+
 export class QueryApplicantDto {
   @IsOptional()
   @IsString()
@@ -21,6 +33,16 @@ export class QueryApplicantDto {
   @Transform(emptyToUndefined)
   @IsEnum(StatusFilterDto)
   status?: StatusFilterDto;
+
+  @IsOptional()
+  @Transform(emptyToUndefined)
+  @IsEnum(ExamResultFilterDto)
+  examResult?: ExamResultFilterDto;
+
+  @IsOptional()
+  @Transform(emptyToUndefined)
+  @IsEnum(ReportInStatusFilterDto)
+  reportInStatus?: ReportInStatusFilterDto;
 
   @IsOptional()
   @Transform(emptyToUndefined)

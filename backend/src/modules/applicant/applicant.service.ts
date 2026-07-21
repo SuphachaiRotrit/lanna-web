@@ -21,6 +21,7 @@ import { EncryptionUtil } from '../../common/utils/encryption.util';
 import { SanitizeUtil } from '../../common/utils/sanitize.util';
 
 import { TurnstileService } from '../../common/utils/turnstile.util';
+import { SettingsService } from '../settings/settings.service';
 
 type ApplicantSortKey =
   | 'firstName'
@@ -52,6 +53,7 @@ export class ApplicantService {
     private readonly prisma: PrismaService,
     private readonly uploadService: UploadService,
     private readonly turnstileService: TurnstileService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   /**
@@ -88,7 +90,7 @@ export class ApplicantService {
     const nationalIdHash = EncryptionUtil.hash(dto.nationalId);
 
     // Check if already applied this year
-    const currentYear = new Date().getFullYear() + 543; // Buddhist era
+    const currentYear = await this.settingsService.getCurrentApplicationYear();
 
     const existingById = await this.prisma.applicant.findUnique({
       where: { nationalIdHash },
@@ -286,6 +288,8 @@ export class ApplicantService {
     const {
       search,
       status,
+      examResult,
+      reportInStatus,
       year,
       programId,
       page = 1,
@@ -299,6 +303,16 @@ export class ApplicantService {
     // Status filter
     if (status) {
       where.status = status;
+    }
+
+    // Exam result filter
+    if (examResult) {
+      where.examResult = examResult;
+    }
+
+    // Report-in status filter
+    if (reportInStatus) {
+      where.reportInStatus = reportInStatus;
     }
 
     // Year filter
@@ -544,6 +558,8 @@ export class ApplicantService {
     const where: Prisma.ApplicantWhereInput = {};
 
     if (query.status) where.status = query.status;
+    if (query.examResult) where.examResult = query.examResult;
+    if (query.reportInStatus) where.reportInStatus = query.reportInStatus;
     if (query.year) where.applicationYear = query.year;
     if (query.programId) where.programId = query.programId;
 

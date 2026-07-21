@@ -5,12 +5,18 @@ import { ApplicantService } from '../applicant/applicant.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { StatusFilterDto } from '../applicant/dto/query-applicant.dto';
+import {
+  StatusFilterDto,
+  ExamResultFilterDto,
+  ReportInStatusFilterDto,
+} from '../applicant/dto/query-applicant.dto';
 import { PurgeDto } from './dto/purge.dto';
 
 interface ExportBody {
   ids?: string[];
   status?: StatusFilterDto;
+  examResult?: ExamResultFilterDto;
+  reportInStatus?: ReportInStatusFilterDto;
   year?: number;
   programId?: string;
 }
@@ -26,7 +32,13 @@ export class ExportController {
   @Post('excel')
   async exportExcel(@Body() body: ExportBody, @Res() res: Response) {
     const buffer = await this.exportService.exportExcel(
-      { status: body.status, year: body.year, programId: body.programId },
+      {
+        status: body.status,
+        examResult: body.examResult,
+        reportInStatus: body.reportInStatus,
+        year: body.year,
+        programId: body.programId,
+      },
       body.ids,
     );
 
@@ -43,7 +55,13 @@ export class ExportController {
   @Post('pdf')
   async exportPdf(@Body() body: ExportBody, @Res() res: Response) {
     const buffer = await this.exportService.exportPdf(
-      { status: body.status, year: body.year, programId: body.programId },
+      {
+        status: body.status,
+        examResult: body.examResult,
+        reportInStatus: body.reportInStatus,
+        year: body.year,
+        programId: body.programId,
+      },
       body.ids,
     );
 

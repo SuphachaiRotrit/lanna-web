@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, Loader2, Calendar } from 'lucide-react';
-import { PremiumInput } from '@/components/ui/FormControls';
+import { Search, Loader2 } from 'lucide-react';
+import { PremiumInput, ThaiDatePicker } from '@/components/ui/FormControls';
 import Turnstile from '@/components/Turnstile';
 import { SiteNavbar } from '@/components/SiteNavbar';
 import { getErrorMessage } from '@/lib/call-api';
@@ -66,13 +66,11 @@ export const StatusView = () => {
             onChange={(e) => setNationalId(e.target.value.replace(/\D/g, ''))}
             placeholder="กรอกเลข 13 หลัก"
           />
-          <PremiumInput
+          <ThaiDatePicker
             label="วันเดือนปีเกิด"
-            type="date"
             required
-            prefixIcon={<Calendar size={18} />}
             value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
+            onChange={setBirthDate}
           />
           <Turnstile onVerify={setTurnstileToken} siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
           <button

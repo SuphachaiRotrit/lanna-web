@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { XCircle, UploadCloud, Loader2 } from 'lucide-react';
 import { Banner } from '@/types';
 import { Switch } from '@/components/ui/Switch';
+import { PremiumInput } from '@/components/ui/FormControls';
 import { uploadFileApi } from '@/services/upload.service';
 import { getErrorMessage } from '@/lib/call-api';
 import { toast } from 'sonner';
@@ -92,27 +93,20 @@ const BannerModalContent: React.FC<Omit<BannerModalProps, 'isOpen'>> = ({ onClos
             </label>
           </div>
 
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อสไลด์ (ไม่บังคับ)</label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="เช่น เปิดรับนักศึกษาใหม่ 2570"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            />
-          </div>
+          <PremiumInput
+            label="ชื่อสไลด์ (ไม่บังคับ)"
+            placeholder="เช่น เปิดรับนักศึกษาใหม่ 2570"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          />
 
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ลิงก์เมื่อคลิก (ไม่บังคับ)</label>
-            <input
-              type="url"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="https://..."
-              value={formData.linkUrl}
-              onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
-            />
-          </div>
+          <PremiumInput
+            label="ลิงก์เมื่อคลิก (ไม่บังคับ)"
+            type="url"
+            placeholder="https://..."
+            value={formData.linkUrl}
+            onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+          />
 
           <div className="flex items-center pt-2">
             <Switch

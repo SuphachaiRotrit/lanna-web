@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { XCircle } from 'lucide-react';
 import { User } from '@/types';
 import { Switch } from '@/components/ui/Switch';
+import { PremiumInput, PremiumSelect } from '@/components/ui/FormControls';
 import { CreateUserPayload, UpdateUserPayload } from '@/services/user.service';
 
 interface UserModalProps {
@@ -47,61 +48,47 @@ export const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSubmit,
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">อีเมล</label>
-            <input
-              type="email"
-              pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
-              title="อีเมลต้องมีโดเมนที่ถูกต้อง เช่น name@example.com"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={!!user}
-              required
-              autoFocus={!user}
-            />
-          </div>
+          <PremiumInput
+            label="อีเมล"
+            type="email"
+            pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+            title="อีเมลต้องมีโดเมนที่ถูกต้อง เช่น name@example.com"
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={!!user}
+            required
+            autoFocus={!user}
+          />
 
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">ชื่อ-นามสกุล</label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="เช่น สมชาย ใจดี"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-              autoFocus={!!user}
-            />
-          </div>
+          <PremiumInput
+            label="ชื่อ-นามสกุล"
+            placeholder="เช่น สมชาย ใจดี"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+            autoFocus={!!user}
+          />
 
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">บทบาท</label>
-            <select
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              value={role}
-              onChange={(e) => setRole(e.target.value as 'SUPER_ADMIN' | 'STAFF')}
-            >
-              <option value="STAFF">Staff</option>
-              <option value="SUPER_ADMIN">Super Admin</option>
-            </select>
-          </div>
+          <PremiumSelect
+            label="บทบาท"
+            value={role}
+            onChange={(e) => setRole(String(e.target.value) as 'SUPER_ADMIN' | 'STAFF')}
+            options={[
+              { label: 'Staff', value: 'STAFF' },
+              { label: 'Super Admin', value: 'SUPER_ADMIN' },
+            ]}
+          />
 
-          <div>
-            <label className="block text-[12px] font-black text-gray-400 uppercase mb-1.5 ml-1">
-              {user ? 'ตั้งรหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)' : 'รหัสผ่าน'}
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="อย่างน้อย 8 ตัวอักษร"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              minLength={8}
-              required={!user}
-            />
-          </div>
+          <PremiumInput
+            label={user ? 'ตั้งรหัสผ่านใหม่ (เว้นว่างถ้าไม่เปลี่ยน)' : 'รหัสผ่าน'}
+            type="password"
+            placeholder="อย่างน้อย 8 ตัวอักษร"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            minLength={8}
+            required={!user}
+          />
 
           {user && (
             <div className="pt-1">
