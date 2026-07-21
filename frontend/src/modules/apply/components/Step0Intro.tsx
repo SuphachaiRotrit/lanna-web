@@ -65,7 +65,7 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
           📌 เอกสารที่ต้องอัปโหลด (เตรียมไฟล์ให้พร้อม)
         </h4>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
-          {['รูปถ่ายหน้าตรง 1 นิ้ว', 'สำเนาบัตรประชาชน/ใบสุทธิ', 'สำเนาทะเบียนบ้าน', 'สำเนาวุฒิการศึกษา (3 ฉบับ)'].map((doc, idx) => (
+          {['รูปถ่ายหน้าตรง 1 นิ้ว', 'สำเนาบัตรประชาชน/ใบสุทธิ', 'สำเนาทะเบียนบ้าน', 'สำเนาวุฒิการศึกษา'].map((doc, idx) => (
             <li key={idx} className="text-xs font-bold text-amber-800/80 flex items-center gap-2">
               <div className="w-1 h-1 rounded-full bg-amber-400" />
               {doc}

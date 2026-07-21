@@ -14,8 +14,8 @@ export const Step4Documents: React.FC<Step4Props> = ({ files, onFileChange, remo
   const documents = [
     { key: 'PHOTO', label: 'รูปถ่ายหน้าตรง 1 นิ้ว (1 รูป)', accept: 'image/*', required: true, multiple: false },
     { key: 'TRANSCRIPT', label: 'สำเนาวุฒิการศึกษา/Transcript', accept: 'image/*,application/pdf', required: true, multiple: true },
-    { key: 'ID_CARD', label: 'สำเนาบัตรประชาชน / ใบสุทธิ (1 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: false },
-    { key: 'HOUSE_REGISTRATION', label: 'สำเนาทะเบียนบ้าน (1 ฉบับ)', accept: 'image/*,application/pdf', required: true, multiple: false },
+    { key: 'ID_CARD', label: 'สำเนาบัตรประชาชน / ใบสุทธิ', accept: 'image/*,application/pdf', required: true, multiple: false },
+    { key: 'HOUSE_REGISTRATION', label: 'สำเนาทะเบียนบ้าน', accept: 'image/*,application/pdf', required: true, multiple: false },
     { key: 'NAME_CHANGE', label: 'สำเนาการเปลี่ยนชื่อ-นามสกุล (ถ้ามี)', accept: 'image/*,application/pdf', required: false, multiple: false },
   ];
 
