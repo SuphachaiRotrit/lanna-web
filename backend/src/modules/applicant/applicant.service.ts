@@ -22,6 +22,7 @@ import { SanitizeUtil } from '../../common/utils/sanitize.util';
 
 import { TurnstileService } from '../../common/utils/turnstile.util';
 import { SettingsService } from '../settings/settings.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 type ApplicantSortKey =
   | 'firstName'
@@ -54,6 +55,7 @@ export class ApplicantService {
     private readonly uploadService: UploadService,
     private readonly turnstileService: TurnstileService,
     private readonly settingsService: SettingsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   /**
@@ -174,6 +176,13 @@ export class ApplicantService {
     });
 
     this.logger.log(`New application submitted: ${applicationNumber}`);
+
+    await this.notificationsService.notifyNewApplication({
+      applicantId: applicant.id,
+      applicationNumber: applicant.applicationNumber,
+      fullName: `${applicant.prefixName}${applicant.firstName} ${applicant.lastName}`,
+      submittedAt: applicant.submittedAt,
+    });
 
     return {
       id: applicant.id, // ต้องส่ง ID กลับไปเพื่อให้ Frontend อัปโหลดไฟล์ต่อได้

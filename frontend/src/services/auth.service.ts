@@ -8,6 +8,7 @@ export interface LoginResponse {
     email: string;
     fullName: string;
     role: string;
+    notificationsReadAt: string | null;
   };
 }
 

@@ -10,7 +10,6 @@ import {
   LogOut,
   Menu,
   X,
-  Bell,
   ChevronRight,
   Settings,
   BookOpen,
@@ -25,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
 import { GlobalApplicantSearch } from '@/modules/applicants/components/GlobalApplicantSearch';
+import { NotificationBell } from '@/modules/notifications/components/NotificationBell';
 
 const menuItems = [
   { title: 'ภาพรวม', icon: LayoutDashboard, href: '/admin/dashboard', badge: null, superAdminOnly: false },
@@ -228,10 +228,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <GlobalApplicantSearch />
 
             {/* Notification */}
-            <button className="relative p-2 text-gray-400 bg-gray-50/80 rounded-lg border border-gray-100 hover:bg-gray-100 transition-all">
-              <Bell size={17} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand border-2 border-white rounded-full"></span>
-            </button>
+            <NotificationBell />
 
             {/* Divider */}
             <div className="hidden lg:block w-px h-8 bg-gray-100 mx-1"></div>

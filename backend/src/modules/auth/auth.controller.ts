@@ -91,6 +91,7 @@ export class AuthController {
         email: admin.email,
         fullName: admin.fullName,
         role: admin.role,
+        notificationsReadAt: admin.notificationsReadAt,
       },
     };
   }

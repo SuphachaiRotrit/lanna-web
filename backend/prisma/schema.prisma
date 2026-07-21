@@ -25,6 +25,7 @@ model Admin {
   lastLoginAt         DateTime? @map("last_login_at")
   failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
   lockedUntil         DateTime? @map("locked_until")
+  notificationsReadAt DateTime? @map("notifications_read_at")
   createdAt           DateTime  @default(now()) @map("created_at")
   updatedAt           DateTime  @updatedAt @map("updated_at")
 
