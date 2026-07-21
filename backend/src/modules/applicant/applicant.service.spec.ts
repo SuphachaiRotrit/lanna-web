@@ -4,6 +4,8 @@ import { ApplicantService } from './applicant.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
 import { TurnstileService } from '../../common/utils/turnstile.util';
+import { SettingsService } from '../settings/settings.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { EncryptionUtil } from '../../common/utils/encryption.util';
 
 type UpdateArgs = { data: Record<string, unknown> };
@@ -21,6 +23,8 @@ describe('ApplicantService.updateStatus', () => {
       prisma,
       {} as UploadService,
       {} as TurnstileService,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
   };
 
@@ -69,6 +73,8 @@ describe('ApplicantService.updateExamResult', () => {
       prisma,
       {} as UploadService,
       {} as TurnstileService,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
   };
 
@@ -115,6 +121,8 @@ describe('ApplicantService.updateReportIn', () => {
       prisma,
       {} as UploadService,
       {} as TurnstileService,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
   };
 
@@ -184,11 +192,15 @@ describe('ApplicantService.checkStatus', () => {
       notFound,
       {} as UploadService,
       validTurnstile,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
     const serviceB = new ApplicantService(
       wrongBirthDate,
       {} as UploadService,
       validTurnstile,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
 
     const errA: unknown = await serviceA
@@ -217,6 +229,8 @@ describe('ApplicantService.checkStatus', () => {
       prisma,
       {} as UploadService,
       invalidTurnstile,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
 
     await expect(
@@ -251,6 +265,8 @@ describe('ApplicantService.checkStatus', () => {
       prisma,
       {} as UploadService,
       validTurnstile,
+      {} as SettingsService,
+      {} as NotificationsService,
     );
 
     const result = await service.checkStatus(
@@ -278,10 +294,15 @@ describe('ApplicantService.deletePurgeYear', () => {
   it('rejects purging a year within the 3-year retention window', async () => {
     const currentYear = new Date().getFullYear() + 543;
     const prisma = {} as PrismaService;
+    const settingsService = {
+      getCurrentApplicationYear: jest.fn().mockResolvedValue(currentYear),
+    } as unknown as SettingsService;
     const service = new ApplicantService(
       prisma,
       {} as UploadService,
       {} as TurnstileService,
+      settingsService,
+      {} as NotificationsService,
     );
 
     await expect(service.deletePurgeYear(currentYear - 2)).rejects.toThrow(
@@ -303,10 +324,15 @@ describe('ApplicantService.deletePurgeYear', () => {
       applicant: { findMany, deleteMany },
     } as unknown as PrismaService;
     const uploadService = { deleteFile } as unknown as UploadService;
+    const settingsService = {
+      getCurrentApplicationYear: jest.fn().mockResolvedValue(currentYear),
+    } as unknown as SettingsService;
     const service = new ApplicantService(
       prisma,
       uploadService,
       {} as TurnstileService,
+      settingsService,
+      {} as NotificationsService,
     );
 
     const count = await service.deletePurgeYear(purgeYear);

@@ -1,4 +1,11 @@
-import { IsOptional, IsString, IsEnum, IsIn, IsInt, Min } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsIn,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
 const emptyToUndefined = ({ value }: { value: unknown }) =>

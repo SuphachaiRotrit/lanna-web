@@ -39,7 +39,7 @@
     "csurf": "^1.11.0",
     "exceljs": "^4.4.0",
     "express-rate-limit": "^8.5.2",
-    "firebase-admin": "^14.2.0",
+    "firebase-admin": "13.10.0",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "passport": "^0.7.0",

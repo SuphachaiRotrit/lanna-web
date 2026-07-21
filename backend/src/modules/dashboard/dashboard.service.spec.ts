@@ -1,5 +1,6 @@
 import { DashboardService } from './dashboard.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { SettingsService } from '../settings/settings.service';
 
 describe('DashboardService.getStats', () => {
   const buildService = (
@@ -18,6 +19,7 @@ describe('DashboardService.getStats', () => {
       programId: string;
       program: { name: string };
     }>,
+    defaultYear = 2570,
   ) => {
     const prisma = {
       applicant: {
@@ -26,10 +28,15 @@ describe('DashboardService.getStats', () => {
       },
       $queryRaw: jest.fn().mockResolvedValue([]),
     } as unknown as PrismaService;
-    return new DashboardService(prisma);
+    const settingsService = {
+      getCurrentApplicationYear: jest.fn().mockResolvedValue(defaultYear),
+    } as unknown as SettingsService;
+    return new DashboardService(prisma, settingsService);
   };
 
-  const applicant = (overrides: Partial<Parameters<typeof buildService>[1][number]>) => ({
+  const applicant = (
+    overrides: Partial<Parameters<typeof buildService>[1][number]>,
+  ) => ({
     id: '1',
     prefixName: 'นาย',
     firstName: 'A',
@@ -60,12 +67,11 @@ describe('DashboardService.getStats', () => {
     expect(stats.overview.reportedInCount).toBe(1);
   });
 
-  it('defaults to the current Buddhist-era year when no year is given', async () => {
-    const service = buildService(0, []);
+  it('defaults to SettingsService.getCurrentApplicationYear() when no year is given', async () => {
+    const service = buildService(0, [], 2570);
 
     const stats = await service.getStats();
 
-    const expectedYear = new Date().getFullYear() + 543;
-    expect(stats.overview.currentYear).toBe(expectedYear);
+    expect(stats.overview.currentYear).toBe(2570);
   });
 });

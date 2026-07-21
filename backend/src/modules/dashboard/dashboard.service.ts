@@ -24,7 +24,8 @@ export class DashboardService {
   ) {}
 
   async getStats(year?: number) {
-    const targetYear = year ?? (await this.settingsService.getCurrentApplicationYear());
+    const targetYear =
+      year ?? (await this.settingsService.getCurrentApplicationYear());
     const cacheKey = `dashboard:stats:${targetYear}`;
 
     if (redis) {

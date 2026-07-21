@@ -342,7 +342,9 @@ export class ApplicantService {
       // which is stored without the title. Longest prefix checked first
       // since "นางสาว" also starts with "นาง".
       const NAME_PREFIXES = ['นางสาว', 'สามเณร', 'นาง', 'นาย', 'พระ'];
-      const matchedPrefix = NAME_PREFIXES.find((p) => sanitizedSearch.startsWith(p));
+      const matchedPrefix = NAME_PREFIXES.find((p) =>
+        sanitizedSearch.startsWith(p),
+      );
       const firstNameSearch = matchedPrefix
         ? sanitizedSearch.slice(matchedPrefix.length).trim()
         : sanitizedSearch;
@@ -367,8 +369,9 @@ export class ApplicantService {
         skip,
         take: limit,
         orderBy: (
-          APPLICANT_SORT_MAP[sortBy as ApplicantSortKey] ?? APPLICANT_SORT_MAP.submittedAt
-        )(sortOrder as 'asc' | 'desc'),
+          APPLICANT_SORT_MAP[sortBy as ApplicantSortKey] ??
+          APPLICANT_SORT_MAP.submittedAt
+        )(sortOrder),
         include: {
           program: {
             select: {

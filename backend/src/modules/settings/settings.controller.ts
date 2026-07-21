@@ -28,9 +28,10 @@ export class SettingsController {
   @Roles('SUPER_ADMIN')
   async update(@Body() dto: UpdateSettingDto) {
     return {
-      currentApplicationYear: await this.settingsService.setCurrentApplicationYear(
-        dto.currentApplicationYear,
-      ),
+      currentApplicationYear:
+        await this.settingsService.setCurrentApplicationYear(
+          dto.currentApplicationYear,
+        ),
     };
   }
 }
