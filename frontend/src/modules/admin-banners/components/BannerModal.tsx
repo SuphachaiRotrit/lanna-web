@@ -22,27 +22,19 @@ const defaultFormData: Partial<Banner> = {
   isActive: true,
 };
 
-export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSubmit, banner, isSubmitting }) => {
-  const [formData, setFormData] = useState<Partial<Banner>>(defaultFormData);
-  const [previewUrl, setPreviewUrl] = useState<string>('');
+const BannerModalContent: React.FC<Omit<BannerModalProps, 'isOpen'>> = ({ onClose, onSubmit, banner, isSubmitting }) => {
+  const [formData, setFormData] = useState<Partial<Banner>>(() =>
+    banner
+      ? {
+          imageKey: banner.imageKey,
+          title: banner.title || '',
+          linkUrl: banner.linkUrl || '',
+          isActive: banner.isActive,
+        }
+      : defaultFormData
+  );
+  const [previewUrl, setPreviewUrl] = useState<string>(() => banner?.imageUrl || '');
   const [isUploading, setIsUploading] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    setFormData(
-      banner
-        ? {
-            imageKey: banner.imageKey,
-            title: banner.title || '',
-            linkUrl: banner.linkUrl || '',
-            isActive: banner.isActive,
-          }
-        : defaultFormData
-    );
-    setPreviewUrl(banner?.imageUrl || '');
-  }, [isOpen, banner]);
-
-  if (!isOpen) return null;
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,7 +57,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSub
     onSubmit(formData);
   };
 
-  return createPortal(
+  return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[2.5rem] shadow-2xl p-8 sm:p-10 animate-in fade-in zoom-in duration-300">
@@ -138,7 +130,20 @@ export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSub
           </div>
         </form>
       </div>
-    </div>,
+    </div>
+  );
+};
+
+export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSubmit, banner, isSubmitting }) => {
+  if (!isOpen) return null;
+
+  return createPortal(
+    <BannerModalContent
+      onClose={onClose}
+      onSubmit={onSubmit}
+      banner={banner}
+      isSubmitting={isSubmitting}
+    />,
     document.body
   );
 };
