@@ -521,11 +521,11 @@ export class ApplicantService {
 
   /**
    * Export-then-delete data retention purge (admin, SUPER_ADMIN only).
-   * Keeps the current year and the 2 preceding years; only years older
-   * than that (year <= currentYear - 3) are eligible.
+   * Keeps the current recruiting year and the 2 preceding years; only years
+   * older than that (year <= currentYear - 3) are eligible.
    */
   async deletePurgeYear(year: number): Promise<number> {
-    const currentYear = new Date().getFullYear() + 543;
+    const currentYear = await this.settingsService.getCurrentApplicationYear();
     if (year > currentYear - 3) {
       throw new BadRequestException(
         'This year is not old enough to purge — the last 3 years must be kept',

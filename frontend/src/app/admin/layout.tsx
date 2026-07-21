@@ -192,7 +192,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="p-2 text-white/20 hover:text-white/50 hover:bg-white/[0.04] rounded-lg transition-all"
             title={isCollapsed ? 'ขยายเมนู' : 'ย่อเมนู'}
           >
-            {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            {isCollapsed ? (
+              <div>
+                  <PanelLeftOpen size={16}/>
+              </div>
+            )  : <PanelLeftClose size={16} />}
           </button>
         </div>
 

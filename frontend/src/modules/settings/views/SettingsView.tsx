@@ -34,10 +34,12 @@ export const SettingsView = () => {
   const updateSettingMutation = useUpdateSetting();
   const [applicationYear, setApplicationYear] = useState<number | undefined>(undefined);
   const [appliedSettingYear, setAppliedSettingYear] = useState<number | undefined>(undefined);
+  const recruitingYear = settingRes?.data?.currentApplicationYear ?? currentYear;
 
   if (settingRes?.data && settingRes.data.currentApplicationYear !== appliedSettingYear) {
     setAppliedSettingYear(settingRes.data.currentApplicationYear);
     setApplicationYear(settingRes.data.currentApplicationYear);
+    setPurgeYear(settingRes.data.currentApplicationYear);
   }
 
   const purgeMutation = useMutation({
@@ -168,8 +170,8 @@ export const SettingsView = () => {
           </p>
           <YearPicker
             label="ปีการศึกษาที่ต้องการลบ"
-            min={currentYear - 30}
-            max={currentYear}
+            min={recruitingYear - 30}
+            max={recruitingYear}
             value={purgeYear}
             onChange={setPurgeYear}
           />
