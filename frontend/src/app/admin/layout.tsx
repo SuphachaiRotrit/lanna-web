@@ -193,11 +193,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             title={isCollapsed ? 'ขยายเมนู' : 'ย่อเมนู'}
           >
             {isCollapsed ? (
-              <div>
-                <span className="text-xs font-bold text-warm-gray">ขยาย</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-warm-gray">ขยาย</span>
                 <PanelLeftOpen size={16}/>
               </div>
-            )  : <PanelLeftClose size={16} />}
+            )  : (
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-warm-gray">หุบ</span>
+                <PanelLeftClose size={16} />
+              </div>
+            )}
           </button>
         </div>
 

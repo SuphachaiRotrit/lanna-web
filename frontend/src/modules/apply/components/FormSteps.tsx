@@ -216,7 +216,7 @@ export const Step2Education = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-7">
-          <PremiumInput label="จังหวัดของสถานศึกษา" name="schoolProvince" required placeholder="ระบุจังหวัด" />
+          <PremiumSelect label="จังหวัดของสถานศึกษา" name="schoolProvince" required placeholder="เลือกจังหวัด" options={getProvinceOptions()} />
           <PremiumInput
             label="ปีที่จบการศึกษา (พ.ศ.)"
             name="graduationYear"
