@@ -131,7 +131,7 @@ export const Step1Personal = () => {
       {/* 3. รายละเอียดส่วนตัว */}
       <section>
         <SectionHeader icon={Info} title="รายละเอียดส่วนตัว" desc="ระบุเพศและศาสนาเพื่อข้อมูลทางสถิติ" />
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-7">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-x-6 gap-y-7">
           <PremiumSelect
             label="เพศ"
             name="gender"
@@ -151,7 +151,7 @@ export const Step1Personal = () => {
       </section>
 
       {/* 4. ข้อมูลที่อยู่ */}
-      <section className="bg-gray-50/30 px-10 py-10 rounded-[3rem] border border-gray-100/50">
+      <section className="bg-gray-50/30 py-10 rounded-[3rem] border border-gray-100/50">
         <SectionHeader icon={MapPin} title="ข้อมูลที่อยู่ปัจจุบัน" desc="ใช้สำหรับจัดส่งเอกสารและข้อมูลการศึกษา" />
         <div className="space-y-7">
           <PremiumInput label="ที่อยู่ปัจจุบัน" name="address" required placeholder="บ้านเลขที่, หมู่ที่, ซอย, ถนน..." />
@@ -234,7 +234,7 @@ export const Step2Education = () => {
         </div>
       </section>
 
-      <section className="bg-brand/5 px-10 py-10 rounded-[3rem] border border-brand/10 shadow-inner shadow-brand/5">
+      <section className="rounded-[3rem] shadow-brand/5">
         <label className="block text-xs font-black text-navy/60 uppercase ml-1 mb-4 flex items-center gap-2">
           <Info size={14} className="text-brand" />
           เหตุผลที่สนใจสมัครเรียนที่ มหาวิทยาลัยมหามกุฏราชวิทยาลัย วิทยาเขตล้านนา

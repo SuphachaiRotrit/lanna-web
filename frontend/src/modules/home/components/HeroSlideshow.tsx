@@ -40,7 +40,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
 
   return (
     <div
-      className="group relative w-full aspect-[21/9] min-h-[200px] max-h-[440px] overflow-hidden rounded-[2rem] border border-navy/5 shadow-brand-sm bg-navy/5"
+      className="group relative w-full aspect-[21/9]  overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -66,7 +66,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
                 {slide}
               </a>
             ) : slide}
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none" />
           </div>
         );
       })}
@@ -93,7 +93,7 @@ export const HeroSlideshow = ({ banners }: HeroSlideshowProps) => {
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`สไลด์ที่ ${i + 1}`}
-                className="relative h-1 w-8 rounded-full bg-white/35 overflow-hidden"
+                className="relative h-2 w-8 rounded-full bg-white/35 overflow-hidden"
               >
                 {i === index && (
                   <span

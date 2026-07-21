@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Search, Loader2, Calendar } from 'lucide-react';
 import { PremiumInput } from '@/components/ui/FormControls';
 import Turnstile from '@/components/Turnstile';
+import { SiteNavbar } from '@/components/SiteNavbar';
 import { getErrorMessage } from '@/lib/call-api';
 import { useCheckStatus } from '../hooks/use-check-status';
 import {
@@ -44,16 +43,9 @@ export const StatusView = () => {
 
   return (
     <div className="min-h-screen bg-cream">
-      <nav className="border-b border-navy/5">
-        <div className="max-w-4xl mx-auto px-6 h-20 flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/img/logo.png" alt="ตราสัญลักษณ์ มมร" width={40} height={40} />
-            <span className="font-bold text-navy">มมร. วิทยาเขตล้านนา</span>
-          </Link>
-        </div>
-      </nav>
+      <SiteNavbar />
 
-      <div className="max-w-lg mx-auto px-6 py-16">
+      <div className="max-w-lg mx-auto px-6 pt-36 pb-16">
         <h1 className="text-2xl font-black text-navy text-center mb-2">ตรวจสอบสถานะใบสมัคร</h1>
         <p className="text-navy/50 text-center text-sm mb-10">กรอกเลขบัตรประชาชนและวันเดือนปีเกิดเพื่อตรวจสอบสถานะ</p>
 

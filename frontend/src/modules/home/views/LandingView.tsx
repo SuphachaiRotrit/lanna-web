@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useHomePrograms, useHomeBanners } from '../hooks/use-home';
 import { ProgramDetailModal } from '../components/ProgramDetailModal';
 import { HeroSlideshow } from '../components/HeroSlideshow';
+import { SiteNavbar } from '@/components/SiteNavbar';
 import { Program } from '@/types';
 
 const MAP_EMBED_SRC = 'https://www.google.com/maps?cid=5141882952009849250&output=embed';
@@ -23,37 +24,22 @@ export const LandingView = () => {
 
   return (
     <div className="min-h-screen bg-cream">
-      {/* NAVIGATION */}
-      <nav className="fixed top-0 w-full z-50 glass border-b border-white/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-4 group">
-            <Image src="/img/logo.png" alt="ตราสัญลักษณ์ มมร" width={48} height={48} className="drop-shadow-md group-hover:scale-105 transition-transform" />
-            <div className="hidden sm:block">
-              <h1 className="text-base font-bold text-navy leading-tight tracking-tight">มหาวิทยาลัยมหามกุฏราชวิทยาลัย</h1>
-              <p className="text-[13px] font-semibold text-brand tracking-widest uppercase">Lanna Campus • วิทยาเขตล้านนา</p>
-            </div>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="#programs" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">หลักสูตร</Link>
-            <Link href="/status" className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">ตรวจสอบสถานะ</Link>
-            <a href="https://lanna.mbu.ac.th/" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-navy/70 hover:text-brand transition-colors rounded-xl">
-              เว็บมหาวิทยาลัย <ExternalLink size={13} />
-            </a>
-            <Link href="/admin/login" className="px-5 py-2.5 text-sm font-semibold text-navy/60 bg-navy/5 hover:bg-navy/10 rounded-xl transition-all">เจ้าหน้าที่</Link>
-            <Link href="/apply" className="px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl shadow-brand-sm hover:shadow-brand transition-all hover:-translate-y-0.5">สมัครเรียน</Link>
-          </div>
-        </div>
-      </nav>
+      <SiteNavbar />
 
       {/* HERO SLIDESHOW */}
-      {banners.length > 0 && (
-        <section className="relative pt-28 pb-20 lg:pt-28 lg:pb-32 my-16 lg:my-24">
+      {banners.length > 0 ? (
+        <section className="relative pt-12 lg:pt-26 my-16 lg:my-24">
           <HeroSlideshow banners={banners} />
         </section>
+      ) : (
+        <div className="flex flex-col pt-12 lg:pt-26 my-16 lg:my-24 items-center gap-3 text-navy/30">
+          <Loader2 size={28} className="animate-spin" />
+          <p className="text-sm font-bold">กำลังโหลดสไลด์...</p>
+        </div>
       )}
 
       {/* HERO SECTION */}
-      <section className="relative pt-12 pb-20 lg:pt-12 lg:pb-32 overflow-hidden">
+      <section className="relative pb-20 lg:pt-4 lg:pb-32 overflow-hidden">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">
@@ -144,12 +130,12 @@ export const LandingView = () => {
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-brand scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                 <div className="w-16 h-16 rounded-2xl bg-brand/8 flex items-center justify-center mb-8"><BookOpen size={28} className="text-brand" /></div>
                 <div className="flex items-center gap-2 mb-2">
-                   <h4 className="text-xl font-bold text-navy leading-snug group-hover:text-brand">{prog.name}</h4>
-                   {prog.duration && (
-                     <span className="text-[12px] font-black text-brand bg-brand/5 px-2 py-0.5 rounded">
-                       {prog.duration} ปี
-                     </span>
-                   )}
+                  <h4 className="text-xl font-bold text-navy leading-snug group-hover:text-brand">{prog.name}</h4>
+                  {prog.duration && (
+                    <span className="text-[12px] font-black text-brand bg-brand/5 px-2 py-0.5 rounded">
+                      {prog.duration} ปี
+                    </span>
+                  )}
                 </div>
                 <p className="text-sm text-navy/40 font-bold uppercase tracking-wider">{prog.faculty?.name}</p>
                 {prog.description && (

@@ -87,8 +87,8 @@ export const Step0Intro: React.FC<IntroProps> = ({ onStart, onCancel }) => {
           onClick={onStart}
           className="group relative px-16 py-5 bg-navy text-white rounded-3xl font-black text-sm tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-navy/20"
         >
-          <span className="relative z-10 flex items-center gap-3">
-            เริ่มสมัครเรียนตอนนี้
+          <span className="relative z-10 flex items-center gap-3 justify-center">
+            สมัครเรียน
             <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center group-hover:translate-x-1 transition-transform">
               {/* <Smartphone size={14} className="text-navy" /> */}
               <ArrowRightStartOnRectangle16SolidIcon width="14" height="14" className="text-navy" />
