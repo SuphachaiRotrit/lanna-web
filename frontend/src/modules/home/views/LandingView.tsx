@@ -44,7 +44,7 @@ export const LandingView = () => {
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand/10 text-brand text-sm font-bold mb-10 border border-brand/20">
               <Award size={16} />
-              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา 2569</span>
+              <span>เปิดรับสมัครนักศึกษาใหม่ ปีการศึกษา 2570</span>
             </div>
             <h2 className="text-4xl sm:text-7xl lg:text-[4rem] font-black text-navy leading-[1.05] tracking-tight mb-8">
               <span>สมัครเรียน </span>

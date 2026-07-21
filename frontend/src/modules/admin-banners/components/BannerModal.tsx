@@ -105,7 +105,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ isOpen, onClose, onSub
             <input
               type="text"
               className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-brand outline-none transition-all font-bold text-sm"
-              placeholder="เช่น เปิดรับนักศึกษาใหม่ 2569"
+              placeholder="เช่น เปิดรับนักศึกษาใหม่ 2570"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
