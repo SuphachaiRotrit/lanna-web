@@ -59,9 +59,9 @@ export const DashboardView = () => {
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">ภาพรวมการรับสมัคร</h2>
           <p className="text-gray-400 text-sm font-medium mt-0.5">สรุปข้อมูลการรับสมัครนักศึกษาและสถิติที่สำคัญ</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-end gap-3">
           <div className="w-44">
-            <YearPicker value={selectedYear} onChange={setSelectedYear} />
+            <YearPicker label="ปีการศึกษา" value={selectedYear} onChange={setSelectedYear} />
           </div>
           <button
             type="button"

@@ -117,7 +117,7 @@ export const ApplicantsView = () => {
       </button>
 
       {/* Filters Bar */}
-      <PremiumCard className="p-2 flex flex-wrap items-center gap-3 border-gray-100/50">
+      <PremiumCard className="p-2 flex flex-wrap items-end gap-3 border-gray-100/50">
         <div className="flex-1 min-w-[320px]">
           <PremiumInput
             placeholder="ค้นหาตามชื่อ, นามสกุล หรือเลขใบสมัคร..."
@@ -174,6 +174,7 @@ export const ApplicantsView = () => {
 
         <div className="w-36">
           <YearPicker
+            label="ปีการศึกษา"
             value={filters.year}
             onChange={(year) => setFilters(prev => ({ ...prev, year, page: 1 }))}
           />
