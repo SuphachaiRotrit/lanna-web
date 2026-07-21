@@ -9,10 +9,8 @@ export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get('token')
-  async getToken(@Req() req: Request) {
-    const token = await this.notificationsService.createBrowserToken(
-      req.user!.id,
-    );
+  getToken(@Req() req: Request) {
+    const token = this.notificationsService.createBrowserToken(req.user!.id);
     return { token };
   }
 
