@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { XCircle, FileText, ExternalLink, Printer, Download, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas-pro';
@@ -91,6 +91,13 @@ export const ApplicantDetailModal: React.FC<ApplicantDetailModalProps> = ({ appl
   const { updateStatus, updateExam, updateReportIn } = useApplicantMutation();
   const applicant = res?.data;
   const hasDoc = (type: ApplicantDocument['type']) => !!applicant?.documents?.some((d) => d.type === type);
+
+  useEffect(() => {
+    if (applicantId && applicant?.status === 'PENDING') {
+      updateStatus.mutate({ id: applicantId, status: 'REVIEWING' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applicantId, applicant?.status]);
 
   if (!applicantId) return null;
 

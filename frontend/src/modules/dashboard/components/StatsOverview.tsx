@@ -38,22 +38,23 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
     {
       title: 'ผ่านการสมัคร',
       value: stats?.statusBreakdown?.find((s) => s.status === 'APPROVED')?.count || 0,
-      icon: UserCheck, 
+      icon: UserCheck,
       iconBg: 'bg-emerald-50',
       iconColor: 'text-emerald-500',
       trend: 'up',
       subtitle: 'ผ่านเกณฑ์'
     },
-    {
-      title: 'รายงานตัวแล้ว',
-      value: stats?.overview?.reportedInCount || 0,
-      icon: GraduationCap,
-      iconBg: 'bg-purple-50',
-      iconColor: 'text-purple-500',
-      trend: null,
-      subtitle: 'ยืนยันเข้าเรียนแล้ว'
-    },
   ];
+
+  const reportedInCard = {
+    title: 'รายงานตัวแล้ว',
+    value: stats?.overview?.reportedInCount || 0,
+    icon: GraduationCap,
+    iconBg: 'bg-purple-50',
+    iconColor: 'text-purple-500',
+    trend: null,
+    subtitle: 'ยืนยันเข้าเรียนแล้ว'
+  };
 
   const passed = stats?.examResultBreakdown?.find((e) => e.examResult === 'PASSED')?.count || 0;
   const failed = stats?.examResultBreakdown?.find((e) => e.examResult === 'FAILED')?.count || 0;
@@ -118,6 +119,19 @@ export const StatsOverview: React.FC<StatsCardProps> = ({ stats }) => {
             <div className="h-full w-full bg-gray-100" />
           )}
         </div>
+      </div>
+
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gray-150 transition-all duration-300 group cursor-default">
+        <div className="flex items-start justify-between mb-4">
+          <div className={`p-2.5 rounded-xl ${reportedInCard.iconBg} group-hover:scale-105 transition-transform duration-300`}>
+            <reportedInCard.icon size={18} className={reportedInCard.iconColor} strokeWidth={2} />
+          </div>
+        </div>
+        <h3 className="text-2xl font-extrabold text-gray-900 mb-0.5 tabular-nums tracking-tight">
+          {reportedInCard.value.toLocaleString()}
+        </h3>
+        <p className="text-[13px] font-bold text-gray-400">{reportedInCard.title}</p>
+        <p className="text-[12px] font-medium text-gray-300 mt-0.5">{reportedInCard.subtitle}</p>
       </div>
     </div>
   );

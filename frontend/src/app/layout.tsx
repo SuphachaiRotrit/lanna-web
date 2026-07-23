@@ -28,7 +28,20 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
-        <Toaster position="top-center" richColors closeButton />
+        <Toaster
+          position="top-center"
+          richColors
+          closeButton
+          style={{ '--width': '420px' } as React.CSSProperties}
+          toastOptions={{
+            classNames: {
+              toast: '!p-5 !gap-3',
+              title: '!text-[15px]',
+              description: '!text-[13px]',
+              actionButton: '!bg-brand !text-white !h-8 !px-3.5 !text-[13px]',
+            },
+          }}
+        />
       </body>
     </html>
   );
