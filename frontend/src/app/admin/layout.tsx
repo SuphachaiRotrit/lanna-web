@@ -194,13 +194,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             {isCollapsed ? (
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-warm-gray">ขยาย</span>
-                <PanelLeftOpen size={16}/>
+                <span className="text-[16px] font-bold text-warm-gray">ขยาย</span>
+                <PanelLeftOpen size={20}/>
               </div>
             )  : (
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-warm-gray">หุบ</span>
-                <PanelLeftClose size={16} />
+                <span className="text-[16px] font-bold text-warm-gray">หุบ</span>
+                <PanelLeftClose size={20} />
               </div>
             )}
           </button>
