@@ -239,7 +239,7 @@ describe('ApplicantService.checkStatus', () => {
     expect(findUnique).not.toHaveBeenCalled();
   });
 
-  it('returns public-safe, name-masked fields on a matching nationalId + birthDate', async () => {
+  it('returns public-safe fields on a matching nationalId + birthDate', async () => {
     const nationalIdHash = EncryptionUtil.hash('1234567890123');
     const prisma = {
       applicant: {
@@ -276,7 +276,7 @@ describe('ApplicantService.checkStatus', () => {
     );
 
     expect(result).toEqual({
-      fullName: 'นายท**** ร***',
+      fullName: 'นายทดสอบ ระบบ',
       applicationNumber: '2569-000001',
       program: {
         name: 'พุทธศาสตรบัณฑิต',

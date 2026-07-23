@@ -273,9 +273,7 @@ export class ApplicantService {
     }
 
     return {
-      // Masked - a caller who already has the correct nationalId + birthDate can confirm
-      // status, but this page must not double as a "whose ID is this" name-lookup tool.
-      fullName: `${applicant.prefixName}${this.maskName(applicant.firstName)} ${this.maskName(applicant.lastName)}`,
+      fullName: `${applicant.prefixName}${applicant.firstName} ${applicant.lastName}`,
       applicationNumber: applicant.applicationNumber,
       program: applicant.program,
       status: applicant.status,
@@ -283,11 +281,6 @@ export class ApplicantService {
       reportInStatus: applicant.reportInStatus,
       reportInAt: applicant.reportInAt,
     };
-  }
-
-  private maskName(name: string): string {
-    if (name.length <= 1) return name;
-    return name[0] + '*'.repeat(name.length - 1);
   }
 
   /**
