@@ -447,6 +447,17 @@ export class ApplicantService {
         ...(status === ApplicationStatus.REJECTED
           ? { rejectionReason: reason }
           : {}),
+        // Exam result and report-in are only meaningful while APPROVED — clear
+        // them on any move away from it so a reverted applicant can't show a
+        // stale PASSED/CONFIRMED badge.
+        ...(status !== ApplicationStatus.APPROVED
+          ? {
+              examResult: ExamResult.NOT_YET,
+              reportInStatus: ReportInStatus.NOT_YET,
+              reportInAt: null,
+              reportInReason: null,
+            }
+          : {}),
       },
       include: {
         program: {

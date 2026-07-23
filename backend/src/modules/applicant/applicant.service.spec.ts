@@ -56,6 +56,34 @@ describe('ApplicantService.updateStatus', () => {
     const dataArg = update.mock.calls[0][0].data;
     expect(dataArg.rejectionReason).toBeUndefined();
   });
+
+  it('clears examResult and reportInStatus when moving away from APPROVED', async () => {
+    const update: UpdateMock = jest
+      .fn<Promise<unknown>, [UpdateArgs]>()
+      .mockResolvedValue({});
+    const service = buildService(update);
+
+    await service.updateStatus('1', ApplicationStatus.PENDING);
+
+    const dataArg = update.mock.calls[0][0].data;
+    expect(dataArg.examResult).toBe(ExamResult.NOT_YET);
+    expect(dataArg.reportInStatus).toBe(ReportInStatus.NOT_YET);
+    expect(dataArg.reportInAt).toBeNull();
+    expect(dataArg.reportInReason).toBeNull();
+  });
+
+  it('leaves examResult and reportInStatus untouched when the new status is APPROVED', async () => {
+    const update: UpdateMock = jest
+      .fn<Promise<unknown>, [UpdateArgs]>()
+      .mockResolvedValue({});
+    const service = buildService(update);
+
+    await service.updateStatus('1', ApplicationStatus.APPROVED);
+
+    const dataArg = update.mock.calls[0][0].data;
+    expect(dataArg.examResult).toBeUndefined();
+    expect(dataArg.reportInStatus).toBeUndefined();
+  });
 });
 
 describe('ApplicantService.updateExamResult', () => {

@@ -133,35 +133,14 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                       </button>
                     )}
                     {app.status === 'APPROVED' && (
-                      <details className="relative">
-                        <summary className="list-none flex items-center gap-1.5 px-3 py-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors text-xs font-black cursor-pointer">
-                          {pendingStatusId === app.id ? <Loader2 size={16} className="animate-spin" /> : <RotateCcw size={16} />}
-                          ปรับสถานะ
-                        </summary>
-                        <div className="absolute right-0 mt-1 w-44 bg-white border border-gray-100 rounded-xl shadow-xl z-10 overflow-hidden text-left">
-                          <button
-                            onClick={(e) => {
-                              onUpdateStatus(app.id, 'PENDING');
-                              (e.currentTarget.closest('details') as HTMLDetailsElement)?.removeAttribute('open');
-                            }}
-                            disabled={pendingStatusId === app.id}
-                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-orange-600 hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            ส่งกลับไปรอตรวจใหม่
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              onUpdateStatus(app.id, 'REVIEWING');
-                              onView(app.id);
-                              (e.currentTarget.closest('details') as HTMLDetailsElement)?.removeAttribute('open');
-                            }}
-                            disabled={pendingStatusId === app.id}
-                            className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            ส่งกลับไปพิจารณาใหม่
-                          </button>
-                        </div>
-                      </details>
+                      <button
+                        onClick={() => onUpdateStatus(app.id, 'PENDING')}
+                        disabled={pendingStatusId === app.id}
+                        className="flex items-center gap-1.5 px-3 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors text-xs font-black disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {pendingStatusId === app.id ? <Loader2 size={16} className="animate-spin" /> : <RotateCcw size={16} />}
+                        ส่งกลับไปรอตรวจใหม่
+                      </button>
                     )}
                   </div>
                 </td>
