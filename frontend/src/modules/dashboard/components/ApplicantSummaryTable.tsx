@@ -16,7 +16,7 @@ interface ApplicantSummaryTableProps {
 }
 
 const Cell = ({ value }: { value: number }) => (
-  <td className="px-4 py-3 text-center text-[13px] font-bold text-gray-700 tabular-nums">
+  <td className="border border-gray-200 px-4 py-3 text-center text-[13px] font-bold text-gray-700 tabular-nums">
     {value || <span className="text-gray-300">-</span>}
   </td>
 );
@@ -112,39 +112,40 @@ export const ApplicantSummaryTable: React.FC<ApplicantSummaryTableProps> = ({ da
       </div>
 
       <div ref={tableRef} className="overflow-x-auto bg-white">
-        <table className="w-full text-left border-collapse">
+        <p className="px-6 pt-4 pb-1 text-[13px] font-extrabold text-gray-700">ปีการศึกษา {year}</p>
+        <table className="w-full text-left border-collapse border border-gray-200">
           <thead>
-            <tr className="bg-gray-50/80 border-b border-gray-100">
-              <th className="px-6 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em]">สาขาวิชาที่เปิดรับสมัคร</th>
-              <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em] text-center">ผู้สมัครปีนี้</th>
-              <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em] text-center">รอตรวจสอบ</th>
-              <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em] text-center">ผ่านการสมัคร</th>
-              <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em] text-center">สอบผ่าน</th>
-              <th className="px-4 py-3.5 text-[12px] font-extrabold text-gray-400 uppercase tracking-[0.1em] text-center">รายงานตัวแล้ว</th>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-200 px-6 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em]">สาขาวิชาที่เปิดรับสมัคร</th>
+              <th className="border border-gray-200 px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em] text-center">ผู้สมัครปีนี้</th>
+              <th className="border border-gray-200 px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em] text-center">รอตรวจสอบ</th>
+              <th className="border border-gray-200 px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em] text-center">ผ่านการสมัคร</th>
+              <th className="border border-gray-200 px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em] text-center">สอบผ่าน</th>
+              <th className="border border-gray-200 px-4 py-3.5 text-[12px] font-extrabold text-gray-500 uppercase tracking-[0.1em] text-center">รายงานตัวแล้ว</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
-                  <td className="px-6 py-3.5"><Skeleton className="h-4 w-56" /></td>
-                  <td className="px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
-                  <td className="px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
-                  <td className="px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
-                  <td className="px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
-                  <td className="px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
+                  <td className="border border-gray-200 px-6 py-3.5"><Skeleton className="h-4 w-56" /></td>
+                  <td className="border border-gray-200 px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
+                  <td className="border border-gray-200 px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
+                  <td className="border border-gray-200 px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
+                  <td className="border border-gray-200 px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
+                  <td className="border border-gray-200 px-4 py-3.5"><Skeleton className="h-4 w-8 mx-auto" /></td>
                 </tr>
               ))
             ) : !data || data.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-10 text-center text-gray-400 text-xs font-bold">
+                <td colSpan={6} className="border border-gray-200 px-6 py-10 text-center text-gray-400 text-xs font-bold">
                   ยังไม่มีสาขาวิชาที่เปิดรับสมัคร
                 </td>
               </tr>
             ) : (
               data.map((r) => (
                 <tr key={r.programId} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-3.5 text-[13px] font-bold text-gray-800">{r.programName}</td>
+                  <td className="border border-gray-200 px-6 py-3.5 text-[13px] font-bold text-gray-800">{r.programName}</td>
                   <Cell value={r.applied} />
                   <Cell value={r.pending} />
                   <Cell value={r.approved} />
@@ -156,13 +157,13 @@ export const ApplicantSummaryTable: React.FC<ApplicantSummaryTableProps> = ({ da
           </tbody>
           {!isLoading && data && data.length > 0 && (
             <tfoot>
-              <tr className="bg-amber-50/70 border-t border-amber-100">
-                <td className="px-6 py-3.5 text-[13px] font-extrabold text-gray-800">รวม</td>
-                <td className="px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.applied}</td>
-                <td className="px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.pending}</td>
-                <td className="px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.approved}</td>
-                <td className="px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.examPassed}</td>
-                <td className="px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.reportedIn}</td>
+              <tr className="bg-amber-100">
+                <td className="border border-gray-200 px-6 py-3.5 text-[13px] font-extrabold text-gray-800">รวม</td>
+                <td className="border border-gray-200 px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.applied}</td>
+                <td className="border border-gray-200 px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.pending}</td>
+                <td className="border border-gray-200 px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.approved}</td>
+                <td className="border border-gray-200 px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.examPassed}</td>
+                <td className="border border-gray-200 px-4 py-3.5 text-center text-[13px] font-extrabold text-gray-800 tabular-nums">{totals.reportedIn}</td>
               </tr>
             </tfoot>
           )}
