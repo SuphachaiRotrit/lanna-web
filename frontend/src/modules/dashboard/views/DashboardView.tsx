@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Award, BookOpen, Users, Clock, RefreshCw } from 'lucide-react';
 import { useDashboardStats } from '../hooks/use-dashboard';
 import { StatsOverview } from '../components/StatsOverview';
+import { ApplicantSummaryTable } from '../components/ApplicantSummaryTable';
 import { TrendChart } from '../components/TrendChart';
 import { ExamByProgramChart } from '../components/ExamByProgramChart';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -85,6 +86,8 @@ export const DashboardView = () => {
           </div>
         </div>
       </div>
+
+      <ApplicantSummaryTable data={stats?.programStatusBreakdown} year={selectedYear} isLoading={isLoading} />
 
       <StatsOverview stats={stats} />
 

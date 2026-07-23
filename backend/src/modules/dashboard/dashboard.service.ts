@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Redis } from '@upstash/redis';
+import * as ExcelJS from 'exceljs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SettingsService } from '../settings/settings.service';
 
@@ -90,6 +91,16 @@ export class DashboardService {
       string,
       { name: string; passed: number; failed: number }
     >();
+    const programStatusCounts = new Map<
+      string,
+      {
+        applied: number;
+        pending: number;
+        approved: number;
+        examPassed: number;
+        reportedIn: number;
+      }
+    >();
 
     for (const a of yearApplicants) {
       if (a.reportInStatus === 'CONFIRMED') reportedInCount++;
@@ -117,7 +128,29 @@ export class DashboardService {
         else entry.failed++;
         examByProgram.set(a.programId, entry);
       }
+
+      const statusEntry = programStatusCounts.get(a.programId) ?? {
+        applied: 0,
+        pending: 0,
+        approved: 0,
+        examPassed: 0,
+        reportedIn: 0,
+      };
+      statusEntry.applied++;
+      if (a.status === 'PENDING') statusEntry.pending++;
+      if (a.status === 'APPROVED') statusEntry.approved++;
+      if (a.examResult === 'PASSED') statusEntry.examPassed++;
+      if (a.reportInStatus === 'CONFIRMED') statusEntry.reportedIn++;
+      programStatusCounts.set(a.programId, statusEntry);
     }
+
+    // All programs currently open for enrollment, so a program with zero
+    // applicants still shows a (zeroed) row in the summary table.
+    const openPrograms = await this.prisma.program.findMany({
+      where: { isActive: true },
+      orderBy: [{ faculty: { name: 'asc' } }, { name: 'asc' }],
+      select: { id: true, name: true },
+    });
 
     const recentApplicants = yearApplicants.slice(0, 5).map((a) => ({
       id: a.id,
@@ -158,11 +191,137 @@ export class DashboardService {
           count,
         }),
       ),
+      programStatusBreakdown: openPrograms.map((p) => {
+        const counts = programStatusCounts.get(p.id) ?? {
+          applied: 0,
+          pending: 0,
+          approved: 0,
+          examPassed: 0,
+          reportedIn: 0,
+        };
+        return {
+          programId: p.id,
+          programName: p.name,
+          ...counts,
+        };
+      }),
       genderBreakdown: Array.from(genderCounts.entries()).map(
         ([gender, count]) => ({ gender, count }),
       ),
       monthlyTrend,
       recentApplicants,
     };
+  }
+
+  async exportSummaryExcel(year?: number): Promise<Buffer> {
+    const stats = await this.getStats(year);
+    const rows = stats.programStatusBreakdown;
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'MBU Lanna Registration System';
+    workbook.created = new Date();
+    const sheet = workbook.addWorksheet('สรุปยอดผู้สมัคร');
+
+    sheet.columns = [
+      { key: 'program', width: 45 },
+      { key: 'applied', width: 14 },
+      { key: 'pending', width: 14 },
+      { key: 'approved', width: 16 },
+      { key: 'examPassed', width: 14 },
+      { key: 'reportedIn', width: 16 },
+    ];
+
+    sheet.mergeCells('A1:B1');
+    const yearLabelCell = sheet.getCell('A1');
+    yearLabelCell.value = 'ปีการศึกษา';
+    yearLabelCell.font = { bold: true };
+    const yearValueCell = sheet.getCell('C1');
+    yearValueCell.value = stats.overview.currentYear;
+    yearValueCell.font = { bold: true };
+    sheet.addRow([]);
+
+    const headerRow = sheet.addRow([
+      'สาขาวิชาที่เปิดรับสมัคร',
+      'ผู้สมัครปีนี้',
+      'รอตรวจสอบ',
+      'ผ่านการสมัคร',
+      'สอบผ่าน',
+      'รายงานตัวแล้ว',
+    ]);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF7D9BE' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        bottom: { style: 'thin' },
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
+    sheet.getCell(`A${headerRow.number}`).alignment = { vertical: 'middle', horizontal: 'left' };
+
+    const totals = { applied: 0, pending: 0, approved: 0, examPassed: 0, reportedIn: 0 };
+    for (const r of rows) {
+      const row = sheet.addRow([
+        r.programName,
+        r.applied || '',
+        r.pending || '',
+        r.approved || '',
+        r.examPassed || '',
+        r.reportedIn || '',
+      ]);
+      row.eachCell((cell, colNumber) => {
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: colNumber === 1 ? 'left' : 'center',
+        };
+        cell.border = {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+      });
+      totals.applied += r.applied;
+      totals.pending += r.pending;
+      totals.approved += r.approved;
+      totals.examPassed += r.examPassed;
+      totals.reportedIn += r.reportedIn;
+    }
+
+    const totalRow = sheet.addRow([
+      'รวม',
+      totals.applied,
+      totals.pending,
+      totals.approved,
+      totals.examPassed,
+      totals.reportedIn,
+    ]);
+    totalRow.eachCell((cell, colNumber) => {
+      cell.font = { bold: true };
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: colNumber === 1 ? 'center' : 'center',
+      };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF7D9BE' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        bottom: { style: 'thin' },
+        left: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    return Buffer.from(buffer);
   }
 }
